@@ -1,0 +1,117 @@
+﻿@model IEnumerable<Domain.MainModule.Entities.Cotizacion>
+
+@section css {
+    @Styles.Render("~/Content/dynatable_personal")
+}
+
+@{
+    ViewBag.Title = "Cotizacion";
+}
+
+<h5>Cotizacion</h5>
+
+<table>
+    <tr>
+        <td style="padding:0 8px 0 8px"><label for="txtFechaInicial">Vigencia Desde:</label></td>
+        <td style="padding:0 8px 0 8px"><input type="text" id="txtFechaInicial" class="form-control fecha" placeholder="dd/mm/yyyy"></td>
+        <td style="padding:0 8px 0 8px"><label for="txtFechaFinal">Vigencia Hasta:</label></td>
+        <td style="padding:0 8px 0 8px"><input type="text" id="txtFechaFinal" class="form-control fecha" placeholder="dd/mm/yyyy"></td>
+        <td style="padding:0 8px 0 8px"><label for="txtUsuario">Usuario:</label></td>
+        <td>
+            @Html.DropDownListFor(p => MVC.Client.Extension.Utilities.Helper.GetUserData().UserId, (IEnumerable<SelectListItem>)ViewBag.UsuarioList, new { @class = "form-control multiSelect", style = "width:100px;", id = "ddlUsuario" })
+        </td>        
+        <td><button class="btn btn-primary" onclick="Buscar();">Buscar</button></td>
+        <td><button class="btn btn-primary" onclick="location.href='@Url.Action("Crear", "Cotizar", new { id = 0 })'">Nuevo</button></td>
+    </tr>
+    <tr>
+        <td style="padding:0 8px 0 8px"><label for="txtRFC">RFC:</label></td>
+        <td style="padding:0 8px 0 8px"><input type="text" id="txtRFC" class="form-control"></td>
+        <td style="padding:0 8px 0 8px"><label for="txtNombre">Nombre:</label></td>
+        <td style="padding:0 8px 0 8px"><input type="text" id="txtNombre" class="form-control"></td>
+        <td style="padding:0 8px 0 8px"><label for="txtNroPol">Nro Poliza:</label></td>
+        <td style="padding:0 8px 0 8px"><input type="text" id="txtNroPol" class="form-control"></td>
+    </tr>
+    <tr>
+        <td colspan="6"><div id="errores"></div></td>
+    </tr>
+</table>
+
+<div id="datos"></div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dynatable")
+
+    <script>
+    $(function () {
+        $.ajaxSetup({ cache: false });
+    });
+
+
+    $(".multiSelect").multiselect({
+        multiple: false,
+        header: "Seleccionar una opción",
+        noneSelectedText: "Seleccionar una opción",
+        selectedList: 1,
+        position: { my: 'left top', at: 'left bottom' }
+    });
+
+
+    $(".fecha").datepicker({
+        autoclose: true,
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy',
+        dayNamesMin: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+        monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+        showButtonPanel: true
+    });
+
+    function Buscar() {
+        var FechaInicial = $('#txtFechaInicial').val();
+        var FechaFinal = $('#txtFechaFinal').val();
+        var RFC = $('#txtRFC').val();
+        var UsuarioID = $('#ddlUsuario').val();
+        var Nombre = $('#txtNombre').val();
+        var NroPol = $('#txtNroPol').val();
+
+        $('#errores').html("");
+        $('#datos').html("");
+        
+        $.ajax({
+            url: '@Url.Content("~/Cotizar/GetListCotizaciones/")',
+                data: {
+                    vigenciaInicio: FechaInicial,
+                    vigenciaFin: FechaFinal,
+                    rfc: RFC,
+                    usuarioID: UsuarioID,
+                    nombre: Nombre,
+                    nroPol: NroPol
+                },
+                traditional: true,
+                success: function (data) {
+                    if (data.mensaje == "") {
+                        $('#datos').html(data.datos);
+
+                        $('#tblCotizacion').dynatable(
+                           {
+                               features: {
+                                   paginate: true,
+                                   recordCount: false,
+                                   perPageSelect: false
+                               },
+                               dataset: {
+                                   perPageDefault: 10
+                               }
+                           }
+                           );
+                    }
+                    else {
+                        $('#errores').html(data.mensaje);
+                    }
+                }
+
+            });
+        }
+    </script>
+}

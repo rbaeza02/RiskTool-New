@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="04171628-4e5d-4961-b6ad-9217ece75a87" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.Collections.Generic.List`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://201.157.37.2:8082/Sistran.IntegracionMasiva/Data.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Data.xsd" MetadataType="Schema" ID="c6475326-867e-4a5f-a99f-ce3418d45796" SourceId="1" SourceUrl="http://201.157.37.2:8082/Sistran.IntegracionMasiva/Data.svc?xsd=xsd1" />
+    <MetadataFile FileName="Data.disco" MetadataType="Disco" ID="984eec59-1122-4cf3-bf66-16c1dbcc4f37" SourceId="1" SourceUrl="http://201.157.37.2:8082/Sistran.IntegracionMasiva/Data.svc?disco" />
+    <MetadataFile FileName="Data1.xsd" MetadataType="Schema" ID="efe40c55-ad72-4d17-9110-2932a55b5ef1" SourceId="1" SourceUrl="http://201.157.37.2:8082/Sistran.IntegracionMasiva/Data.svc?xsd=xsd0" />
+    <MetadataFile FileName="Data2.xsd" MetadataType="Schema" ID="8535ccce-d6cc-4bcd-bc16-1e7b77f89984" SourceId="1" SourceUrl="http://201.157.37.2:8082/Sistran.IntegracionMasiva/Data.svc?xsd=xsd2" />
+    <MetadataFile FileName="Data.wsdl" MetadataType="Wsdl" ID="236456ec-79cf-4656-890e-5c7c7852f916" SourceId="1" SourceUrl="http://201.157.37.2:8082/Sistran.IntegracionMasiva/Data.svc?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

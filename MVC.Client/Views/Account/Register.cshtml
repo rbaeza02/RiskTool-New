@@ -1,0 +1,183 @@
+﻿@model Domain.MainModule.Entities.Usuario
+@{
+    ViewBag.Title = "Registro";
+}
+
+@if(Model.UsuarioID>0)
+{
+    <h5>Modificar Usuario</h5>
+}    
+else
+{
+    <h5>Registrar Nuevo Usuario</h5>
+}
+@if (ViewBag.Message != null)
+{ 
+    <div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'><span class="fui-cross"></span></button>@ViewBag.Message</div>
+}
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()    
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    @Html.HiddenFor(x => x.UsuarioID)
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="divLimite">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h5 class="modal-title small" id="myModalLabel">Límites del suscriptor (USD)</h5>
+                </div>
+                <div class="modal-body">
+                    <table id="tblLimite" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <td align="center"><b>Sub línea Negocio</b></td>
+                                <td align="center"><b>Límite</b></td>
+                                <td align="center"><b>Capacidad Contrato Reaseguro</b></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @if (Model.bk_tr_UsuarioSubLinea != null)
+                        {
+                            for (int i = 0; i < Model.bk_tr_UsuarioSubLinea.Count(); i++)
+                            {
+                                @Html.HiddenFor(model => Model.bk_tr_UsuarioSubLinea[i].SubLineaNegocioID)
+                                @Html.HiddenFor(model => Model.bk_tr_UsuarioSubLinea[i].UsuarioID)
+                                <tr>
+                                    <td>@Model.bk_tr_UsuarioSubLinea[i].bk_tc_SubLineaNegocio.nombre</td>
+                                    <td>@Html.TextBoxFor(p => p.bk_tr_UsuarioSubLinea[i].Limite, new { @class = "form-control number qty", Value = String.Format("{0:N0}", Model.bk_tr_UsuarioSubLinea[i].Limite), @onkeypress = "return isNumberKey(event)", @onblur = "EscribirValor()" })</td>
+                                    <td><input type="text" class="form-control number" disabled="disabled" value="@(Model.bk_tr_UsuarioSubLinea[i].bk_tc_SubLineaNegocio.limitReaseguro.HasValue ? Model.bk_tr_UsuarioSubLinea[i].bk_tc_SubLineaNegocio.limitReaseguro.Value.ToString("#,###") : "")" /> </td>
+                                </tr>
+                            }
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.NombreUsuario, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.NombreUsuario, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Nombre, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Apellido, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Apellido, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.email, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.email, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="SISEcod_sus">Código Suscriptor SISE</label>
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.SISEcod_sus, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="isActivo">Sucursal</label>
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.SucursalID, (IEnumerable<SelectListItem>)ViewBag.SucursalList, new { @class = "form-control multiSelect" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="isActivo">Rol</label>
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.rolID, (IEnumerable<SelectListItem>)ViewBag.RolList, new { @class = "form-control multiSelect" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Contraseña, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.Contraseña, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+        </div>
+    </div>
+
+    if (Model.bk_tr_UsuarioSubLinea != null)
+    {
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="isActivo">Límites</label>
+            <div class="col-md-10">
+                <div class="input-group">
+                    <input type="text" class="form-control decimal" value="@(Model.bk_tr_UsuarioSubLinea.Where(x => x.Limite != 0).Count().ToString() + " Valores")" id="txtLimite" disabled />
+                    <span class="input-group-btn">
+                        <span class="input-group-addon"><a data-toggle="modal" data-target="#divLimite">...</a></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="isActivo">Usuario Activo</label>
+        <div class="col-md-10">
+            <label class="checkbox primary" for="chkActivo">
+                <input type="checkbox" data-toggle="radio" value="" id="chkActivo" @(Model.isActivo.Value ? "checked" : "") onchange="CambiarChk()">
+            </label>
+            @Html.HiddenFor(p => p.isActivo, new { @id = "hdActivo" })
+        </div>
+    </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-success" value="Guardar" />
+                <input type="button" class="btn btn-primary" value="Regresar" onclick="window.location.href ='@Url.Action("Index", "Account")';" />
+            </div>
+        </div>
+        }
+
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+
+            <script>
+
+                $(document).ready(function () {
+                    $(".multiSelect").multiselect({
+                        multiple: false,
+                        header: "Seleccionar una opción",
+                        noneSelectedText: "Seleccionar una opción",
+                        selectedList: 1,
+                        position: { my: 'left top', at: 'left bottom' }
+                    });
+                });
+
+                function CambiarChk()
+                {
+                    $('#hdActivo').val($('#chkActivo').is(':checked'));
+                }
+
+                function EscribirValor()
+                {
+                    var arr = document.getElementsByClassName('qty');
+                    var tot = 0;                    
+                    for (var i = 0; i < arr.length; i++) {
+                        if (parseInt(arr[i].value))
+                            if (arr[i].value != 0)
+                                tot += 1;
+                    }
+
+                    document.getElementById('txtLimite').value = tot + ' Valores';
+                }
+            </script>
+        }

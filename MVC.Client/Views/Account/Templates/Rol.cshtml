@@ -1,0 +1,16 @@
+﻿@model Domain.MainModule.Entities.Rol
+<br />
+<table class="table-hover table">
+    @for (int valor = 0; valor < Model.bk_tc_Accion.Count(); valor++)
+    {
+        <tr>
+            @if (Model.bk_tc_Accion[valor].isPrimero)
+            { 
+                <td rowspan="@Model.bk_tc_Accion[valor].NroController">@Model.bk_tc_Accion[valor].controllerName</td>
+            }
+            <td>@Model.bk_tc_Accion[valor].actionName</td>
+            <td>@Model.bk_tc_Accion[valor].descripcion</td>
+            <td><input type="checkbox" id="@("chk" + Model.rolID.ToString() + "_" + Model.bk_tc_Accion[valor].AccionID.ToString())" value="@Model.bk_tc_Accion[valor].AccionID" data-toggle="checkbox"></td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,631 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B5FC40BB-7215-4FC8-801F-0444961CE757}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MVC.Client</RootNamespace>
+    <AssemblyName>MVC.Client</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <Use64BitIISExpress />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Domain.Core.Entities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dlls\Domain.Core.Entities.dll</HintPath>
+    </Reference>
+    <Reference Include="Infrastructure.CrossCutting.IoC">
+      <HintPath>..\dlls\Infrastructure.CrossCutting.IoC.dll</HintPath>
+    </Reference>
+    <Reference Include="Infrastructure.Data.Core">
+      <HintPath>..\Infrastructure.Data.MainModule\bin\Debug\Infrastructure.Data.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Infrastructure.Data.MainModule">
+      <HintPath>..\Infrastructure.Data.MainModule\bin\Debug\Infrastructure.Data.MainModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>D:\MS\MarketShield\Infrastructure.CrossCutting.IoC\bin\Release\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportViewer.Web.2012.1.0.0\lib\Microsoft.ReportViewer.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.DataVisualization, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportViewer.Web.2012.1.0.0\lib\Microsoft.ReportViewer.DataVisualization.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportViewer.Web.2012.1.0.0\lib\Microsoft.ReportViewer.ProcessingObjectModel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportViewer.Web.2012.1.0.0\lib\Microsoft.ReportViewer.WebForms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.Types.14.0.314.76\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.1.2\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.1.2\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <Private>True</Private>
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AseguradoController.cs" />
+    <Compile Include="Controllers\CotizarController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ProcessController.cs" />
+    <Compile Include="Controllers\RiskReportController.cs" />
+    <Compile Include="Extension\ActionFilters\CustomAuthorize.cs" />
+    <Compile Include="Extension\ActionFilters\HandleCustomError.cs" />
+    <Compile Include="Extension\BootStrapper\DefaultBootStrapper.cs" />
+    <Compile Include="Extension\BootStrapper\IBootStrapper.cs" />
+    <Compile Include="Extension\CustomModelBinders\CustomerPictureModelBinder.cs" />
+    <Compile Include="Extension\CustomModelBinders\SelfTrackingEntityModelBinder.cs" />
+    <Compile Include="Extension\DependencyInjection\IoCControllerActivator.cs" />
+    <Compile Include="Extension\DependencyInjection\ServiceLocatorDependencyResolver.cs" />
+    <Compile Include="Extension\HtmlHelpers\NLayerAppHtmlHelpers.cs" />
+    <Compile Include="Extension\Messages\MessagesValidation.cs" />
+    <Compile Include="Extension\Utilities\DoubleModelBinder.cs" />
+    <Compile Include="Extension\Utilities\Helper.cs" />
+    <Compile Include="Extension\Utilities\Library.cs" />
+    <Compile Include="Extension\Utilities\ModelBinder.cs" />
+    <Compile Include="Extension\Utilities\Render.cs" />
+    <Compile Include="Extension\Utilities\RewriteUrlTransform.cs" />
+    <Compile Include="Extension\Utilities\SelfTrackingEntityBase64Converter.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Messages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Messages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="RiskToolDataSet.cs">
+      <DependentUpon>RiskToolDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="RiskToolDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RiskToolDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="SqlServerTypes\Loader.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BO.ico" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\dynatable\jquery.dynatable.css" />
+    <Content Include="Content\editable\bootstrap-editable.css" />
+    <Content Include="Content\flatui\bootstrap.css" />
+    <Content Include="Content\flatui\custom.css" />
+    <Content Include="Content\flatui\flat-ui.css" />
+    <Content Include="Content\flatui\fonts\Flat-UI-Icons.dev.svg" />
+    <Content Include="Content\flatui\fonts\Flat-UI-Icons.svg" />
+    <Content Include="Content\flatui\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\flatui\fonts\lato\lato-black.svg" />
+    <Content Include="Content\flatui\fonts\lato\lato-bold.svg" />
+    <Content Include="Content\flatui\fonts\lato\lato-bolditalic.svg" />
+    <Content Include="Content\flatui\fonts\lato\lato-italic.svg" />
+    <Content Include="Content\flatui\fonts\lato\lato-light.svg" />
+    <Content Include="Content\flatui\fonts\lato\lato-regular.svg" />
+    <Content Include="Content\flatui\fonts\glyphicons\flat-ui-icons-regular.svg" />
+    <Content Include="Content\flatui\sticky-footer.css" />
+    <Content Include="Content\fonts\glyphicons\flat-ui-icons-regular.svg" />
+    <Content Include="Content\fonts\lato\lato-black.svg" />
+    <Content Include="Content\fonts\lato\lato-bold.svg" />
+    <Content Include="Content\fonts\lato\lato-bolditalic.svg" />
+    <Content Include="Content\fonts\lato\lato-italic.svg" />
+    <Content Include="Content\fonts\lato\lato-light.svg" />
+    <Content Include="Content\fonts\lato\lato-regular.svg" />
+    <Content Include="Content\menu\menu.css" />
+    <Content Include="Content\multiselect\images\ui-bg_glass_100_f6f6f6_1x400.png" />
+    <Content Include="Content\multiselect\images\ui-bg_glass_100_fdf5ce_1x400.png" />
+    <Content Include="Content\multiselect\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\multiselect\images\ui-bg_gloss-wave_35_f6a828_500x100.png" />
+    <Content Include="Content\multiselect\images\ui-bg_highlight-soft_100_eeeeee_1x100.png" />
+    <Content Include="Content\multiselect\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\multiselect\images\ui-icons_ef8c08_256x240.png" />
+    <Content Include="Content\multiselect\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Content\multiselect\jquery-ui.css" />
+    <Content Include="Content\multiselect\jquery.multiselect.css" />
+    <Content Include="Content\multiselect\jquery.multiselect.filter.css" />
+    <Content Include="Content\themes\base\accordion.css" />
+    <Content Include="Content\themes\base\all.css" />
+    <Content Include="Content\themes\base\autocomplete.css" />
+    <Content Include="Content\themes\base\base.css" />
+    <Content Include="Content\themes\base\button.css" />
+    <Content Include="Content\themes\base\core.css" />
+    <Content Include="Content\themes\base\datepicker.css" />
+    <Content Include="Content\themes\base\dialog.css" />
+    <Content Include="Content\themes\base\draggable.css" />
+    <Content Include="Content\themes\base\images\calendar.gif" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_444444_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_555555_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_777620_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_777777_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cc0000_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Content\themes\base\jquery-ui.css" />
+    <Content Include="Content\themes\base\jquery-ui.min.css" />
+    <Content Include="Content\themes\base\jquery.ui.accordion.css" />
+    <Content Include="Content\themes\base\jquery.ui.all.css" />
+    <Content Include="Content\themes\base\jquery.ui.autocomplete.css" />
+    <Content Include="Content\themes\base\jquery.ui.base.css" />
+    <Content Include="Content\themes\base\jquery.ui.button.css" />
+    <Content Include="Content\themes\base\jquery.ui.core.css" />
+    <Content Include="Content\themes\base\jquery.ui.datepicker.css" />
+    <Content Include="Content\themes\base\jquery.ui.dialog.css" />
+    <Content Include="Content\themes\base\jquery.ui.progressbar.css" />
+    <Content Include="Content\themes\base\jquery.ui.resizable.css" />
+    <Content Include="Content\themes\base\jquery.ui.selectable.css" />
+    <Content Include="Content\themes\base\jquery.ui.slider.css" />
+    <Content Include="Content\themes\base\jquery.ui.tabs.css" />
+    <Content Include="Content\themes\base\jquery.ui.theme.css" />
+    <Content Include="Content\themes\base\menu.css" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\minified\jquery-ui.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.accordion.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.autocomplete.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.button.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.core.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.datepicker.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.dialog.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.progressbar.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.resizable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.selectable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Content\themes\base\progressbar.css" />
+    <Content Include="Content\themes\base\resizable.css" />
+    <Content Include="Content\themes\base\selectable.css" />
+    <Content Include="Content\themes\base\selectmenu.css" />
+    <Content Include="Content\themes\base\slider.css" />
+    <Content Include="Content\themes\base\sortable.css" />
+    <Content Include="Content\themes\base\spinner.css" />
+    <Content Include="Content\themes\base\tabs.css" />
+    <Content Include="Content\themes\base\theme.css" />
+    <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="Content\timeout\timeout-dialog.css" />
+    <Content Include="favicon.ico" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Images\accent.png" />
+    <Content Include="Images\Berkley-México-Seguros.png" />
+    <Content Include="Images\bkg.png" />
+    <Content Include="Images\bullet.png" />
+    <Content Include="Images\flatui\icons\png\Book.png" />
+    <Content Include="Images\flatui\icons\png\Calendar.png" />
+    <Content Include="Images\flatui\icons\png\Chat.png" />
+    <Content Include="Images\flatui\icons\png\Clipboard.png" />
+    <Content Include="Images\flatui\icons\png\Compas.png" />
+    <Content Include="Images\flatui\icons\png\Gift-Box.png" />
+    <Content Include="Images\flatui\icons\png\Infinity-Loop.png" />
+    <Content Include="Images\flatui\icons\png\Mail.png" />
+    <Content Include="Images\flatui\icons\png\Map.png" />
+    <Content Include="Images\flatui\icons\png\Pensils.png" />
+    <Content Include="Images\flatui\icons\png\Pocket.png" />
+    <Content Include="Images\flatui\icons\png\Retina-Ready.png" />
+    <Content Include="Images\flatui\icons\png\Toilet-Paper.png" />
+    <Content Include="Images\flatui\icons\png\Watches.png" />
+    <Content Include="Images\flatui\icons\svg\book.svg" />
+    <Content Include="Images\flatui\icons\svg\calendar.svg" />
+    <Content Include="Images\flatui\icons\svg\chat.svg" />
+    <Content Include="Images\flatui\icons\svg\clipboard.svg" />
+    <Content Include="Images\flatui\icons\svg\clocks.svg" />
+    <Content Include="Images\flatui\icons\svg\compas.svg" />
+    <Content Include="Images\flatui\icons\svg\gift-box.svg" />
+    <Content Include="Images\flatui\icons\svg\loop.svg" />
+    <Content Include="Images\flatui\icons\svg\mail.svg" />
+    <Content Include="Images\flatui\icons\svg\map.svg" />
+    <Content Include="Images\flatui\icons\svg\paper-bag.svg" />
+    <Content Include="Images\flatui\icons\svg\pencils.svg" />
+    <Content Include="Images\flatui\icons\svg\retina.svg" />
+    <Content Include="Images\flatui\icons\svg\ribbon.svg" />
+    <Content Include="Images\flatui\icons\svg\toilet-paper.svg" />
+    <Content Include="Images\heroAccent.png" />
+    <Content Include="Images\orderedList0.png" />
+    <Content Include="Images\orderedList1.png" />
+    <Content Include="Images\orderedList2.png" />
+    <Content Include="Images\orderedList3.png" />
+    <Content Include="Images\orderedList4.png" />
+    <Content Include="Images\orderedList5.png" />
+    <Content Include="Images\orderedList6.png" />
+    <Content Include="Images\orderedList7.png" />
+    <Content Include="Images\orderedList8.png" />
+    <Content Include="Images\orderedList9.png" />
+    <Content Include="Images\timeout-icon.png" />
+    <Content Include="Scripts\timeout\timeout-dialog.js" />
+    <Content Include="SqlServerTypes\readme.htm" />
+    <Content Include="SqlServerTypes\x64\msvcr120.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\x64\SqlServerSpatial140.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\x86\msvcr120.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\x86\SqlServerSpatial140.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\ASPX\PresentacionRC.aspx" />
+    <Content Include="Views\ASPX\PresentacionUbic.aspx" />
+    <Content Include="Views\ASPX\RiskBrowser.aspx" />
+    <Content Include="Views\ASPX\RiskReportRC.aspx" />
+    <Content Include="Views\ASPX\RiskReportTrans.aspx" />
+    <Content Include="Views\ASPX\RiskReport.aspx" />
+    <Content Include="Views\ASPX\Presentacion.aspx" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\flatui\fonts\Flat-UI-Icons.eot" />
+    <Content Include="Content\flatui\fonts\Flat-UI-Icons.ttf" />
+    <Content Include="Content\flatui\fonts\Flat-UI-Icons.woff" />
+    <Content Include="Content\flatui\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\flatui\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\flatui\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\flatui\fonts\icomoon-session.json" />
+    <Content Include="Content\fonts\glyphicons\flat-ui-icons-regular.eot" />
+    <Content Include="Content\fonts\glyphicons\flat-ui-icons-regular.ttf" />
+    <Content Include="Content\fonts\glyphicons\flat-ui-icons-regular.woff" />
+    <Content Include="Content\fonts\glyphicons\selection.json" />
+    <Content Include="Content\fonts\lato\lato-black.eot" />
+    <Content Include="Content\fonts\lato\lato-black.ttf" />
+    <Content Include="Content\fonts\lato\lato-black.woff" />
+    <Content Include="Content\fonts\lato\lato-bold.eot" />
+    <Content Include="Content\fonts\lato\lato-bold.ttf" />
+    <Content Include="Content\fonts\lato\lato-bold.woff" />
+    <Content Include="Content\fonts\lato\lato-bolditalic.eot" />
+    <Content Include="Content\fonts\lato\lato-bolditalic.ttf" />
+    <Content Include="Content\fonts\lato\lato-bolditalic.woff" />
+    <Content Include="Content\fonts\lato\lato-italic.eot" />
+    <Content Include="Content\fonts\lato\lato-italic.ttf" />
+    <Content Include="Content\fonts\lato\lato-italic.woff" />
+    <Content Include="Content\fonts\lato\lato-light.eot" />
+    <Content Include="Content\fonts\lato\lato-light.ttf" />
+    <Content Include="Content\fonts\lato\lato-light.woff" />
+    <Content Include="Content\fonts\lato\lato-regular.eot" />
+    <Content Include="Content\fonts\lato\lato-regular.ttf" />
+    <Content Include="Content\fonts\lato\lato-regular.woff" />
+    <Content Include="Scripts\dynatable\jquery.dynatable.js" />
+    <Content Include="Scripts\editable\bootstrap-editable.js" />
+    <Content Include="Scripts\flatui\application.js" />
+    <Content Include="Scripts\flatui\bootstrap.js" />
+    <Content Include="Scripts\flatui\flat-ui.js" />
+    <Content Include="RiskToolDataSet.xsc">
+      <DependentUpon>RiskToolDataSet.xsd</DependentUpon>
+    </Content>
+    <Content Include="Content\flatui\fonts\lato\lato-black.eot" />
+    <Content Include="Content\flatui\fonts\lato\lato-black.ttf" />
+    <Content Include="Content\flatui\fonts\lato\lato-black.woff" />
+    <Content Include="Content\flatui\fonts\lato\lato-bold.eot" />
+    <Content Include="Content\flatui\fonts\lato\lato-bold.ttf" />
+    <Content Include="Content\flatui\fonts\lato\lato-bold.woff" />
+    <Content Include="Content\flatui\fonts\lato\lato-bolditalic.eot" />
+    <Content Include="Content\flatui\fonts\lato\lato-bolditalic.ttf" />
+    <Content Include="Content\flatui\fonts\lato\lato-bolditalic.woff" />
+    <Content Include="Content\flatui\fonts\lato\lato-italic.eot" />
+    <Content Include="Content\flatui\fonts\lato\lato-italic.ttf" />
+    <Content Include="Content\flatui\fonts\lato\lato-italic.woff" />
+    <Content Include="Content\flatui\fonts\lato\lato-light.eot" />
+    <Content Include="Content\flatui\fonts\lato\lato-light.ttf" />
+    <Content Include="Content\flatui\fonts\lato\lato-light.woff" />
+    <Content Include="Content\flatui\fonts\lato\lato-regular.eot" />
+    <Content Include="Content\flatui\fonts\lato\lato-regular.ttf" />
+    <Content Include="Content\flatui\fonts\lato\lato-regular.woff" />
+    <Content Include="Content\flatui\fonts\glyphicons\flat-ui-icons-regular.eot" />
+    <Content Include="Content\flatui\fonts\glyphicons\flat-ui-icons-regular.ttf" />
+    <Content Include="Content\flatui\fonts\glyphicons\flat-ui-icons-regular.woff" />
+    <Content Include="Content\flatui\fonts\glyphicons\selection.json" />
+    <None Include="Properties\PublishProfiles\Prod.pubxml" />
+    <None Include="RiskToolDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>RiskToolDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="RiskToolDataSet.xss">
+      <DependentUpon>RiskToolDataSet.xsd</DependentUpon>
+    </Content>
+    <None Include="Scripts\jquery-1.12.4.intellisense.js" />
+    <Content Include="Scripts\jquery-1.12.4.js" />
+    <Content Include="Scripts\jquery-1.12.4.min.js" />
+    <Content Include="Scripts\jquery-1.12.4.min.map" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery-ui-1.12.1.js" />
+    <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\multiselect\jquery.multiselect.filter.js" />
+    <Content Include="Scripts\multiselect\jquery.multiselect.js" />
+    <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\selectList\jquery.selectlistactions.js" />
+    <Content Include="Scripts\site.js" />
+    <Content Include="Scripts\typeahead\bootstrap-tagsinput-angular.js" />
+    <Content Include="Scripts\typeahead\bootstrap-tagsinput.js" />
+    <Content Include="Scripts\typeahead\typeahead.bundle.js" />
+    <Content Include="Scripts\_references.js" />
+    <Content Include="Views\ASPX\PresentacionTrans.aspx" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Account\_ChangePasswordPartial.cshtml" />
+    <Content Include="Views\Account\_RemoveAccountPartial.cshtml" />
+    <Content Include="Views\Account\_SetPasswordPartial.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Manage.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
+    <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Shared\Navigation.cshtml" />
+    <Content Include="Views\Cotizar\Index.cshtml" />
+    <Content Include="Views\Cotizar\Resultado.cshtml" />
+    <Content Include="Views\Cotizar\Crear.cshtml" />
+    <Content Include="Views\Cotizar\Templates\ListaCotizaciones.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Asegurado\Index.cshtml" />
+    <Content Include="Views\Asegurado\Ubicacion.cshtml" />
+    <Content Include="Views\Asegurado\EditorTemplates\Ubicacion.cshtml" />
+    <Content Include="Views\Asegurado\_BuscarSIC.cshtml" />
+    <Content Include="Views\Cotizar\Valores.cshtml" />
+    <Content Include="Views\Cotizar\EditorTemplates\Ubicacion.cshtml" />
+    <Content Include="Views\Cotizar\_BuscarContacto.cshtml" />
+    <Content Include="Views\Cotizar\Presentacion.cshtml" />
+    <Content Include="Views\Cotizar\Diversos.cshtml" />
+    <Content Include="Views\Cotizar\RC.cshtml" />
+    <Content Include="Views\Cotizar\RCExtRecall.cshtml" />
+    <Content Include="Views\Cotizar\Texto.cshtml" />
+    <Content Include="Views\Asegurado\List.cshtml" />
+    <Content Include="Views\Asegurado\Templates\ListaAsegurados.cshtml" />
+    <Content Include="Views\Shared\NavigationLeft.cshtml" />
+    <Content Include="Views\Cotizar\Transporte.cshtml" />
+    <Content Include="Views\Cotizar\PresentacionTrans.cshtml" />
+    <Content Include="Views\Cotizar\Templates\_BuscarSIC.cshtml" />
+    <Content Include="Views\RiskReport\Datos.cshtml" />
+    <Content Include="Views\RiskReport\RiskReportInc.cshtml" />
+    <Content Include="Views\RiskReport\Index.cshtml" />
+    <Content Include="Views\RiskReport\Templates\ListaCotizaciones.cshtml" />
+    <Content Include="Views\RiskReport\RiskReportTrans.cshtml" />
+    <Content Include="Views\Process\ProcessCotizacion.cshtml" />
+    <Content Include="Views\Shared\AccessDenied.cshtml" />
+    <Content Include="Views\Account\Rol.cshtml" />
+    <Content Include="Views\Account\Templates\Rol.cshtml" />
+    <Content Include="Views\RiskReport\RiskReportRC.cshtml" />
+    <Content Include="Views\Cotizar\PresentacionUbicacion.cshtml" />
+    <Content Include="Views\RiskReport\RiskBrowser.cshtml" />
+    <Content Include="Views\Process\SendSiSE.cshtml" />
+    <Content Include="Views\Process\LogSISE.cshtml" />
+    <Content Include="Views\Process\Templates\ListaBeneficiario.cshtml" />
+    <Content Include="Views\Process\Templates\ListaPagador.cshtml" />
+    <Content Include="Views\Cotizar\PresentacionRC.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Files\Equipos\" />
+    <Folder Include="Files\Transporte\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="packages.config" />
+    <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Integration\Application.Integration.csproj">
+      <Project>{7DA9601F-A439-4ADF-A28D-E33C86919DEF}</Project>
+      <Name>Application.Integration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Application.MainModule\Application.MainModule.csproj">
+      <Project>{7e47f9ca-50c8-476d-9f2e-8c393b921fdc}</Project>
+      <Name>Application.MainModule</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Domain.MainModule.Entities\Domain.MainModule.Entities.csproj">
+      <Project>{ebf60b19-31af-4f10-be71-5807a94cb12a}</Project>
+      <Name>Domain.MainModule.Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Reports\PresentacionCotizacionRC.rdlc" />
+    <EmbeddedResource Include="Reports\PresentacionCotizacion.rdlc" />
+    <EmbeddedResource Include="Reports\PresentacionTrans.rdlc">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PresentacionTrans2.rdlc" />
+    <EmbeddedResource Include="Reports\PresentacionUbicaciones.rdlc" />
+    <EmbeddedResource Include="Reports\Report1.rdlc" />
+    <EmbeddedResource Include="Reports\RiskBrowser.rdlc" />
+    <EmbeddedResource Include="Reports\RiskReportInc.rdlc" />
+    <EmbeddedResource Include="Reports\RiskReportRC.rdlc" />
+    <EmbeddedResource Include="Reports\RiskReportTrans.rdlc" />
+    <EmbeddedResource Include="Resources\Messages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:14965/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

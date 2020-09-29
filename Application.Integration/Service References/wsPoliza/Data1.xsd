@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://201.157.37.2:8082/Sistran.IntegracionMasiva/Data.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" />
+  <xs:element name="insertarCamposIntegracion">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" minOccurs="0" name="objInAero" nillable="true" type="q1:ArrayOfPasoAERO" />
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" minOccurs="0" name="objInAge" nillable="true" type="q2:ArrayOfPasoAge" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" minOccurs="0" name="objInCli" nillable="true" type="q3:ArrayOfPasoCli" />
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" minOccurs="0" name="objInCob" nillable="true" type="q4:ArrayOfPasoCob" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" minOccurs="0" name="objInEmb" nillable="true" type="q5:ArrayOfPasoEMB" />
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" minOccurs="0" name="objInTransporte" nillable="true" type="q6:ArrayOfPasoTRANSPORTE" />
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" minOccurs="0" name="objInTev" nillable="true" type="q7:ArrayOfPasoTEV" />
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" minOccurs="0" name="objInPol" nillable="true" type="q8:ArrayOfPasoPol" />
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" minOccurs="0" name="objInObs" nillable="true" type="q9:ArrayOfPasoObs" />
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" minOccurs="0" name="objInObraciivl" nillable="true" type="q10:ArrayOfPasoOBRACIVIL" />
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" minOccurs="0" name="objInInc" nillable="true" type="q11:ArrayOfPasoInc" />
+        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" minOccurs="0" name="objInHidro" nillable="true" type="q12:ArrayOfPasoHIDRO" />
+        <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" minOccurs="0" name="objInDetalle" nillable="true" type="q13:ArrayOfPasoDetalle" />
+        <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" minOccurs="0" name="objInAne" nillable="true" type="q14:ArrayOfPasoAne" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="insertarCamposIntegracionResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="insertarCamposIntegracionResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,572 @@
+﻿@model Domain.MainModule.Entities.Cotizacion
+
+@{
+    ViewBag.Title = "Datos Risk Report";
+}
+
+@Html.Partial("../Asegurado/_BuscarSIC")
+
+@if (ViewBag.Mensaje != null)
+{
+    <div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'><span class="fui-cross"></span></button>@ViewBag.Mensaje</div>
+}
+
+@using (Html.BeginForm("Datos", "RiskReport", FormMethod.Post, new { @class = "form-horizontal", @id = "frm", @name = "frm" }))
+{
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.CotizacionID)
+    @Html.HiddenFor(model => model.GastosAdministracion)
+    @Html.HiddenFor(model => model.Utilidad)
+    @Html.HiddenFor(model => model.Comision)
+    @Html.HiddenFor(model => model.TipoCambio)
+
+    <p class="accordion-expand-holder">
+        <a class="accordion-expand-all" href="#">Expandir Todo</a>
+    </p>
+    <div id="accordion" class="ui-accordion ui-widget ui-helper-reset">
+        @if (Model.bk_te_IncGeneralInf != null)
+        {
+            @Html.HiddenFor(model => model.bk_te_IncGeneralInf.CotizacionID)
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                GENERAL INFORMATION
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table>
+                    <tr>
+                        <td width="200px">Narrative:</td>
+                        <td>
+                            @Html.TextAreaFor(p => p.bk_te_IncGeneralInf.Narrative, new { @class = "form-control", rows = 5, Style = "width:600px;" })
+                        </td>
+                    </tr>                    
+                </table>
+            </div>
+        }
+        @if (Model.bk_te_IncAS != null)
+        {
+            @Html.HiddenFor(model => model.bk_te_IncAS.CotizacionID)
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                AMOUNT SUBJECT
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table>
+                    <tr>
+                        <td><b>REINSURANCE</b></td>
+                    </tr>
+                    <tr>                        
+                        <td>Reinsurance:</td>
+                        <td>
+                            @Html.TextAreaFor(p => p.bk_te_IncAS.Reinsurance, new { @class = "form-control", rows = 5, Style = "width:600px;" })
+                        </td>
+                    </tr>
+                    <tr>                        
+                        <td>Carrier:</td>
+                        <td>
+                            @Html.TextAreaFor(p => p.bk_te_IncAS.Carrier, new { @class = "form-control", rows = 5, Style = "width:600px;" })
+                        </td>
+                    </tr>
+                    <tr>                        
+                        <td>Cost Net/Gross:</td>
+                        <td>
+                            @Html.TextBoxFor(model => model.bk_te_IncAS.CostNetGross, new { @class = "form-control number" })
+                        </td>
+                    </tr>
+                    <tr>                        
+                        <td>Terms:</td>
+                        <td>
+                            @Html.TextAreaFor(p => p.bk_te_IncAS.Terms, new { @class = "form-control", rows = 5, Style = "width:600px;" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Explanation:</td>
+                        <td>
+                            @Html.TextAreaFor(p => p.bk_te_IncAS.Explanation, new { @class = "form-control", rows = 5, Style = "width:600px;" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><br /></td>
+                    </tr>
+                    <tr>
+                        <td><b>COLLABORATION</b></td>
+                    </tr>
+                    <tr>                        
+                        <td>Loss Control Report in File:</td>
+                        <td>
+                            @Html.TextAreaFor(p => p.bk_te_IncAS.LossControlReport, new { @class = "form-control", rows = 5, Style = "width:600px;" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Loss Control Service:</td>
+                        <td>
+                            @Html.TextAreaFor(p => p.bk_te_IncAS.LossControlService, new { @class = "form-control", rows = 5, Style = "width:600px;" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Recommendations:</td>
+                        <td>
+                            @Html.TextAreaFor(p => p.bk_te_IncAS.Recommendations, new { @class = "form-control", rows = 5, Style = "width:600px;" })
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        }
+        @if (Model.bk_te_IncCOPE != null)
+        {            
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                C.O.P.E.
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                
+                <ul class="nav nav-tabs">
+                    @for(int i=0; i<Model.bk_te_IncCOPE.Count(); i++)
+                    {                        
+                        <li class="@(i == 0 ? "active" : "")"><a data-toggle="tab" href="@("#nro" + Model.bk_te_IncCOPE[i].UbicacionID.ToString())">Ubicación @(i+1)</a></li>
+                    }                    
+                </ul>
+                <div class="tab-content">
+                    @for (int i = 0; i < Model.bk_te_IncCOPE.Count(); i++)
+                    {
+                        @Html.HiddenFor(model => model.bk_te_IncCOPE[i].CotizacionID)
+                        @Html.HiddenFor(model => model.bk_te_IncCOPE[i].UbicacionID)
+                        <div id="@("nro" + Model.bk_te_IncCOPE[i].UbicacionID.ToString())" class="tab-pane fade @(i == 0 ? "in active" : "")">
+                            <table>
+                                <tr>
+                                    <td><b>Construction:</b></td>
+                                    <td>Description:</td>
+                                    <td>
+                                        @Html.TextAreaFor(model => model.bk_te_IncCOPE[i].Description, new { @class = "form-control", rows = 5, Style = "width:600px;" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>Fire Area:</td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.bk_te_IncCOPE[i].FireAreas, new { @class = "form-control" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Protection:</b></td>
+                                    <td>Public Protection:</td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.bk_te_IncCOPE[i].PublicProtection, new { @class = "form-control" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>Fire Department</td>
+                                    <td>
+                                        <table>
+                                            <tr>
+                                                <td>@Html.RadioButtonFor(model => model.bk_te_IncCOPE[i].isPaidFireDepartment, true)</td>
+                                                <td>Paid</td>
+                                                <td width="20px"></td>
+                                                <td>@Html.RadioButtonFor(model => model.bk_te_IncCOPE[i].isPaidFireDepartment, false)</td>
+                                                <td>Volunteer</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>Distance from Risk and Response Time</td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.bk_te_IncCOPE[i].DistanceRisk, new { @class = "form-control" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>Private Protection:</td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.bk_te_IncCOPE[i].PublicProtection, new { @class = "form-control" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>ISO:</td>
+                                    <td>@Html.DropDownListFor(model => model.bk_te_IncCOPE[i].ISOid, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.ISOList,"Value", "Label",Model.bk_te_IncCOPE[i].ISOid), new { @class = "form-control multiSelect" })</td>
+                                </tr>
+                                <tr>
+                                    <td><b>CAT Exposure:</b></td>
+                                    <td>Hurricane:</td>
+                                    <td>@Html.DropDownListFor(model => model.bk_te_IncCOPE[i].ExposicionIDHurricane, new SelectList((List<Domain.MainModule.Entities.Exposicion>)ViewBag.ExposicionList, "ExposicionID", "nombre", Model.bk_te_IncCOPE[i].ExposicionIDHurricane), new { @class = "form-control multiSelect" })</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>Flood:</td>                                    
+                                    <td>@Html.DropDownListFor(model => model.bk_te_IncCOPE[i].ExposicionIDFlood, new SelectList((List<Domain.MainModule.Entities.Exposicion>)ViewBag.ExposicionList, "ExposicionID", "nombre", Model.bk_te_IncCOPE[i].ExposicionIDFlood), new { @class = "form-control multiSelect" })</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>Electric Storms:</td>                                    
+                                    <td>@Html.DropDownListFor(model => model.bk_te_IncCOPE[i].ExposicionIDElectricStorm, new SelectList((List<Domain.MainModule.Entities.Exposicion>)ViewBag.ExposicionList, "ExposicionID", "nombre", Model.bk_te_IncCOPE[i].ExposicionIDElectricStorm), new { @class = "form-control multiSelect" })</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>Hail:</td>                                    
+                                    <td>@Html.DropDownListFor(model => model.bk_te_IncCOPE[i].ExposicionIDHail, new SelectList((List<Domain.MainModule.Entities.Exposicion>)ViewBag.ExposicionList, "ExposicionID", "nombre", Model.bk_te_IncCOPE[i].ExposicionIDHail), new { @class = "form-control multiSelect" })</td>
+                                </tr>
+                                <tr>
+                                    <td><br /></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" align="right"><a class="btn btn-info" href="javascript:addArea('@Model.bk_te_IncCOPE[i].UbicacionID')"><span class="fui-plus-circle"></span></a></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Fire Areas:</b></td>
+                                    <td colspan="2">
+                                        <table class="table table-condensed">
+                                            <thead>
+                                                <tr>
+                                                    <td><b><i>Área</i></b></td>
+                                                    <td>%</td>
+                                                    <td>SIC</td>
+                                                    <td>ISO</td>
+                                                    <td>Tipo Const</td>
+                                                    <td></td>
+                                                </tr>
+                                            </thead>
+                                            @if (Model.bk_te_IncGeneralInf != null)
+                                            {
+                                                for (int j = 0; j < Model.bk_te_IncASAreaFuego.Count(); j++)
+                                                {
+                                                    if (Model.bk_te_IncASAreaFuego[j].UbicacionID == Model.bk_te_IncCOPE[i].UbicacionID)
+                                                    {
+    @Html.HiddenFor(model => model.bk_te_IncASAreaFuego[j].Visible, new {@id = "hdVisible_" + Model.bk_te_IncASAreaFuego[j].UbicacionID + "_" + Model.bk_te_IncASAreaFuego[j].Nro})
+    @Html.HiddenFor(model => model.bk_te_IncASAreaFuego[j].Nro)
+    @Html.HiddenFor(model => model.bk_te_IncASAreaFuego[j].UbicacionID)
+    @Html.HiddenFor(model => model.bk_te_IncASAreaFuego[j].CotizacionID)
+    @Html.HiddenFor(model => model.bk_te_IncASAreaFuego[j].IncASAreaFuegoID)
+<tr style="@(Model.bk_te_IncASAreaFuego[j].Visible ? "" : "display:none")" id=@("trArea_" + Model.bk_te_IncASAreaFuego[j].UbicacionID + "_" + Model.bk_te_IncASAreaFuego[j].Nro)>
+    <td>@Model.bk_te_IncASAreaFuego[j].Nro</td>
+    <td>
+        <div class="form-group">
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.bk_te_IncASAreaFuego[j].pct, "{0:F}", new { @class = "form-control", placeholder = "0.00" })
+                <span class="input-group-addon">%</span>
+            </div>
+        </div>
+    </td>
+    <td>
+        <div class="input-group">
+            @Html.TextBoxFor(model => model.bk_te_IncASAreaFuego[j].SIC, new { @class = "form-control", @id = "txtSIC_" + Model.bk_te_IncASAreaFuego[j].UbicacionID + '_' + Model.bk_te_IncASAreaFuego[j].Nro, @maxlength = "4", @onkeypress = "return isNumberKey(event)", @placeholder = "0000"})
+            <span class="input-group-btn">
+                <span class="input-group-addon"><a href="javascript:OpenSIC('@Model.bk_te_IncASAreaFuego[j].UbicacionID','@Model.bk_te_IncASAreaFuego[j].Nro')">...</a></span>
+            </span>
+        </div>
+    </td>    
+    <td>@Html.DropDownListFor(model => model.bk_te_IncASAreaFuego[j].ISOid, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.ISOList, "Value", "Label", Model.bk_te_IncASAreaFuego[j].ISOid), new { @class = "form-control multiSelect" })</td>
+    <td>@Html.DropDownListFor(model => model.bk_te_IncASAreaFuego[j].TipoConstructivoIncendioID, new SelectList((List<Domain.MainModule.Entities.TipoConstructivoIncendio>)ViewBag.TipoConstIncendioList, "TipoConstructivoIncendioID", "Descripcion", Model.bk_te_IncASAreaFuego[j].TipoConstructivoIncendioID), new { @class = "form-control multiSelect" })</td>
+    <td><a class="btn btn-info" href="javascript:DeleteArea('@Model.bk_te_IncCOPE[i].UbicacionID','@Model.bk_te_IncASAreaFuego[j].Nro')"><span class="fui-cross-circle"></span></a></td>
+</tr>
+                                                    }
+                                                }
+                                            }                                            
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    }
+                </div>
+                </div>
+        }
+        @if (Model.bk_te_LazCasualty != null)
+        {
+            @Html.HiddenFor(model => model.bk_te_LazCasualty.CotizacionID)
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                LAZ CASUALTY RISK REPORT
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table>                    
+                    <tr>
+                        <td width="200px">Referral</td>
+                        <td>
+                            <label class="checkbox primary" for="chkReferral">
+                                <input type="checkbox" data-toggle="radio" value="" id="chkReferral" @(Model.bk_te_LazCasualty.isReferral.Value ? "checked" : "") onchange="CambiarChk(this,'Referral')">
+                            </label>
+                            @Html.HiddenFor(p => p.bk_te_LazCasualty.isReferral, new { @id = "hdReferral" })
+                        </td>
+                    </tr>                    
+                    <tr>
+                        <td>Retroactive</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_LazCasualty.RetroactiveId, Model.bk_te_LazCasualty.RetroactiveList, new { @class = "form-control multiSelect" })</td>
+                    </tr>
+                    <tr>
+                        <td>Trigger</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_LazCasualty.TriggerId, Model.bk_te_LazCasualty.TriggerList, new { @class = "form-control multiSelect" })</td>
+                    </tr>
+                    <tr>
+                        <td>Premises/Operations</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_LazCasualty.TypeOcurrencyIdPremises, Model.bk_te_LazCasualty.TypeOcurrencyList, new { @class = "form-control multiSelect", @onchange = "habilitarPct('Premises')", @id = "ddlPremises" })</td>
+                        <td style='@(Model.bk_te_LazCasualty.TypeOcurrencyIdPremises == 4 ? "" : "display:none;")' id="tdPremises">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_LazCasualty.pctPremises, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Products</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_LazCasualty.TypeOcurrencyIdProducts, Model.bk_te_LazCasualty.TypeOcurrencyList, new { @class = "form-control multiSelect", @onchange = "habilitarPct('Products')", @id = "ddlProducts" })</td>
+                        <td style='@(Model.bk_te_LazCasualty.TypeOcurrencyIdPremises == 4 ? "" : "display:none;")' id="tdProducts">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_LazCasualty.pctProducts, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Employers Liability</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_LazCasualty.TypeOcurrencyIdLiability, Model.bk_te_LazCasualty.TypeOcurrencyList, new { @class = "form-control multiSelect", @onchange = "habilitarPct('Liability')", @id = "ddlLiability" })</td>
+                        <td style='@(Model.bk_te_LazCasualty.TypeOcurrencyIdLiability == 4 ? "" : "display:none;")' id="tdLiability">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_LazCasualty.pctLiability, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Auto</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_LazCasualty.TypeOcurrencyIdAuto, Model.bk_te_LazCasualty.TypeOcurrencyList, new { @class = "form-control multiSelect", @onchange = "habilitarPct('Auto')", @id = "ddlAuto" })</td>
+                        <td style='@(Model.bk_te_LazCasualty.TypeOcurrencyIdAuto == 4 ? "" : "display:none;")' id="tdAuto">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_LazCasualty.pctAuto, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Construction</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_LazCasualty.TypeOcurrencyIdConstruction, Model.bk_te_LazCasualty.TypeOcurrencyList, new { @class = "form-control multiSelect", @onchange = "habilitarPct('Construction')", @id = "ddlConstruction" })</td>
+                        <td style='@(Model.bk_te_LazCasualty.TypeOcurrencyIdConstruction == 4 ? "" : "display:none;")' id="tdConstruction">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_LazCasualty.pctConstruction, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Authority:</td>
+                        <td>
+                            @Html.TextBoxFor(model => model.bk_te_LazCasualty.Authority, new { @class = "form-control" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Describe the operations and process the company:</td>
+                        <td colspan="2">
+                            @Html.TextAreaFor(p => p.bk_te_LazCasualty.Comments1, new { @class = "form-control", rows = 5, Style = "width:600px;" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>OFAC Disclaimer:</td>
+                        <td colspan="2">
+                            @Html.TextAreaFor(p => p.bk_te_LazCasualty.Comments2, new { @class = "form-control", rows = 5, Style = "width:600px;" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Overall coments about the risk:</td>
+                        <td colspan="2">
+                            @Html.TextAreaFor(p => p.bk_te_LazCasualty.Comments3, new { @class = "form-control", rows = 5, Style = "width:600px;" })
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        }
+
+        
+
+    </div>
+    <table>
+        <tr>
+            <td><button type="submit" class="btn btn-success">Guardar</button></td>                        
+        </tr>
+    </table>
+}
+
+
+
+@section scripts {
+    <script>
+
+    var ubicaciones = new Array(@Model.bk_te_IncCOPE.Count());
+    @for(int z = 0; z<Model.bk_te_IncCOPE.Count();z++)
+    {
+        <text>
+    ubicaciones[@z] = new Array(2);
+    ubicaciones[@z][0] = @Model.bk_te_IncCOPE[z].UbicacionID;
+    ubicaciones[@z][1] = @Model.bk_te_IncASAreaFuego.Where(x => x.UbicacionID == Model.bk_te_IncCOPE[z].UbicacionID && x.Visible).Count();
+    </text>
+    }
+
+
+    var headers = $('#accordion .accordion-header');
+    var contentAreas = $('#accordion .ui-accordion-content ').hide().first().show().end();
+    var expandLink = $('.accordion-expand-all');
+
+    // add the accordion functionality
+    headers.click(function () {
+        // close all panels
+        contentAreas.slideUp();
+        // open the appropriate panel
+        $(this).next().slideDown();
+        // reset Expand all button
+        expandLink.text('Expandir Todo')
+            .data('isAllOpen', false);
+        // stop page scroll
+        return false;
+    });
+
+    expandLink.click(function () {
+        var isAllOpen = !$(this).data('isAllOpen');
+        console.log({ isAllOpen: isAllOpen, contentAreas: contentAreas })
+        contentAreas[isAllOpen ? 'slideDown' : 'slideUp']();
+
+        expandLink.text(isAllOpen ? 'Colapsar Todo' : 'Expandir Todo')
+                    .data('isAllOpen', isAllOpen);
+    });
+
+    $(function () {
+
+        $.ajaxSetup({ cache: false });
+
+        $(".accordion").accordion({
+            collapsible: true,
+            heightStyle: "content"
+        });
+
+        $(".multiSelect").multiselect({
+            multiple: false,
+            header: "Seleccionar una opción",
+            noneSelectedText: "Seleccionar una opción",
+            selectedList: 1,
+
+        });
+
+        $(".multiSelect2").multiselect({
+            multiple: false,
+            header: "Seleccionar una opción",
+            noneSelectedText: "Seleccionar una opción",
+            selectedList: 1,
+        }).multiselectfilter();
+
+    });
+
+
+    function habilitarPct(a) {
+        //debugger;
+        //$('#' + a.replace('ddl', 'hd') + 'Dep').val($('#' + a).val());
+        //$('#' + a + 'Dep').val($('#' + a).val());
+        //$('#' + a + 'Dep').multiselect('refresh');
+        if ($('#ddl' + a).val() == 4)
+            $('#td' + a).show();
+        else
+            $('#td' + a).css('display', 'none');
+    }
+
+    function OpenSIC(a,b) {
+        //debugger;
+        SICubic = a;
+        SICnro = b;
+        $('#divBuscarSIC').modal('toggle');
+        BuscarGrupo();
+    }
+
+    function BuscarGrupo() {
+        var selectionDivision = $('#ddlDivision').val();
+        $('#ddlGrupo').html('');
+
+        if (selectionDivision != null) {
+            $.ajax({
+                url: '@Url.Content("~/Asegurado/GetGrupoToSelection/")',
+                data: {
+                    divisionID: selectionDivision
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    var $select = $('#ddlGrupo');
+                    $.each(data, function (key, val) {
+                        $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                    })
+
+                    $select.multiselect('refresh');
+
+                    BuscarSIC();
+                }, error: function () {
+                    $('#ddlGrupo').append('<option id="-1">none available</option>');
+                }
+            });
+        }
+    }
+
+    function BuscarSIC() {
+        var selectionGrupo = $('#ddlGrupo').val();
+        $('#ddlSIC').html('');
+
+        if (selectionGrupo != null) {
+            $.ajax({
+                url: '@Url.Content("~/Asegurado/GetSICToSelection/")',
+                data: {
+                    grupoID: selectionGrupo
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    var $select = $('#ddlSIC');
+                    $.each(data, function (key, val) {
+                        $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                    })
+
+                    $select.multiselect('refresh');
+
+                }, error: function () {
+                    $('#ddlSIC').append('<option id="-1">none available</option>');
+                }
+            });
+        }
+    }
+
+    function SeleccionarSIC() {
+        //debugger;
+        if ($('#ddlSIC').val() != null) {
+            $("input[id='txtSIC_" + SICubic + '_' + SICnro + "']").val($('#ddlSIC').val());
+            $('#divBuscarSIC').modal('hide');
+
+        }
+    }
+
+    function addArea(ubi) {
+        for(j=0; j<ubicaciones.length; j++)
+        {
+            if(ubicaciones[j][0] == ubi)
+            {
+                $('#trArea_' + ubicaciones[j][0] + '_' + (ubicaciones[j][1] + 1)).show();
+                $('#hdVisible_' + ubicaciones[j][0] + '_' + (ubicaciones[j][1] + 1)).val('True');
+                ubicaciones[j][1] = ubicaciones[j][1] + 1;
+            }
+        }        
+    }
+
+    function DeleteArea(ubi, nro){
+        $('#trArea_' + ubi + '_' + nro).css('display', 'none');
+        $('#hdVisible_' + ubi + '_' + nro).val('False');
+        //for(j=0; j<ubicaciones.length; j++){
+        //    if(ubicaciones[j][0] == ubi){
+        //        $('#trArea_' + ubicaciones[j][0] + '_' + (ubicaciones[j][1])).css('display', 'none');;
+        //    }
+        //}
+    }
+
+</script>
+}

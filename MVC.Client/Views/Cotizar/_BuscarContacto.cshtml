@@ -1,0 +1,30 @@
+﻿<div class="modal fade" tabindex="-1" role="dialog" id="divBuscarContacto">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Seleccionar Contacto</h4>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr>
+                        <td><label>Sucursal:</label></td>
+                        <td style="padding:0 8px 0 8px">@Html.DropDownList("SucursalList", new SelectList(ViewBag.SucursalList, "SucursalID", "nombre"), new { id = "ddlSucursal", @class = "form-control multiSelect", @onchange = "BuscarAgente();", style = "width:700px" })</td>
+                    </tr>
+                    <tr>
+                        <td><label>Agente:</label></td>
+                        <td style="padding:0 8px 0 8px"><select class="form-control multiSelect2" style="width:700px" id="ddlAgente" onchange="BuscarContacto();" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Contacto:</label></td>
+                        <td style="padding:0 8px 0 8px"><select class="form-control multiSelect2" style="width:700px" id="ddlContacto" /></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="SeleccionarContacto()">Seleccionar</button>
+            </div>
+        </div>
+    </div>
+</div>

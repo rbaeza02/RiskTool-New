@@ -1,0 +1,500 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EBF60B19-31AF-4F10-BE71-5807A94CB12A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Domain.MainModule.Entities</RootNamespace>
+    <AssemblyName>Domain.MainModule.Entities</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Domain.Core.Entities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dlls\Domain.Core.Entities.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.1.2\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Accion.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Agente.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Asegurado.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Ciudad.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cobertura.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Colonia.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Contacto.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cotizacion.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionAnuncio.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionCaldera.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionCalderaPC.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionCoberturaUbi.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionCristal.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionDeducible.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionDinVal.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionEqContratista.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionEqElec.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionEqElecCostoOper.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionEqElecMovil.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionEqElecPortExt.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionLog.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionPagador.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRCActInm.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRCAdicional.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRCConstruccion.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRCEqContratista.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRCEstacionamiento.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRCHoteleria.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRCProductoExt.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRCProductoExtPais.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRCProductoExtResultado.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRCRecall.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRCTaller.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRCTrabajoTerm.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRCVehiculoExc.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRobo.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRotMaq.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionRotMaqPC.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionSubLineaNegocio.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionSubLineaUbi.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionTipoCobertura.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionTrans.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionTransConceptoEvaluacion.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CotizacionUbicacion.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EqContratistaEquipo.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Estado.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EstadoCivil.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Exposicion.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FormaPago.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Genero.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GradoExposicion.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GrupoIncendio.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IncAS.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IncASAreaFuego.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IncCOPE.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IncGeneralInf.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LazCasualty.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LineaNegocio.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MainModuleContext.Types.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Moneda.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Municipio.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Pais.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Partial\CotizacionDeducible.cs" />
+    <Compile Include="Partial\CotizacionPagador.Partial.cs" />
+    <Compile Include="Partial\CotizacionRCAdicional.Partial.cs" />
+    <Compile Include="Partial\CotizacionTransConceptoEvaluacion.Partial.cs" />
+    <Compile Include="Partial\SelectBeneficiario_Result.Partial.cs" />
+    <Compile Include="Partial\Persona.Partial.cs" />
+    <Compile Include="Partial\Contacto.Partial.cs" />
+    <Compile Include="Partial\Cotizacion.Partial.cs" />
+    <Compile Include="Partial\Agente.Partial.cs" />
+    <Compile Include="Partial\CotizacionRCProductoExt.Partial.cs" />
+    <Compile Include="Partial\CotizacionRCProductoExtPais.Partial.cs" />
+    <Compile Include="Partial\CotizacionRCProductoExtResultado.Partial.cs" />
+    <Compile Include="Partial\CotizacionRCRecall.Partial.cs" />
+    <Compile Include="Partial\CotizacionRCTrabajoTerm.Partial.cs" />
+    <Compile Include="Partial\CotizacionRCProducto.Partial.cs" />
+    <Compile Include="Partial\CotizacionRCActInm.Partial.cs" />
+    <Compile Include="Partial\CotizacionEqElecMovil.Partial.cs" />
+    <Compile Include="Partial\CotizacionEqElec.Partial.cs" />
+    <Compile Include="Partial\CotizacionEqContratista.Partial.cs" />
+    <Compile Include="Partial\EqContratistaEquipo.Partial.cs" />
+    <Compile Include="Partial\IncASAreaFuego.Partial.cs" />
+    <Compile Include="Partial\IncCOPE.Partial.cs" />
+    <Compile Include="Partial\LazCasualty.Partial.cs" />
+    <Compile Include="Partial\CotizacionRotMaqPC.Partial.cs" />
+    <Compile Include="Partial\CotizacionRotMaq.Partial.cs" />
+    <Compile Include="Partial\CotizacionCalderaPC.Partial.cs" />
+    <Compile Include="Partial\CotizacionDinVal.Partial.cs" />
+    <Compile Include="Partial\CotizacionCaldera.Partial.cs" />
+    <Compile Include="Partial\CotizacionRobo.Partial.cs" />
+    <Compile Include="Partial\CotizacionCristal.Partial.cs" />
+    <Compile Include="Partial\CotizacionSubLineaUbi.Partial.cs" />
+    <Compile Include="Partial\CotizacionCoberturaUbi.Partial.cs" />
+    <Compile Include="Partial\CotizacionTrans.Partial.cs" />
+    <Compile Include="Partial\Presentacion.cs" />
+    <Compile Include="Partial\PresentacionTrans.cs" />
+    <Compile Include="Partial\PresentacionUbicacion.cs" />
+    <Compile Include="Partial\RiskBrowser.cs" />
+    <Compile Include="Partial\RiskReportRC.cs" />
+    <Compile Include="Partial\RiskReportTrans.cs" />
+    <Compile Include="Partial\RiskReportInc.cs" />
+    <Compile Include="Partial\SIC.Partial.cs" />
+    <Compile Include="Partial\SICClassMap.cs" />
+    <Compile Include="Partial\ResultadoPrima.cs" />
+    <Compile Include="Partial\Table.cs" />
+    <Compile Include="Partial\Accion.Partial.cs" />
+    <Compile Include="Partial\Texto.Partial.cs" />
+    <Compile Include="Partial\TipoConstructivoTerremoto.Partial.cs" />
+    <Compile Include="Partial\Ubicacion.Partial.cs" />
+    <Compile Include="Partial\Asegurado.Partial.cs" />
+    <Compile Include="Partial\Usuario.Partial.cs" />
+    <Compile Include="Persona.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProteccionPrivada.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProteccionPublica.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Messages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Messages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Rol.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectAccionUser_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectAdjustedRateRang_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectBeneficiario_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectCodigoPostalDatos_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectCotizacionPresentacionRC_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectCotizacionPresentacion_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectEquipoPresentacion_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectPagina_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectPresentacionTransporte_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectPresentacionUbicaciones_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectPrimasPresentacion_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectResumenPresentacion_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectRiskBrowser_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectRiskReportASAreaInc_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectRiskReportAS_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectRiskReportCOPE_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectRiskReportGeneralInformation_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectRiskReportRC_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectRiskReportTransporte_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectRiskReportUbicaciones_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectTextosPrimaPresentacionRC_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SelectTextosPrimaPresentacion_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SIC.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SICClassMap.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SICDivision.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SICGrupo.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SISEAge_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SISEClausula_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SISECob_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SISEEquipoDetalle_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SISEInc_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SISEObs_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SISEPol_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SISETransporte_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SubLineaNegocio.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Sucursal.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Tarifa.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Texto.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TipoCobertura.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TipoConstructivoIncendio.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TipoConstructivoTerremoto.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TipoOperacion.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TipoPersona.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TipoTelefono.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TransConceptoEval.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TransCondicion.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Ubicacion.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UpdateCotizacionTransporte_Result.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Usuario.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UsuarioSubLinea.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Util\Enum.cs" />
+    <Compile Include="Util\Funciones.cs" />
+    <Compile Include="workflow.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ZonaHidro.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ZonaTEV.cs">
+      <DependentUpon>MainModuleContext.Types.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="MainModuleContext.Types.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MainModuleContext.Types.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Messages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

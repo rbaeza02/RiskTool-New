@@ -1,0 +1,185 @@
+﻿@model List<Domain.MainModule.Entities.Rol>
+
+@if (ViewBag.Mensaje != null)
+{
+    <div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'><span class="fui-cross"></span></button>@ViewBag.Mensaje</div>
+}
+
+@Html.ValidationSummary("", new { @class = "text-danger" })
+<div><span id="spnMensaje"></span></div>
+
+@if (Model != null)
+{
+    <ul class="nav nav-tabs">    
+            @foreach (var item in Model)
+            {
+                <li class="@(item.rolID.ToString() == ViewBag.isActive ? "active" : "")"><a data-toggle="tab" href="@("#nro" + item.rolID.ToString())" onclick="javascript:BuscarAcciones('@item.rolID')">@item.nombre</a></li>
+            }
+    
+    
+    </ul>
+
+    <div class="tab-content" id="divValores">    
+        @foreach(var item in Model)
+        {
+            <div id="@("nro" + item.rolID.ToString())" class="tab-pane fade @(item.rolID.ToString() == ViewBag.isActive ? "in active" : "")">                
+                <div id=@("datos" + item.rolID.ToString())></div>
+            </div>
+        }    
+    </div>
+    
+    <table>
+        <tr>
+            <td>Controlador</td>
+            <td><select class="form-control multiSelect" style="width:700px" id="ddlControlador" onchange="BuscarAccion();" /></td>
+        </tr>
+        <tr>
+            <td>Accion</td>
+            <td><select class="form-control multiSelect" style="width:700px" id="ddlAccion"/></td>
+            <td><a class="btn btn-success" href="javascript:AddAccion()"><span class="fui-plus-circle"></span>&nbsp;&nbsp;Agregar</a></td>
+            <td><a class="btn btn-danger" href="javascript:DeleteAccion()"><span class="fui-cross-circle"></span>&nbsp;&nbsp;Eliminar</a></td>
+            
+</tr>
+    </table>
+}
+
+
+
+
+@section scripts {
+    <script>
+    var localRolid;
+    var localController;
+
+    $(function () {
+
+
+        $.ajaxSetup({ cache: false });
+
+        $(".multiSelect").multiselect({
+            multiple: false,
+            header: "Seleccionar una opción",
+            noneSelectedText: "Seleccionar una opción",
+            selectedList: 1//,
+            //minWidth: 150
+        });
+
+        @if (Model != null)
+            {
+                <text>
+        BuscarAcciones('@ViewBag.isActive');
+        </text>
+            }
+
+    });
+
+    function BuscarAcciones(rolID) {
+        //debugger;
+        localRolid = rolID;
+        $.ajax({
+            url: '@Url.Content("~/Account/GetListAcciones/")',
+            data: {
+                rolID: rolID
+            },
+            traditional: true,
+            success: function (data) {
+                $('#datos' + rolID).html(data.acciones);
+
+                var $select = $('#ddlControlador');
+                $select.html('');
+                $.each(data.controlador, function (key, val) {
+                    $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                })
+
+                $select.multiselect('refresh');
+
+                //controller = $('#ddlControlador').val();
+                BuscarAccion();
+            }
+        });
+    }
+
+    function BuscarAccion() {
+        //debugger;
+        //var selectionController = $('#ddlControlador').val();
+        localController = $('#ddlControlador').val();
+
+        $.ajax({
+            url: '@Url.Content("~/Account/GetAccion/")',
+            data: {
+                rolID: localRolid,
+                controllerA: localController
+            },
+            traditional: true,
+            success: function (data) {
+
+                var $select = $('#ddlAccion');
+                $select.html('');
+                $.each(data, function (key, val) {
+                    $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                })
+
+                $select.multiselect('refresh');
+            }
+        });
+    }
+
+
+
+    function DeleteAccion() {
+
+        var searchIDs = $("#divValores input:checkbox:checked").map(function () {
+            return $(this).val();
+        }).get();
+
+        //debugger;
+        if (searchIDs != null) {
+                $.ajax({
+                    url: '@Url.Content("~/Account/DeleteAccion/")',
+                    data: {
+                        rolID: localRolid,
+                        valores: searchIDs
+                    },
+                traditional: true,
+                success: function (data) {
+                    if (data.codigo == 0)
+                        $('#spnMensaje').html(data)
+                    else
+                    {
+                        var url = '@Url.Action("Rol", "Account", new { active = "param" })';
+                        window.location.href = url.replace('param', localRolid);
+                    }
+                }, error: function () {
+                    $('#spnMensaje').html('Error');
+                }
+            });
+        }
+    }
+
+        function AddAccion() {
+            var selectionAccion = $('#ddlAccion').val();
+
+            if (selectionAccion != null)
+            {
+                $.ajax({
+                    url: '@Url.Content("~/Account/AddAccion/")',
+                    data: {
+                        rolID: localRolid,
+                        accionID: selectionAccion
+                    },
+                    traditional: true,
+                    success: function (data) {
+                        if (data.codigo == 0)
+                            $('#spnMensaje').html(data)
+                        else {
+                            var url = '@Url.Action("Rol", "Account", new { active = "param" })';
+                            window.location.href = url.replace('param', localRolid);
+                        }
+                    }, error: function () {
+                        $('#spnMensaje').html('Error');
+                    }
+                });
+            }
+        }
+    </script>
+}

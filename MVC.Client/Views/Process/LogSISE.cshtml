@@ -1,0 +1,411 @@
+﻿@model Domain.MainModule.Entities.Cotizacion
+
+@{
+    ViewBag.Title = "LogSiSE";
+}
+
+<div id="divCambiosAsegurado" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-content">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+            <h5>Diferencias entre Asegurados SISE/Cotizador</h5>
+        </div>
+        <div class="modal-body">            
+            <table class="table table-striped">
+                <tr>
+                    <td>Campo</td>
+                    <td>Cotizador</td>
+                    <td>SISE</td>
+                </tr>
+                @foreach (string dato in (List<string>)ViewBag.ListaAseguradoDiferencias)
+                {
+                    <tr>
+                        <td>@dato.Split("|".ToCharArray())[0]</td>
+                        <td>@dato.Split("|".ToCharArray())[1]</td>
+                        <td>@dato.Split("|".ToCharArray())[2]</td>
+                    </tr>
+                }
+            </table>           
+            
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">Cerrar</button>            
+        </div>
+    </div>
+</div>
+
+<div id="divBeneficiarios" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-content">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+            <h5>Beneficiarios</h5>
+        </div>
+        <div class="modal-body">
+            <div id="divError"></div>
+            <table>
+                <tr>
+                    <td>Ubicación</td>
+                    <td>@Html.DropDownList("UbicacionList", new SelectList(ViewBag.UbicacionList, "Value", "Label"), new { id = "ddlUbicacion", @class = "form-control multiSelect", @onchange = "addBeneficiarios()" })</td>
+                @if (ViewBag.isEnable)
+                {
+                    <td><a class="btn btn-default" onclick="addFilaBeneficiario()"><i class="fui-plus"></i></a></td>
+                }
+                </tr>
+                <tr>
+                    <td colspan="3"><div><span id="spnMensaje"></span></div></td>
+                </tr>
+            </table>
+            <br />
+            <div id="datos"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">Cerrar</button>
+@if (ViewBag.isEnable)
+        {
+            <button class="btn btn-primary" onclick="GrabarBeneficiario();">Grabar</button>
+}
+        </div>
+    </div>
+</div>
+
+<div id="divPagador" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-content">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+            <h5>Pagadores</h5>
+        </div>
+        <div class="modal-body">
+                @if (Model != null)
+                {                    
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="todo">
+                            <ul>
+                                <li class="todo-done" id="liPagadorGrabado" onclick="CambiarTodoDone()">                                    
+                                    <div class="todo-content">
+                                        @if (Model.bk_te_CotizacionPagador != null)
+                                        {
+                                        <h4 class="todo-name">
+                                            <span id="spnConducto">@Model.bk_te_CotizacionPagador.Conducto</span>
+                                        </h4>
+                                            <span id="spnNombre">@(Model.bk_te_CotizacionPagador.RFC + " - " + Model.bk_te_CotizacionPagador.nombre)</span><br />
+                                            <span id="spnBanco">@Model.bk_te_CotizacionPagador.Banco</span><br />
+                                            <span id="spnNroTarjeta">@(Model.bk_te_CotizacionPagador.NroTarjeta == "" ? "" : "****" + Model.bk_te_CotizacionPagador.NroTarjeta)</span>                                        
+                                        }
+                                        else
+                                        {
+                                            <h4 class="todo-name">
+                                                <b>Sin Selección</b>
+                                            </h4>
+                                        }
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>                    
+                }
+            <table>                
+                @if (Model != null)
+                {       
+                    <tr>
+                        <td colspan="3"><span id="spnMensajePagador"></span></td>
+                    </tr>             
+                    <tr>
+                        <td><br /></td>
+                    </tr>
+                    <tr>
+                        <td>RFC:</td>
+                        <td> <div id="divRFCPagador"> <input type="text" class="form-control" value="@(Model.bk_te_CotizacionPagador == null ? ViewBag.RFC : Model.bk_te_CotizacionPagador.RFC)" id="txtRFCPagador" /> </div></td>
+                        <td><button class="btn btn-default" onclick="getPagadores();">Buscar</button></td>
+                    </tr>
+                }
+            </table>
+            <br />
+            <div id="datosPagador"></div>
+        </div>
+
+                    <div class="modal-footer">
+                        <button class="btn" data-dismiss="modal">Cerrar</button>
+                        @if (ViewBag.isEnable)
+                        {
+                            <button class="btn btn-primary" onclick="GrabarPagador();">Grabar</button>
+                        }
+                    </div>
+                </div>
+            </div>
+
+
+            <table width="100%">
+                <tr>
+                    <td><h4>Envío de Cotización a SiSE</h4></td>
+                    @if (ViewBag.isEnable)
+                    {
+                        <td align="right"><a class="btn btn-primary" href="@Url.Action("SendSiSE", "Process")">Enviar Cotización SISE</a></td>
+                    }
+                </tr>
+            </table>
+            <br />
+            <table class="table table-curved">
+                <tr>
+                    <td rowspan="2"><h6>Nivel Póliza</h6></td>
+                    <td><a class="btn btn-inverse" onclick="getPagadores();">Pagador&nbsp;&nbsp;<i class="fui-resize"></i></a></td>
+
+                </tr>
+                <tr>
+                    <td><a class="btn btn-danger" onclick="showDifAsegurado();">"@(((List<string>)ViewBag.ListaAseguradoDiferencias).Count())" Cambios Asegurado&nbsp;&nbsp;<i class="fui-resize"></i></a></td>
+                </tr>
+                <tr>
+                    <td rowspan="2"><h6>Nivel Iniciso</h6></td>
+                    <td><a class="btn btn-success" onclick="addBeneficiarios();">"<span id="spnNroBeneficiario">@ViewBag.BeneficiariosNumber</span>" Beneficiarios&nbsp;&nbsp;<i class="fui-resize"></i></a></td>
+                </tr>
+            </table>
+            <br />
+
+
+            <table id="tblLog" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Fecha y Hora de envío</th>
+                        <th>Usuario</th>
+                        <th>Mensaje SISE</th>
+                        <th style="text-align:center">¿Exitoso?</th>
+                    </tr>
+                </thead>
+                @if (Model != null)
+                {
+                    foreach (var item in Model.bk_te_CotizacionLog)
+                    {
+                        <tr>
+                            <td>@item.LogTime</td>
+                            <td>@item.bk_tc_Usuario.NombreUsuario </td>
+                            <td>@item.mensaje</td>
+                            <td align="center">
+                                @if (item.isOK.Value)
+                                {
+                                    <span class="fui-check"></span>
+                                }
+                                else
+                                {
+                                    <span class="fui-cross"></span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+
+
+            </table>
+
+            @section Scripts {
+
+                <script>
+
+                    var consecutivo;
+                    $(function () {
+                        $.ajaxSetup({ cache: false });
+                        consecutivo = 1;
+                    });
+
+                    function addBeneficiarios() {
+                        $('#datos').html("");
+                        var ubicacion = $('#ddlUbicacion').val();
+
+                        $.ajax({
+                            url: '@Url.Content("~/Process/GetListBeneficiarios/")',
+                            data: {
+                                ubicacionID: ubicacion
+                            },
+                            traditional: true,
+                            success: function (data) {
+                                $('#datos').html(data);
+                                $('#divBeneficiarios').modal('show');
+                            }
+                        });
+                    }
+
+                    function addFilaBeneficiario() {
+
+                        var rowCount = $('#tblBeneficiario tr').length;
+
+                        if (rowCount == 4) {
+                            $('#divError').html("@Html.Raw(ViewBag.ErrorNroBeneficiarios)");
+                        }
+                        else {
+                            var datoHTML = '<tr id= "trBenef_' + -consecutivo + '"><td>@Html.Raw(Ajax.JavaScriptStringEncode(Html.DropDownList("TipoBeneficiario", new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.TipoBeneficiarioList, "Value", "Label"), new { @class = "form-control multiSelect idTipoBeneficiario" }).ToHtmlString()))</td>';
+                            datoHTML += '<td><div><input type="text" class="form-control" onblur="RevisarRFC(this,' + -consecutivo + ')" /></div></td>'
+                            datoHTML += '<td><span class="nombrePersona"><i>Nombre obtenido de SISE</i></span></td>'
+                            datoHTML += '<td><a class="btn btn-info" href="javascript:DeleteBeneficiario(' + -consecutivo + ')"><span class="fui-cross-circle"></span></a></td>'
+                            datoHTML += '<td><input type="hidden" value ="" class="idPersona" /></td></tr>'
+
+                            $('#tblBeneficiario tr:last').after(datoHTML);
+
+                            consecutivo++;
+                        }
+                        //debugger;
+                    }
+
+                    function GrabarBeneficiario() {
+
+                        $('#spnMensaje').html('');
+                        var ubicacion = $('#ddlUbicacion').val();
+
+                        var beneficiarios = [];
+                        var individual = [];
+
+                        $('#tblBeneficiario > tbody  > tr').each(function () {
+
+                            var i = 0;
+                            if ($(this).closest('tr').attr('id') != null) {
+                                //debugger;
+                                var id = $(this).closest('tr').attr('id');
+                                individual = new Array(3);
+                                individual[0] = id.split('trBenef_')[1];
+                                individual[1] = $(this).closest('tr').find('.idPersona').val();
+                                individual[2] = $(this).closest('tr').find('.idTipoBeneficiario').val();
+                                beneficiarios.push(individual);
+                                i++;
+                            }
+                        });
+
+                        //debugger;
+
+                        $.ajax({
+                            url: '@Url.Content("~/Process/SaveBeneficiarios/")',
+                            data: {
+                                datos: beneficiarios,
+                                ubicacionID: ubicacion
+                            },
+                            traditional: true,
+                            success: function (data) {
+                                $('#spnMensaje').html(data.Mensaje);
+                                $('#spnNroBeneficiario').html(data.NroBenef);
+                            },
+                            error: function (xhr, textStatus, exceptionThrown) {
+                                alert('Error');
+                            }
+                        });
+                    }
+
+                    function DeleteBeneficiario(a) {
+                        $('#trBenef_' + a).remove();
+                    }
+
+                    function RevisarRFC(a, b) {
+                        valor = a.value;
+
+                        //var rfc = new RegExp('^([A-ZÑ\x26]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[A-Z|\d]{3})$');
+                        var rfc = new RegExp('^([A-ZÑ\x26]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])([A-Z]|[0-9]){3})$');
+                        if (!rfc.test(valor))
+                            a.parentElement.className = "has-error";
+                        else {
+                            a.parentElement.className = "";
+
+                            $.ajax({
+                                url: '@Url.Content("~/Process/GetPersonaSISE/")',
+                                data: {
+                                    rfc: valor
+                                },
+                                traditional: true,
+                                success: function (data) {
+                                    if (data.PersonaID != null) {
+                                        //debugger;
+                                        $('#trBenef_' + b).find('.nombrePersona').text(data.NombreCompleto);
+                                        $('#trBenef_' + b).find('.idPersona').val(data.PersonaID);
+                                    }
+                                    else
+                                        alert('Error Servicio.');
+                                }, error: function () {
+                                    alert('Error Servicio.');
+                                }
+                            });
+                        }
+                    }
+
+                    function showDifAsegurado() {
+                        $('#divCambiosAsegurado').modal('show');
+                    }
+
+
+                    function getPagadores() {
+                        //debugger;
+                        $('#datosPagador').html("");
+                        var valor = $('#txtRFCPagador').val();
+                        var rfc = new RegExp('^([A-ZÑ\x26]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])([A-Z]|[0-9]){3})$');
+
+                        if (!rfc.test(valor))
+                            $('#divRFCPagador').addClass("has-error");
+                        else {
+                            $('#divRFCPagador').removeClass("has-error");
+
+                            $.ajax({
+                                url: '@Url.Content("~/Process/GetListPagadores/")',
+                                data: {
+                                    rfc: valor
+                                },
+                                traditional: true,
+                                success: function (data) {
+                                    MostrarErrorAjax(data.errorException);
+                                    $('#datosPagador').html(data);
+                                    $('#divPagador').modal('show');
+                                }
+                            });
+                        }
+                    }
+
+                    function CambiarPagador() {
+                        $('#liPagadorGrabado').removeClass('todo-done');
+                    }
+
+                    function GrabarPagador() {
+                        
+                        $('#spnMensajePagador').text('');
+                        var radioValue = $("input[name='optPagador']:checked").val();
+                        if (radioValue) {
+                            var cod_conducto = radioValue.split("_")[0];
+                            var cod_banco = $('#hdBanco_' + radioValue).val();
+                            var ind_conducto = radioValue.split("_")[1];
+                            var rfc = $('#hdRFC_' + radioValue).val();
+                            var nroTarjeta = $('#hdTarjeta_' + radioValue).val();
+                            var nombre = $('#hdNombre_' + radioValue).val();
+
+                            $.ajax({
+                                url: '@Url.Content("~/Process/SavePagador/")',
+                                data: {
+                                    cod_conducto: cod_conducto,
+                                    cod_banco: cod_banco,
+                                    ind_conducto: ind_conducto,
+                                    rfc: rfc,
+                                    nroTarjeta: nroTarjeta,
+                                    nombre: nombre
+                                },
+                                traditional: true,
+                                success: function (data) {
+                                    MostrarErrorAjax(data.errorException);
+                                    
+                                    if (data.datos != null) {
+                                        $('#spnConducto').text(data.datos.Conducto);
+                                        $('#spnNombre').text(data.datos.RFC + " - " + data.datos.nombre);
+                                        $('#spnBanco').text(data.datos.Banco == null ? "" : data.datos.Banco);
+                                        $('#spnNroTarjeta').text(data.datos.NroTarjeta == '' ? '' : '****' + data.datos.NroTarjeta);
+
+                                        //debugger;
+                                        $('#spnMensajePagador').html(data.mensaje);
+
+                                        $('#liPagadorGrabado').addClass('todo-done');
+                                        CambiarTodoDone();
+                                    }
+                                }
+                            });
+                        }
+                    }
+
+                    function CambiarTodoDone() {
+                        $("input[name='optPagador']:checked").prop('checked', false);
+                    }
+
+                </script>
+            }

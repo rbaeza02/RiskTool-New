@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://172.19.10.191/Sistran.IntegracionAseg/Data.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Sistran.Application" />
+  <xs:element name="GuardarAsegurados">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Sistran.Application" minOccurs="0" name="objIntAsegurado" nillable="true" type="q1:ArrayOfAsegurado" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GuardarAseguradosResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GuardarAseguradosResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConsultaAsegurados">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="claveRFC" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConsultaAseguradosResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Sistran.Application" minOccurs="0" name="ConsultaAseguradosResult" nillable="true" type="q2:Asegurado" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConsultaConductos">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="claveRFC" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="codAseg" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConsultaConductosResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Sistran.Application" minOccurs="0" name="ConsultaConductosResult" nillable="true" type="q3:ArrayOfConducto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GuardarConducto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Sistran.Application" minOccurs="0" name="objIntConducto" nillable="true" type="q4:ArrayOfConducto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GuardarConductoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GuardarConductoResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

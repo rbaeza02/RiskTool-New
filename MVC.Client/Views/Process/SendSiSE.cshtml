@@ -1,0 +1,145 @@
+﻿@model List<Domain.MainModule.Entities.workflow>
+
+@{
+    ViewBag.Title = "Send SISE";
+}
+
+<h5>Emitir Póliza en SISE</h5>
+
+<input type="hidden" id="hdTransporte" value="@ViewBag.Transporte" />
+@if (Model != null)
+{
+    foreach (var item in Model.OrderBy(x => x.orden))
+    {
+        <div id="@("Calc" + item.orden)" style="display:none">
+            <table class="table-responsive table-curved">
+                <tr>
+                    <td style="width:500px"><p>@item.descripcion: </p></td>
+                    @*<td><div id="@("Calc" + item.orden + "wait")" class='progress progress-indeterminate'> <div class='win-ring small'></div></div></td>*@
+                    @*<td style="width:200px"><p><span id="@("Calc" + item.orden + "nro")"></span></p></td>*@
+                    <td><div id="@("Calc" + item.orden + "OK")" aria-hidden="true" style="display:none"> <span class="fui-check"></span> </div></td>
+                    <td><div id="@("Calc" + item.orden + "Bad")" aria-hidden="true" style="display:none"> <span class="fui-cross"></span> </div></td>
+                    <td width="50px"></td>
+                </tr>
+            </table>
+        </div>
+    }
+}
+
+@if (ViewBag.Transporte == "1")
+{
+    <div id="CalcN_1" style="display:none">
+        <table class="table-responsive table-curved">
+            <tr>
+                <td style="width:500px"><p>Generando Texto para SISE: </p></td>
+                <td><div id="divOKTr" aria-hidden="true" style="display:none"> <span class="fui-check"></span> </div></td>
+                <td><div id="divBadTr" aria-hidden="true" style="display:none"> <span class="fui-cross"></span> </div></td>
+            </tr>            
+        </table>
+    </div>
+}
+
+<div id="CalcN" style="display:none">
+    <table class="table-responsive table-curved">
+        <tr>
+            <td style="width:500px"><p>Enviando información a SISE: </p></td>
+            <td><div id="divOK" aria-hidden="true" style="display:none"> <span class="fui-check"></span> </div></td>
+            <td><div id="divBad" aria-hidden="true" style="display:none"> <span class="fui-cross"></span> </div></td>
+        </tr>
+        <tr>
+            <td><span id="mensaje"></span></td>
+        </tr>
+    </table>
+</div>
+
+    <a class="btn btn-primary" href="@Url.Action("LogSISE", "Process")">Regresar</a>
+
+
+    @section scripts {
+        <script type="text/javascript">
+
+            $(function () {
+                $.ajaxSetup({ cache: false });
+                $('#Calc1').show();
+                Procesar(1);
+            });
+            
+            function ProcesarTransporte(){
+                $('#CalcN_1').show();
+
+                var url = '@Url.Action("FillDetailsReportTrans", "Process")';
+                $.getJSON(url, {}, function (data) {                   
+                    $('#divOKTr').show();
+                    ProcesarSISE();
+                }).error(function (xhr, textStatus, exceptionThrown) {                    
+                    $('#divBadTr').show();
+                });
+            }
+
+            function ProcesarSISE(){
+                $('#CalcN').show();
+
+                var url = '@Url.Action("ProcessSendSISE", "Process")';
+                $.getJSON(url, {} , function (data) {
+                    $('#mensaje').html(data);
+                    $('#divOK').show();
+                }).error(function (xhr, textStatus, exceptionThrown) {
+                    $('#divBad').show();
+                });
+            }
+
+
+            function HiddenControl(nro, mostrar) {
+                //$('#Calc' + nro + 'wait').css('display', 'none');
+
+                if (mostrar) {
+                    //$('#Calc' + nro + 'nro').html(data + " registros afectados");
+                    $('#Calc' + nro + 'OK').show();
+                    if (nro < @Model.Count)
+                        $('#Calc' + (nro + 1)).show();
+                    //if (nro == 3) {
+                    //    $('#btnReturn').show();
+                    //}
+                }
+                else {
+                    //    $('#Calc' + nro + 'nro').html("Error");
+                    $('#Calc' + nro + 'Bad').show();
+                    //$('#btnReturn').show();
+                }
+            }
+
+
+            function Procesar(step){
+
+
+                var url = '@Url.Action("ProcessStep", "Process")';
+                $.getJSON(url, {procesoID: @ViewBag.ProcessID, orden: step} , function (data) {
+                    //debugger;
+                    MostrarErrorAjax(data.errorException);
+                    if ($.isNumeric(data))
+                    {
+                        HiddenControl(step, true);
+                        if (step <  @Model.Count)
+                            Procesar(step + 1);
+                        else {
+                            if ($('#hdTransporte').val() == "1")
+                                ProcesarTransporte();
+                            else
+                                ProcesarSISE();                            
+                        }
+                    }
+                    else
+                    {
+                        HiddenControl(step, false);
+                        //$('#Calc' + step + 'Error').show();
+                        //$('#Calc' + step + 'Error').html(ErrorMessage(data.error));
+                    }
+
+                }).error(function (xhr, textStatus, exceptionThrown) {
+                    HiddenControl(step, false);
+                });
+            }
+
+
+        </script>
+    }

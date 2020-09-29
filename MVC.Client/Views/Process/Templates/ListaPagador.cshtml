@@ -1,0 +1,61 @@
+﻿@model List<Domain.MainModule.Entities.CotizacionPagador>
+
+@if (Model != null)
+{
+    <table class="table table-hover">
+        
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <input type="hidden" value="@item.RFC" id="@("hdRFC_" + item.COD_CONDUCTO + "_" + item.SISEind_conducto)" />
+                        <input type="hidden" value="@item.COD_BANCO_EMI" id="@("hdBanco_" + item.COD_CONDUCTO + "_" + item.SISEind_conducto)" />
+                        <input type="hidden" value="@item.NroTarjeta" id="@("hdTarjeta_" + item.COD_CONDUCTO + "_" + item.SISEind_conducto)" />
+                        <input type="hidden" value="@item.nombre" id="@("hdNombre_" + item.COD_CONDUCTO + "_" + item.SISEind_conducto)" />
+                        <table width="100%">
+                            <tr>
+                                <td rowspan="2" width="20px">
+                                    <input type="radio" name="optPagador" value="@(item.COD_CONDUCTO + "_" + item.SISEind_conducto)" data-toggle="radio" onclick="CambiarPagador()">
+                                </td>
+                                <td width ="60%"><b>@item.Conducto</b></td>
+                                <td>@item.Banco</td>
+                            </tr>
+                            <tr>
+                                <td>@(item.RFC + "-" + item.nombre)</td>
+                                <td>@(item.NroTarjeta == "" ? "" : "****" + item.NroTarjeta)</td>
+                            </tr>                            
+                        </table>
+                    </td>                    
+                </tr>
+            }
+    </table>
+    @*<div class="row">
+        <div class="col-xs-12">
+            <div class="todo">
+                <ul>
+                    @foreach (var item in Model)
+                    {
+                        <li>
+                            <div class="todo-icon fui-eye"></div>
+                            <div class="todo-content">
+                                <h4 class="todo-name">
+                                    @item.Conducto
+                                </h4>
+                                @(item.RFC + "-" + item.nombre)
+                                <br />
+                                @item.Banco
+                                <br />
+                                @(item.NroTarjeta == "" ? "" : "****" + item.NroTarjeta)
+
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>*@
+}
+else
+{
+    <b>No existen Pagadores dados de Alta</b>
+}

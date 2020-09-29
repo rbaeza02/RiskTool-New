@@ -1,0 +1,216 @@
+﻿
+
+@section css {
+    @Styles.Render("~/Content/dynatable_personal")
+}
+
+@{
+    ViewBag.Title = "Asegurados";
+}
+
+<div id="dviBuscarAsegurado" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4>Buscar en la Base de Datos</h4>
+    </div>
+    <div class="modal-body">
+
+        <table>
+            <tr>
+                <td style="padding:0 8px 0 8px"><label for="txtRFCSise">Ingresar nuevo RFC:</label></td>
+                <td>
+                    <input type="text" id="txtRFCSise" class="form-control">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div id="divError"></div>
+                </td>
+            </tr>
+            @*<tr style="display:none" id="trMensajeAdd">
+                <td colspan="2">
+                    <label>No se encuentra este RFC en SISE, ¿Deseas crear un nuevo Cliente con este RFC?</label>
+                </td>
+            </tr>
+            <tr style="display:none" id="trBotonAdd">
+                <td><a class="btn btn-info" href="javascript:addSI()"><span class="fui-check"></span>Si</a></td>
+                <td><a class="btn btn-danger" href="javascript:addNO()"><span class="fui-cross"></span>No</a></td>
+            </tr>*@
+        </table>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cerrar</button>
+        <button class="btn btn-primary" onclick="BuscarSISE();">Crear</button>
+    </div>
+</div>
+
+<h5>Asegurados</h5>
+
+<table>
+    <tr>
+        <td style="padding:0 8px 0 8px"><label for="txtRFC">RFC:</label></td>
+        <td style="padding:0 8px 0 8px"><input type="text" id="txtRFC" class="form-control" onkeypress="revisarMoral()"></td>
+        <td style="padding:0 8px 0 8px"><label for="txtRFC">Tipo Persona:</label></td>
+        <td style="padding:0 8px 0 8px">
+            @Html.DropDownList("TipoPersonaList", (IEnumerable<SelectListItem>)ViewBag.TipoPersonaList, new { id = "ddlTipoPersona", @class = "form-control multiSelect", @onchange = "CambiarPersona()", style = "width:200px" })
+        </td>
+        
+        <td><button class="btn btn-primary" onclick="Buscar();">Buscar</button></td>        
+        <td><a class="btn btn-info" data-toggle="modal" href="#dviBuscarAsegurado"><i class="icon-plus-3 icon-white"></i>Nuevo</a></td>
+    </tr>
+    <tr id="trPersonaFisica">
+        <td style="padding:0 8px 0 8px"><label for="txtNombre">Nombre:</label></td>
+        <td style="padding:0 8px 0 8px"><input type="text" id="txtNombre" class="form-control"></td>
+        <td style="padding:0 8px 0 8px"><label for="txtApellido1">Apellido Paterno:</label></td>
+        <td style="padding:0 8px 0 8px"><input type="text" id="txtApellido1" class="form-control"></td>
+        <td style="padding:0 8px 0 8px"><label for="txtApellido2">Apellido Materno:</label></td>
+        <td style="padding:0 8px 0 8px"><input type="text" id="txtApellido2" class="form-control"></td>
+    </tr>
+    <tr id="trPersonaMoral">
+        <td style="padding:0 8px 0 8px"><label for="txtRazonSocial">Razón Social:</label></td>
+        <td style="padding:0 8px 0 8px" colspan="3"><input type="text" id="txtRazonSocial" class="form-control"></td>
+    </tr>
+    <tr>
+        <td colspan="6"><div id="errores"></div></td>
+    </tr>
+</table>
+
+<div id="datos"></div>
+
+@section scripts {
+@Scripts.Render("~/bundles/dynatable")
+
+    <script>
+
+    $(function () {
+
+        $.ajaxSetup({ cache: false });
+
+        $(".multiSelect").multiselect({
+            multiple: false,
+            header: "Seleccionar una opción",
+            noneSelectedText: "Seleccionar una opción",
+            selectedList: 1//,
+            //minWidth: 150
+        });
+
+        
+        CambiarPersona();
+    });
+
+    function CambiarPersona() {
+        if ($('#ddlTipoPersona').val() == '1') {
+            $('#trPersonaMoral').css('display', 'none');
+            $("#trPersonaFisica").show();
+            $('#txtRazonSocial').val('');
+        }
+        else {
+            $('#trPersonaFisica').css('display', 'none');
+            $("#trPersonaMoral").show();
+            $('#txtNombre').val('');
+            $('#txtApellido1').val('');
+            $('#txtApellido2').val('');
+        }
+    }
+
+    function Buscar() {
+        var valorRFC = $('#txtRFC').val();
+        var valorRS = $('#txtRazonSocial').val();
+        var valorNombre = $('#txtNombre').val();
+        var valorApellido1 = $('#txtApellido1').val();
+        var valorApellido2 = $('#txtApellido2').val();
+        
+
+        $('#txtRFCSise').val(valorRFC);
+
+        $('#errores').html('');
+
+        $.ajax({
+            url: '@Url.Content("~/Asegurado/GetListAsegurados/")',
+            data: {
+                rfc: valorRFC,
+                razonSocial: valorRS,
+                nombre: valorNombre,
+                apellido1: valorApellido1,
+                apellido2: valorApellido2
+            },
+            traditional: true,
+            success: function (data) {
+                if (data.mensaje == "") {
+                    $('#datos').html(data.datos);
+
+                    $('#tblAsegurado').dynatable(
+                       {
+                           features: {
+                               paginate: true,
+                               recordCount: false,
+                               perPageSelect: false
+                           },
+                           dataset: {
+                               perPageDefault: 10
+                           }
+                       }
+                       );
+                }
+                else {
+                    $('#errores').html(data.mensaje);
+                }
+            }
+
+        });
+    }
+
+    function BuscarSISE() {
+        var valor = $('#txtRFCSise').val();
+        $('#divError').html('');
+
+        $.ajax({
+            url: '@Url.Content("~/Asegurado/GetAsegurado/")',
+            data: {
+                rfc: valor
+            },
+            traditional: true,
+            success: function (data) {
+                MostrarErrorAjax(data.errorException);
+                if (data.error != "") {
+                    $('#divError').html(data.error);
+                }
+                else {
+                    var url = '@Url.Action("Index", "Asegurado", new { id = "param", rfc = "param2"})';
+                    window.location.href = url.replace('param', data.id).replace('param2', valor);
+                }
+            }
+        });
+        }
+
+        function revisarMoral() {
+            var valor = $('#txtRFC').val();
+            if (valor.length>3)
+            {                
+                data = parseInt(valor.split('')[3]);
+                if (data === parseInt(data, 10)) {
+                    $('#ddlTipoPersona').val(2);                    
+                }                 
+                else
+                    $('#ddlTipoPersona').val(1);
+                    
+                $('#ddlTipoPersona').multiselect('refresh');
+                CambiarPersona();
+            }
+        }
+        @*function addSI() {
+            var valor = $('#txtRFC').val();
+            var url = '@Url.Action("Index", "Asegurado", new { id='0', rfc = "param1"})';
+            window.location.href = url.replace('param1', valor);
+        }
+
+        function addNO() {
+            $('#trMensajeAdd').css('display', 'none');
+            $('#trBotonAdd').css('display', 'none');
+            $('#txtRFC').prop('disabled', false);
+        }*@
+
+      
+</script>
+}

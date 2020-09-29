@@ -1,0 +1,444 @@
+﻿@model List<Domain.MainModule.Entities.Ubicacion>
+
+@Html.Partial("_BuscarSIC")
+
+<table style="width:100%;">
+    <tr>
+        <td style="padding:0 8px 0 8px; width:150px;"><label>Nro Ubicación:</label></td>
+        <td style="width:200px"><input type="text" id="txtFiltroNroUbicacion" class="form-control" /></td>
+        <td><button type="button" class="btn btn-default" onclick="Buscar()">Buscar</button></td>
+        <td align="right"><a class="btn btn-info" href="javascript:addUbicacion()"><span class="fui-plus-circle"></span></a></td>
+    </tr>
+    <tr>
+        <td colspan="4">
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+        </td>
+    </tr>
+</table>
+<hr />
+
+@if (ViewBag.Mensaje != null)
+{
+    <div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'><span class="fui-cross"></span></button>@ViewBag.Mensaje</div>
+}
+
+<div class="tabbable" >
+    @*<ul class="nav nav-pills nav-stacked col-md-3" style="width:200px;">
+        <li><a href="#" data-toggle="tab" onclick="CambiarPagAsegurado(@Model[0].AseguradoID)">Datos</a></li>
+        <li class="active"><a href="#" data-toggle="tab">Ubicaciones</a></li>
+    </ul>*@
+
+    @if(Model != null)
+    { 
+        
+    <div class="tab-content col-md-9" style="width:1100px;">
+        <div class="tab-pane active">
+            @using (Html.BeginForm("Ubicacion", "Asegurado", FormMethod.Post, new { id = "frm" }))
+            {
+                @Html.EditorForModel()
+
+                if (Session["AseguradoID"] != null)
+                {
+                    if (Session["AseguradoID"] != "0")
+                    { 
+                    <table class="table">
+                        <tr>
+                            <td align="right">
+                                <table>
+                                    <tr>
+                                        <td><button type="button" class="btn btn-primary">Cancelar</button></td>
+                                        <td><button type="submit" class="btn btn-success" onclick="window.onbeforeunload = null;">Grabar</button></td>
+                                    </tr>
+                                </table>
+                            </td>
+
+                        </tr>
+                    </table>
+                    }
+                }
+            }
+        </div>
+
+        <table>
+            <tr>
+                <td style="width:50%">&nbsp;</td>
+                <td>
+                    <a href="@Url.Action("Ubicacion", "Asegurado", new { id = Model[0].AseguradoID.ToString(), pagina = (ViewBag.Pagina == 0 ? 0 : ViewBag.Pagina- 1) })" class="btn btn-inverse previous" @(ViewBag.Pagina == 0 ? "disabled" : "")>
+                        <i class="fui-arrow-left"></i>
+                        Anterior
+                    </a>
+                    <ul class="pagination pagination-inverse">
+                        @for (int i = 0; i <= ViewBag.TotalGrupos; i++ )
+                        {   
+                            if(i == ViewBag.TotalGrupos)
+                            {
+                                <li style="display:none" id="liAdicional">
+                                    @Html.ActionLink((i + 1).ToString(), "Ubicacion", "Asegurado", new { id = Model[0].AseguradoID.ToString(), pagina = Convert.ToString(i) }, null)
+                                </li>        
+                            }
+                            else
+                            {
+                                <li>@Html.ActionLink((i + 1).ToString(), "Ubicacion", "Asegurado", new { id = Model[0].AseguradoID.ToString(), pagina = Convert.ToString(i) }, null)</li>
+                            }
+                        }
+                        
+                    </ul>                    
+                    <a href="@Url.Action("Ubicacion", "Asegurado", new { id = Model[0].AseguradoID.ToString(), pagina = ViewBag.Pagina + 1 })" class="btn btn-inverse next" @(ViewBag.Pagina == ViewBag.TotalGrupos ? "disabled" : "")>
+                        <i class="fui-arrow-right"></i>
+                        Siguiente
+                    </a>
+                </td>
+            </tr>
+        </table>
+            
+        
+
+
+
+
+    </div>
+        
+    }
+</div>
+
+
+
+
+@section scripts {
+    <script>
+    var nroUbicaciones;
+    var sic = "";
+    $(document).ready(function () {
+
+        $.ajaxSetup({ cache: false });
+
+        $(".multiSelect").multiselect({
+            multiple: false,
+            header: "Seleccionar una opción",
+            noneSelectedText: "Seleccionar una opción",
+            selectedList: 1,
+            position: { my: 'left top', at: 'left bottom' }
+        });
+
+        $(".multiSelect2").multiselect({
+            multiple: false,
+            header: "Seleccionar una opción",
+            noneSelectedText: "Seleccionar una opción",
+            selectedList: 1,
+            position: { my: 'left top', at: 'left bottom' }
+        }).multiselectfilter();
+
+        nroUbicaciones = @ViewBag.NroRegistros
+
+
+        if ('@ViewBag.Error' == "True")
+        {
+            BuscarCP('[0]');
+            BuscarCP('[1]');
+            BuscarCP('[2]');
+        }
+
+        if(nroUbicaciones == 3 || nroUbicaciones == 0)
+            $('#liAdicional').show();
+
+        needToConfirm = false; 
+        window.onbeforeunload = askConfirm;
+
+    });
+
+    $(":input").only('change',function() {
+        needToConfirm = true;        
+    });
+
+    function askConfirm() {
+        if (needToConfirm) {            
+            return "La información que no se ha guardado se perderá."; 
+        }
+    }
+
+    
+
+    function CambiarChk(a,name)
+    {
+        $("input[id='hdUbicacion" + name + a.id.split("chk" + name)[1] + "']").val($(a).is(':checked'));
+    }
+
+    function CambiarColonia(a) {
+        //debugger;
+        $("input[id='hdColoniaID" + a + "']").val($('select[id="ddlColonia' + a +'"]').val());
+    }
+
+
+    function BuscarCP(a) {
+
+        //var valor = $(a).val();
+        //debugger;
+        var valor = $("input[id='txtCP" + a + "']").val();
+        document.getElementById('ddlCiudad' + a).innerHTML= '';
+
+        if (valor.length > 4) {
+            $.ajax({
+                url: '@Url.Content("~/Asegurado/BuscarCP/")',
+                data: {
+                    cp: valor,
+                    dato: a
+                },
+                traditional: true,
+                success: function (data) {
+                    document.getElementById('txtPais' + data.Dato).value = data.Pais;
+                    document.getElementById('txtEstado' + data.Dato).value = data.Estado;
+                    document.getElementById('txtMunicipio' + data.Dato).value = data.Municipio;
+
+                    var htmlselect = "";
+                    $.each(data.Ciudades, function (key, val) {
+                        htmlselect = htmlselect + '<option value="' + val.Value + '">' + val.Text + '</option>';
+                    })
+
+                    document.getElementById('ddlCiudad' + data.Dato).innerHTML = htmlselect;
+
+                    $("select[id='ddlCiudad" + data.Dato + "']").multiselect('refresh');
+
+                    BuscarColonia(data.Dato);
+                }
+            });
+
+            BuscarInfoCP(a);
+        }
+    }
+
+    function BuscarColonia(a) {
+        var valor = $("input[id='txtCP" + a + "']").val();
+        var valor2 = $("select[id='ddlCiudad" + a + "']").val();
+
+        $("select[id='ddlColonia" + a + "']").html('');
+
+        $.ajax({
+            url: '@Url.Content("~/Asegurado/BuscarColonia/")',
+            data: {
+                cp: valor,
+                ciudadID: valor2
+            },
+            traditional: true,
+            success: function (data) {
+                var $select = $("select[id='ddlColonia" + a + "']");
+
+                $.each(data, function (key, val) {
+                    $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                })
+
+                $select.multiselect({
+                    multiple: false,
+                    header: "Seleccionar una opcion",
+                    noneSelectedText: "Seleccionar una opcion",
+                    selectedList: 1,
+                    position: { my: 'left top', at: 'left bottom' }
+                }).multiselectfilter();
+
+                $("input[id='hdColoniaID" + a + "']").val($select.val());
+            }
+        });
+
+    }
+
+    function BuscarInfoCP(a) {
+        var valor = $("input[id='txtCP" + a + "']").val();
+
+        $.ajax({
+            url: '@Url.Content("~/Asegurado/GetDatosCP/")',
+            data: {
+                cp: valor,
+                dato: a
+            },
+            traditional: true,
+            success: function (data) {
+                //debugger;
+                $("select[id='ddlZonaHidro" + data.Dato + "']").val(data.Info.ZonaHidroID);
+                $("select[id='ddlZonaHidro" + data.Dato + "']").multiselect('refresh');
+                $("select[id='ddlZonaTEV" + data.Dato + "']").val(data.Info.ZonaTEVID);
+                $("select[id='ddlZonaTEV" + data.Dato + "']").multiselect('refresh');
+                $("input[id='txtLongitud" + data.Dato + "']").val(data.Info.longitud);
+                $("input[id='txtLatitud" + data.Dato + "']").val(data.Info.latitud);
+                $("input[id='hdZonaHidroID" + data.Dato + "']").val(data.Info.ZonaHidroID);
+                $("input[id='hdZonaTEVID" + data.Dato + "']").val(data.Info.ZonaTEVID);
+
+                $("input[id='chkCosta" + data.Dato + "']").prop('checked', data.Info.esCosta);
+                $("input[id='hdUbicacionCosta" + data.Dato + "']").val(data.Info.esCosta);
+            }
+        });
+    }
+
+    function addUbicacion() {
+        $("table[id='tblUbicacion[" + nroUbicaciones + "]']").show();
+        $("input[id='hdMostrar[" + nroUbicaciones + "]']").val('True');
+        nroUbicaciones++;
+    }
+
+    function DeleteUbicacion(a){
+        $("table[id='tblUbicacion" + a + "']").find("input,button,textarea,select").attr("disabled", "disabled");
+        $("a[id='btnDesUbicacion" + a + "']").show();
+        $("a[id='btnEliUbicacion" + a + "']").css('display', 'none');
+        $("input[id='hdEliminado" + a + "']").val('True');
+    }
+
+    function DeshacerUbicacion(a){
+        $("table[id='tblUbicacion" + a + "']").find("input,button,textarea,select").attr("disabled", false);
+        $("a[id='btnDesUbicacion" + a + "']").css('display', 'none');
+        $("a[id='btnEliUbicacion" + a + "']").show();
+        $("input[id='hdEliminado" + a + "']").val('False');
+    }
+
+    function OpenSIC(a){
+        //debugger;
+        sic = a;
+        $('#divBuscarSIC').modal('toggle');
+        BuscarGrupo();
+    }
+
+    function BuscarGrupo()
+    {
+        var selectionDivision = $('#ddlDivision').val();
+        $('#ddlGrupo').html('');
+
+        if (selectionDivision != null) {
+            $.ajax({
+                url: '@Url.Content("~/Asegurado/GetGrupoToSelection/")',
+                data: {
+                    divisionID: selectionDivision
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    var $select = $('#ddlGrupo');
+                    $.each(data, function (key, val) {
+                        $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                    })
+
+                    $select.multiselect('refresh');
+
+                    BuscarSIC();
+                }, error: function () {
+                    $('#ddlGrupo').append('<option id="-1">none available</option>');
+                }
+            });
+        }
+    }
+
+    function BuscarSIC(){
+        var selectionGrupo = $('#ddlGrupo').val();
+        $('#ddlSIC').html('');
+
+        if (selectionGrupo != null) {
+            $.ajax({
+                url: '@Url.Content("~/Asegurado/GetSICToSelection/")',
+                data: {
+                    grupoID: selectionGrupo
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    var $select = $('#ddlSIC');
+                    $.each(data, function (key, val) {
+                        $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                    })
+
+                    $select.multiselect('refresh');
+
+                }, error: function () {
+                    $('#ddlSIC').append('<option id="-1">none available</option>');
+                }
+            });
+        }
+    }
+
+    function SeleccionarSIC(){
+        //debugger;
+        if ($('#ddlSIC').val() != null)
+        {
+            $("input[id='txtSIC" + sic + "']").val($('#ddlSIC').val());
+            $('#divBuscarSIC').modal('hide');
+
+            BuscarTipoConstructivoIncendio($('#ddlSIC').val(), sic)
+
+        }
+    }
+
+    function SICInput(a)
+    {
+        //debugger;
+        var valor = $("input[id='txtSIC" + a + "']").val();
+
+        if (valor.length == 4) {
+            BuscarTipoConstructivoIncendio(valor, a);
+        }
+    }
+
+    function BuscarTipoConstructivoIncendio(valorSIC, a)
+    {
+        $.ajax({
+            url: '@Url.Content("~/Asegurado/GetTipoConsIncendio/")',
+            data: {
+                sic: valorSIC
+            },
+            dataType: 'JSON',
+            success: function (data) {
+                //debugger;
+                $("select[id='ddlTipoConstructivoIncendio" + a + "']").val(data);
+                $("select[id='ddlTipoConstructivoIncendio" + a + "']").multiselect('refresh');
+
+                BuscarTipoConstructivoTerremoto(a);
+            }, error: function () {
+                alert('Error');
+            }
+        });
+    }
+
+    function BuscarTipoConstructivoTerremoto(a)
+    {
+        var tipoIncendio = $("select[id='ddlTipoConstructivoIncendio" + a + "']").val();
+
+        if (tipoIncendio != null) {
+            $.ajax({
+                url: '@Url.Content("~/Asegurado/GetTipoConsTerremoto/")',
+                data: {
+                    tipoConsIncendioID: tipoIncendio
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    //debugger;
+                    $("select[id='ddlTipoConstructivoTerremoto" + a + "']").val(data);
+                    $("select[id='ddlTipoConstructivoTerremoto" + a + "']").multiselect('refresh');
+
+                }, error: function () {
+                    alert('Error');
+                }
+            });
+        }
+    }
+
+    function CambiarPagAsegurado(a) {
+    var url = '@Url.Action("Index", "Asegurado", new { id = "param" })';
+        window.location.href = url.replace('param', a);
+    }
+
+        function Buscar() {
+            var nro = $('#txtFiltroNroUbicacion').val();
+            var url = '@Url.Action("Ubicacion", "Asegurado", new { id = "param", nro = "param2" })';
+            window.location.href = url.replace('param', '@ViewBag.AseguradoID').replace('param2',nro);
+        }
+
+
+        function LlenarCeroSIC(a) {
+            //debugger;            
+            var valor = $("input[id='txtSIC[" + a + "]']").val()
+            if(valor.length == 3)
+                $("input[id='txtSIC[" + a + "]']").val('0' + valor);
+        }
+        
+        function LlenarCeroCP(a) {
+            
+            var valor = $("input[id='txtCP[" + a + "]']").val()
+            if (valor.length == 4) {
+                var valor = $("input[id='txtCP[" + a + "]']").val('0' + valor);
+                BuscarCP('[' + a + ']');
+            }
+        }
+    </script>
+}

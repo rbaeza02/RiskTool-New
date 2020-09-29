@@ -1,0 +1,223 @@
+﻿@model List<Domain.MainModule.Entities.TipoCobertura>
+
+@{
+    ViewBag.Title = "CotizarIncendio";
+}
+
+<td><span id="mensaje"></span></td>
+
+<div class="tabbable" style="margin-left:-200px;">
+    <ul class="nav nav-pills nav-stacked col-md-3" style="width:200px;">
+        <li><a href="#" data-toggle="tab" onclick="CambiarPagDatos('@ViewBag.CotizacionID')" @(ViewBag.CotizacionID == 0 ? "disabled" : "")>Datos Generales</a></li>
+        <li class="active"><a href="#" data-toggle="tab">Coberturas Incendio</a></li>
+        <li><a href="#" data-toggle="tab" onclick="CambiarPagValores('@ViewBag.CotizacionID')" @(ViewBag.CotizacionID == 0 ? "disabled" : "")>Valores Incendio</a></li>
+    </ul>
+</div>
+
+<div class="tab-content col-md-9" style="width:1100px;">
+    <div class="tab-pane active">
+        <div class="col-md-6">
+            <label class="control-label">Coberturas</label>
+            <select multiple class="form-control" id="StaffList" style="height:200px">
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        @Html.Raw("<optgroup label='" + item.nombre + "'>")
+                        foreach (var item2 in item.bk_tc_Cobertura)
+                        {
+                            @Html.Raw("<option value=" + item2.CoberturaID + ">" + item2.nombre + "</option>")
+                        }
+
+                        @Html.Raw("</optgroup>")
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-3 col-sm-3 col-xs-3 add-btns">
+                    <input type="button" id="btnIncendio" value="Add Incendio" class="btn btn-default" />
+                </div>
+                <div class="col-md-9 col-sm-9 col-xs-9">
+                    <label class="control-label">Incendio</label>
+                    <div class="selected-left">
+                        <select multiple class="form-control" id="IncendioList">
+                            @if (ViewBag.IncendioList != null)
+                            {
+                                foreach (var item3 in ViewBag.IncendioList)
+                                {
+                                    @Html.Raw("<option value=" + item3.CoberturaID + ">" + item3.bk_tc_Cobertura.nombre + "</option>")
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="selected-right">
+                        <button type="button" class="btn btn-default btn-sm" id="btnRemoveIncendio">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 col-sm-3 col-xs-3 add-btns">
+                    <input type="button" id="btnTerremoto" value="Add Terremoto" class="btn btn-default" />
+                </div>
+                <div class="col-md-9 col-sm-9 col-xs-9">
+                    <label class="control-label">Terremoto</label>
+                    <div class="selected-left">
+                        <select multiple class="form-control" id="TerremotoList">
+                            @if (ViewBag.TerremotoList != null)
+                            {
+                                foreach (var item4 in ViewBag.TerremotoList)
+                                {
+                                    @Html.Raw("<option value=" + item4.CoberturaID + ">" + item4.bk_tc_Cobertura.nombre + "</option>")
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="selected-right">
+                        <button type="button" class="btn btn-default btn-sm" id="btnRemoveTerremoto">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 col-sm-3 col-xs-3 add-btns">
+                    <input type="button" id="btnHidro" value="Add Hidro" class="btn btn-default" />
+                </div>
+                <div class="col-md-9 col-sm-9 col-xs-9">
+                    <label class="control-label">Hidro&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                    <div class="selected-left">
+                        <select multiple class="form-control" id="HidroList">
+                            @if (ViewBag.HidroList != null)
+                            {
+                                foreach (var item5 in ViewBag.HidroList)
+                                {
+                                    @Html.Raw("<option value=" + item5.CoberturaID + ">" + item5.bk_tc_Cobertura.nombre + "</option>")
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="selected-right">
+                        <button type="button" class="btn btn-default btn-sm" id="btnRemoveHidro">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-9 col-sm-9 col-xs-9">
+                    <div class="selected-right">
+                        <table>
+                            <tr>
+                                <td><button type="button" class="btn btn-primary">Cancelar</button></td>
+                                <td><button type="button" class="btn btn-success" onclick="Guardar();">Guardar</button></td>
+                            </tr>
+                        </table>
+                    </div>
+                    </div>
+                </div>
+         </div>        
+    </div>
+</div>
+
+
+
+    @section scripts {
+        @Scripts.Render("~/bundles/selectList")
+
+        <script>
+
+            $('#btnIncendio').click(function (e) {
+                if ($('#IncendioList option[value="' + $('#StaffList option:selected').val() + '"]').val() == null) {
+                    $('select').moveToList('#StaffList', '#IncendioList');
+                    e.preventDefault();
+                }
+            });
+
+            $('#btnRemoveIncendio').click(function (e) {
+                $('select').removeSelected('#IncendioList');
+                e.preventDefault();
+            });
+
+            $('#btnTerremoto').click(function (e) {
+                if ($('#TerremotoList option[value="' + $('#StaffList option:selected').val() + '"]').val() == null) {
+                    $('select').moveToList('#StaffList', '#TerremotoList');
+                    e.preventDefault();
+                }
+            });
+
+            $('#btnRemoveTerremoto').click(function (e) {
+                $('select').removeSelected('#TerremotoList');
+                e.preventDefault();
+            });
+                       
+
+            $('#btnHidro').click(function (e) {
+                if ($('#HidroList option[value="' + $('#StaffList option:selected').val() + '"]').val() == null) {
+                    $('select').moveToList('#StaffList', '#HidroList');
+                    e.preventDefault();
+                }
+            });
+
+            $('#btnRemoveHidro').click(function (e) {
+                $('select').removeSelected('#HidroList');
+                e.preventDefault();
+            });
+
+          
+            function Guardar() {
+           
+                var incendio = [];
+                $("#IncendioList > option").each(function () {
+                    incendio.push(this.value);
+                });
+
+                var terremoto = [];
+                $("#TerremotoList > option").each(function () {
+                    terremoto.push(this.value);
+                });
+
+                var hidro = [];
+                $("#HidroList > option").each(function () {
+                    hidro.push(this.value);
+                });
+
+                $('#mensaje').html("");
+
+                $.ajax({
+                    url: '@Url.Content("~/Cotizar/SaveCoberturas/")',
+                    data: {
+                        cotizacionID: '@ViewBag.CotizacionID',
+                        incendio: incendio,
+                        terremoto: terremoto,
+                        hidro: hidro
+                    },
+                    traditional: true,
+                    error: function (xhr, textStatus, exceptionThrown) {                        
+                        alert('Error');
+                    },
+                    success: function (data) {
+                        //debugger;
+                        $('#mensaje').html(data);
+                    }
+                });
+            }
+
+            function CambiarPagDatos(a) {
+                var url = '@Url.Action("Crear", "Cotizar", new { id = "param" })';
+                window.location.href = url.replace('param', a);
+            }
+
+            function CambiarPagValores(a) {
+                var url = '@Url.Action("Valores", "Cotizar", new { cotizacionID = "param" })';
+                window.location.href = url.replace('param', a);
+            }
+        </script>
+    }

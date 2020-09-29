@@ -1,0 +1,1545 @@
+﻿@model Domain.MainModule.Entities.Cotizacion
+
+@{
+    ViewBag.Title = "Transporte";
+}
+
+@using (Html.BeginForm("Transporte", "Cotizar", FormMethod.Post, new { @class = "form-horizontal", @id = "frm", @name = "frm" }))
+{
+
+    if (Model.bk_te_CotizacionTrans != null)
+    { 
+        
+    <div id="divCuota" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-content" style="width:800px;">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+            <h5>Primas calculadas para Renovación o Póliza Nueva</h5>
+        </div>
+        <div class="modal-body">
+            <table>
+                <tr>
+                    <td>
+                        <table class="table-hover" id="tblEvaluacion">
+                            @if (Model.bk_te_CotizacionTransConceptoEvaluacion != null)
+                            {
+                                for (int i = 0; i < Model.bk_te_CotizacionTransConceptoEvaluacion.Count(); i++)
+                                {
+                                    @Html.HiddenFor(model => model.bk_te_CotizacionTransConceptoEvaluacion[i].TransConceptoEvalID)
+                                    @Html.HiddenFor(model => model.bk_te_CotizacionTransConceptoEvaluacion[i].Nombre)
+                                    @Html.HiddenFor(model => model.bk_te_CotizacionTransConceptoEvaluacion[i].Pct)
+                                    <tr>
+                                        <td>@(i + 1) - </td>
+                                        <td>@Model.bk_te_CotizacionTransConceptoEvaluacion[i].Nombre</td>
+                                        <td>@Html.DropDownListFor(model => model.bk_te_CotizacionTransConceptoEvaluacion[i].TransEvaluacionID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.Evaluaciones, "Value", "Label", Model.bk_te_CotizacionTransConceptoEvaluacion[i].TransEvaluacionID), new { @class = "form-control multiSelect classEvaluacion", onchange = "calcularPrima();" })</td>
+                                        <td style="display:none;"><span class="classValorEval">@Model.bk_te_CotizacionTransConceptoEvaluacion[i].Pct</span></td>
+                                    </tr>
+                                }
+                            }
+
+                            <tr>
+                                <td colspan="3"> <hr /> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                @if (Model.isNew)
+                                {
+                                    <td>Prima Neta Anual Nueva:</td>
+                                }
+                                else
+                                {
+                                    <td>Prima Neta Anual Renovación:</td>
+                                }
+                                <td>@Html.TextBox("txtPrima", String.Format("{0:N}", Model.bk_te_CotizacionTrans.PrimaNetaModificada), new { @class = "form-control number", disabled = "disabled" })</td>                                
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Cuota:</td>
+                                @if (Model.isNew)
+                                {
+                                    <td>@Html.TextBox("txtCuota", String.Format("{0:0.00000%}", Model.bk_te_CotizacionTrans.CuotaNuevo), new { @class = "form-control decimal", disabled = "disabled", @id = "txtCuota" })</td>
+                                }
+                                else
+                                {
+                                    <td>@Html.TextBox("txtCuota", String.Format("{0:0.00000%}", Model.bk_te_CotizacionTrans.CuotaRenovacion), new { @class = "form-control decimal", disabled = "disabled", @id = "txtCuota" })</td>
+                                }
+                            </tr>
+                        </table>
+                    </td>                    
+                </tr>                
+            </table>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">Cerrar</button>
+            <button class="btn btn-primary" type="submit">Modificar</button>
+        </div>
+    </div>
+</div>
+    
+    }
+
+if (ViewBag.Mensaje != null)
+{
+    <div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'><span class="fui-cross"></span></button>@ViewBag.Mensaje</div>
+}
+
+
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.CotizacionID)
+    @Html.HiddenFor(model => model.GastosAdministracion)
+    @Html.HiddenFor(model => model.Utilidad)
+    @Html.HiddenFor(model => model.Comision)
+    @Html.HiddenFor(model => model.isNew)
+    @Html.HiddenFor(model => model.TipoCambio)
+    @Html.HiddenFor(model => model.ContactoID)
+    @Html.HiddenFor(model => model.isActivo)
+
+<p class="accordion-expand-holder">
+        <a class="accordion-expand-all" href="#">Expandir Todo</a>
+    </p>
+    
+    if(Model.bk_te_CotizacionTrans != null)
+    { 
+        if(Model.bk_te_CotizacionTrans.primaNetaNuevo != null || Model.bk_te_CotizacionTrans.primaNetaRenovacion != null)
+        { 
+            <div style="width:100%;text-align:right">
+                <a class="btn btn-info" data-toggle="modal" href="#divCuota"><span class="fui-windows"></span>Modificar Cuotas</a>
+            </div>
+        }
+    }
+    
+
+    <div id="accordion" class="ui-accordion ui-widget ui-helper-reset">
+        @if (Model.bk_te_CotizacionTrans != null)
+        {
+            @Html.HiddenFor(model => model.bk_te_CotizacionTrans.CotizacionID)
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all content1">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                DATOS ESPECÍFICOS DEL SEGURO DE TRANSPORTES
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table>
+                    <tr>
+                        <td width="300px">Bienes a Transportar:</td>
+                        <td width="300px">@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.Bienes, new { @class = "form-control", @placeholder = "Texto" })</td>
+                    </tr>
+                    <tr>
+                        <td>Tipo de Póliza:</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionTrans.TransModalidadPolizaID, Model.bk_te_CotizacionTrans.ModalidadPolizaList, new { @class = "form-control" })</td>
+                    </tr>
+                    <tr>
+                        <td>Commodity Detail en Español:</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionTrans.TransCommodityID, Model.bk_te_CotizacionTrans.CommodityList, new { @class = "form-control", @onchange = "SelTipoBien()", @id = "ddlComodity" })</td>
+                    </tr>
+                    <tr>
+                        <td>Tipo de Bienes:</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionTrans.TransTipoBienID, Model.bk_te_CotizacionTrans.TipoBienList, new { @class = "form-control", @id = "ddlTipoBien", @onchange = "SelCommodityCla()" })</td>
+                    </tr>
+                    <tr>
+                        <td>Commodity Classification:</td>
+                        <td><input type="text" class="form-control" id="txtCommodityClass" disabled="disabled" />                        
+                    </tr>
+                    <tr>
+                        <td>Tipo de Mercancía RR8 (SESA):</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionTrans.TransTipoMercaID, Model.bk_te_CotizacionTrans.TipoMercaList, new { @class = "form-control" })</td>
+                    </tr>                    
+                    <tr>
+                        <td><br /></td>
+                    </tr>
+                    <tr>
+                        <td>Trayectos Asegurados:</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionTrans.TransTrayectoAsegID, Model.bk_te_CotizacionTrans.TrayectoAsegList, new { @class = "form-control" })</td>
+                    </tr>
+                    <tr>
+                        <td><br /></td>
+                    </tr>
+                    <tr>
+                        <td>Trayectos Específico Nacional:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.TrayectoNacional, new { @class = "form-control", @placeholder = "Texto" })</td>
+                        <td rowspan="3" align="right" width="200px"><label><i>Llenar sólo en caso de requerir una descripción más específica en su cotización.</i></label></td>
+                    </tr>
+                    <tr>
+                        <td>Trayectos Específico Importaciones:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.TrayectoImportaciones, new { @class = "form-control", @placeholder = "Texto" })</td>
+                    </tr>
+                    <tr>
+                        <td>Trayectos Específico Exportaciones:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.TrayectoExportaciones, new { @class = "form-control", @placeholder = "Texto" })</td>
+                    </tr>
+                    <tr>
+                        <td><br /></td>
+                    </tr>
+                    <tr>
+                        <td>Medios de Transporte:</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionTrans.TransMediosID, Model.bk_te_CotizacionTrans.MediosList, new { @class = "form-control" })</td>
+                    </tr>
+                    <tr>
+                        <td><br /></td>
+                    </tr>                                     
+                    <tr>
+                        <td>Estimado Anual:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.EstimadoAnual, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionTrans.EstimadoAnual), @placeholder = "0", id="txtEstimadoAnual" })</td>
+                    </tr>
+                    <tr>
+                        <td>Deducible para Robo:</td>
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_CotizacionTrans.DeducRobo, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Deducible para Demás Riesgos:</td>
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_CotizacionTrans.DeducOtros, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Algún Deducible Especial:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.DeducEspecial, new { @class = "form-control", placeholder = "Texto" })</td>                        
+                    </tr>
+                    <tr>
+                        <td><br /></td>
+                    </tr>
+                    <tr>
+                        <td><b>Modalidad de Cobertura:</b></td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionTrans.TransModalidadCobID, Model.bk_te_CotizacionTrans.ModalidadCobList, new { @class = "form-control", @onchange = "ModalidadCobertura()", @id = "ddlModalidadCobertura" })</td>
+                    </tr>  
+                </table>
+            </div>
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all content2">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                Límites de Responsabilidad por medio de Transporte
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table>
+                    <tr>
+                        <td width="300px">Camión:</td>
+                        <td width="300px">@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.MontoCamion, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionTrans.MontoCamion), placeholder = "0" })</td>
+                    </tr>
+                    <tr>
+                        <td>Ferrocarril Convoy):</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.MontoFerrocarril, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionTrans.MontoFerrocarril), placeholder = "0" })</td>
+                    </tr>
+                    <tr>
+                        <td>Avión:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.MontoAvion, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionTrans.MontoAvion), placeholder = "0" })</td>
+                    </tr>
+                    <tr>
+                        <td>Buque:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.MontoBuque, new { @class = "form-control decimal", Value = String.Format("{0:N}", Model.bk_te_CotizacionTrans.MontoBuque), placeholder = "0", onchange="ocultarBuque();", id="txtLimiteBuque" })</td>
+                    </tr>
+                    <tr>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.TextoMonto1, new { @class = "form-control", @placeholder = "Concepto" })</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.Monto1, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionTrans.Monto1), placeholder = "0" })</td>
+                        <td rowspan="3" align="right" width="200px"><label><i>Puede modificar el concepto para una mejor descripción del medio de transporte.</i></label></td>
+                    </tr>
+                    <tr>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.TextoMonto2, new { @class = "form-control", @placeholder = "Concepto" })</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.Monto2, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionTrans.Monto2), placeholder = "0" })</td>
+                    </tr>
+                    <tr>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.TextoMonto3, new { @class = "form-control", @placeholder = "Concepto" })</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.Monto3, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionTrans.Monto3), placeholder = "0" })</td>
+                    </tr>
+                </table>
+            </div>
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all content3">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                SINIESTRALIDAD
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table>
+                    <tr>
+                        <td width="300px">Ultimo Año:</td>
+                        <td width="300px">@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.SinUltimo, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionTrans.SinUltimo), placeholder = "0" })</td>
+                    </tr>
+                    <tr>
+                        <td>Penúltimo Año:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.SinPenultimo, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionTrans.SinPenultimo), placeholder = "0" })</td>
+                    </tr>
+                    <tr>
+                        <td>Antepenúltimo Año:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.SinAntepenultimo, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionTrans.SinAntepenultimo), placeholder = "0" })</td>
+                    </tr>
+                </table>
+            </div>
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                Riesgos Nombrados
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table id="tblNombrados" class="table-striped table">
+                    <tr>
+                        <td width="300px">Riesgos Ordinarios de Tránsito:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRiesgoOrdinario, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRiesgoOrdinario, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr class="classBuque">
+                        <td>Avería gruesa, Ambos culpables de colisión, Embarcaciones auxiliares, Echazón, Barredura, Baratería de Capitán.:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isAveria, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isAveria, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Robo Total.:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRoboTotal, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRoboTotal, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Robo Parcial.:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRoboParcial, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRoboParcial, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mojadura:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isMojadura, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isMojadura, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Oxidación:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isOxidacion, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isOxidacion, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Contaminación por Contacto con otras cargas:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isContacto, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isContacto, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>    
+                    <tr>
+                        <td>Manchas:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isMancha, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isMancha, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Derrames, Mermas:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isMerma, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isMerma, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    @*<tr>
+                        <td>Derrame:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDerrame, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDerrame, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>*@
+                    <tr>
+                        <td>Bodega a Bodega:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isBodega, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isBodega, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Maniobras de Carga y Descarga:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isManiobra, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isManiobra, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Estadía en Recintos Aduanales hasta por 30 días:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isEstadia, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isEstadia, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Devoluciones:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDevoluciones, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDevoluciones, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    @*<tr>
+                        <td>Contaminación:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isContaminacion, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isContaminacion, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>*@
+                    <tr>
+                        <td>Rotura, Rajadura, Abolladura, Dobladura.:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRotura, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRotura, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Ratería, pillería, hurto y desportilladura a consecuencia de un riesgo ordinario de tránsito.:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRateria, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRateria, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Variaciones.:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isVariacion, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isVariacion, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Interrupción en el Transporte.:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isInterrupcion, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isInterrupcion, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Gastos de Re-envío.:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isGastoReenvio, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isGastoReenvio, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                Riesgos y Bienes cubiertos mediante Convenio Expreso
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table class="table-striped table">
+                    <tr>
+                        <td width="300px">Cláusula de Guerra:</td>
+                        <td width="300px">
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isClausulaGuerra, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isClausulaGuerra, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Cláusula de Huelgas:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isClausulaHuelgas, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isClausulaHuelgas, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Cláusula de Actos Terroristas o de Sabotaje:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isClausulaTerroristas, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isClausulaTerroristas, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Cláusula de Estadías Mayores a 30 días:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.ClausulaEstadiaNroDias, new { @class = "form-control number", Value = String.Format("{0:F0}", Model.bk_te_CotizacionTrans.ClausulaEstadiaNroDias), placeholder = "0 días" })</td>
+                    </tr>
+                    <tr>
+                        <td>Cláusula de Fallas o Descomposturas en el Sistema de Refrigeración:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isClausulaFalloRefrigeracion, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isClausulaFalloRefrigeracion, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Cláusula de Desempaque Diferido de 15 días:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isClausulaDesempaque, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isClausulaDesempaque, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>                   
+                </table>
+            </div>
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                Exclusiones Adicionales
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table class="table-striped table">
+                    <tr>
+                        <td width="300px">Devoluciones por daños y/o defectos:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDevolucionesDaños, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDevolucionesDaños, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Descalibración de los bienes:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDescalibracion, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDescalibracion, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Embarques desde o hacia: Los Balcanes, Myanmar (Birmania), República de Costa de Marfil (Côte d'Ivoire), Cuba, Irán, Irak, Liberia, Libia, Corea del Norte, Sudán, Siria y República de Zimbabwe y/o países bajo restricciones o en conflicto con Estados Unidos de Norteamérica y/o Organización de Naciones Unidas:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isEmbarquesDesde, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isEmbarquesDesde, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Daños a Contenedores:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDañoContenedor, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDañoContenedor, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mensajería y Paquetería:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isMensajeria, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isMensajeria, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Bienes a Granel:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isBienes, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isBienes, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Celular o Radio:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isCelular, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isCelular, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Estacionamientos Seguros:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isEstacionamiento, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isEstacionamiento, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Horarios para Cargas y Descargas:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isHorario, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isHorario, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Custodios:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isCustodios, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isCustodios, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>GPS o Rastreo Satelital:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isGPS, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isGPS, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Doble Conductor:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDobleConductor, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDobleConductor, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Inspecciones de Limpieza en Terrestre:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isInspeccionesLimpieza, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isInspeccionesLimpieza, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr class="classBuque">
+                        <td>Inspección de Buque:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isInspeccionBuque, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isInspeccionBuque, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Inspección de Cargas y Descargas:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isInspeccionCarga, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isInspeccionCarga, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr class="classBuque">
+                        <td>Inspecciones de Limpieza en Buques:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isInspeccionBuqueLimpieza, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isInspeccionBuqueLimpieza, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Cláusula de Dividendos:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isClausulaDividendos, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isClausulaDividendos, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                Embarques terrestres (excepto ferrocarril) que no cumplan con las siguientes medidas de prevención
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table class="table-striped table">
+                    <tr>
+                        <td width="300px">No sobrepasar los límites de capacidad especificados por el medio de transporte:</td>
+                        <td width="300px">
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isNoSobrepasarLim, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isNoSobrepasarLim, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Uso de caminos de cuota, cuando estén disponibles:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isCaminoCuota, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isCaminoCuota, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Uso de candados y/o naval locks:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isCandado, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isCandado, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Contar con rutas establecidas:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRutaEstablecida, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRutaEstablecida, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Uso de cajas cerradas o con lonas en perfecto estado protegiendo la mercancía:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isCajaCerrada, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isCajaCerrada, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Cuando sea necesario estacionar el medio de transporte, deberá de hacerse en lugares con protección policial o privada:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isEstProteccion, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isEstProteccion, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Establecer y cumplir con horarios para el desarrollo de las actividades de carga y descarga:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isCumplirHorario, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isCumplirHorario, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Uso de teléfono celular o radio.:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isUsoCelularRadio, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isUsoCelularRadio, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Otras medidas para Camión:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.OtrasMedidasCamion, new { @class = "form-control", placeholder = "Texto" })</td>
+                    </tr>
+                    <tr>
+                        <td class="classBuque">Otras medidas para Buque:</td>
+                        <td class="classBuque">@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.OtrasMedidasBuque, new { @class = "form-control", placeholder = "Texto" })</td>
+                    </tr>
+                    <tr>
+                        <td>Valor para el Seguro distinto a Condiciones Generales:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.ValorSeguroDistinto, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionTrans.ValorSeguroDistinto), @placeholder = "0" })</td>
+                    </tr>
+                </table>
+            </div>
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                Otras Condiciones
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table class="table-striped table">
+                    <tr>
+                        <td width="300px">Ajuste Por Alta Siniestralidad:</td>
+                        <td colspan="2">@Html.DropDownListFor(p => p.bk_te_CotizacionTrans.TransAjusteAltaSinId, Model.bk_te_CotizacionTrans.AjusteAltaSinList, new { @class = "form-control multiSelect", Style = "width:600px" })</td>                                                
+                    </tr>
+                    <tr>
+                        <td>Fórmula De Dividendos Por Buena Siniestralidad:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.formula, new { @class = "form-control", placeholder = "Texto", Style = "width:300px" })</td>
+                        <td align="right"><label><i>Especifica fórmula dividendos, ejemplo: Dividendo = 0.4(0.6*PN-1.1*SO) en donde PN = Prima Neta y SO = Siniestros Ocurridos</i></label></td>
+                    </tr>
+                    <tr>
+                        <td>Par O Juego Para Maquinaria:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isParO, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isParO, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Bodega A Bodega Para Embarques Marítimos, Terrestres O Aéreos:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isBodegaEmbarques, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isBodegaEmbarques, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Medios De Transporte Inadecuados:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isMedioInadecuado, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isMedioInadecuado, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>                   
+                    <tr>
+                        <td>Devoluciones:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDevolucionesOtrasCond, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDevolucionesOtrasCond, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Interplantas O Bodegas:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isInterplantas, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isInterplantas, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Determinacion De Pérdidas:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDeterminacionPerdidas, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDeterminacionPerdidas, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Salvamentos:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isSalvamento, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isSalvamento, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Limitaciones De Cobertura:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isLimCobertura, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isLimCobertura, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Errores U Omisiones:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isErroresOmisiones, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isErroresOmisiones, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Salvamento Con Marcas Y Etiquetas:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isSalvamentoMarcas, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isSalvamentoMarcas, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Renuncia De Subrogación:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRenunciaSubrogacion, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRenunciaSubrogacion, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Bienes Adicionales:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isBienesAdicionales, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isBienesAdicionales, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Etiquetas:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isEtiquetas, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isEtiquetas, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>                    
+                    <tr>
+                        <td>Remoción De Escombros:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRemocionEscombros, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isRemocionEscombros, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Vigencia Del Seguro:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isVigenciaSeguro, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isVigenciaSeguro, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Declaraciones Para Seguro:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDeclaracionSeguro, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isDeclaracionSeguro, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Término De La Póliza:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isTerminoPoliza, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isTerminoPoliza, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Nulificación:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isNulificacion, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isNulificacion, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Control De Mercancia Dañada:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isControlMercancia, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isControlMercancia, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Cláusula De Deducible Para Riesgos Ordinarios De Transito:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isClausulaDeducRiesgos, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isClausulaDeducRiesgos, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Maniobras De Carga Y Descarga A Consecuencia De Desplome:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isManiobraCarga, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionTrans.isManiobraCarga, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                Renovación
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table>
+                    <tr>
+                        <td width="300px">Cuota Póliza Anterior con Berkley:</td>
+                        <td width="300px">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_CotizacionTrans.CuotaAnterior, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Pronóstico Póliza Anterior con Berkley:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.PronosticoAnterior, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionTrans.PronosticoAnterior), @placeholder = "0" })</td>
+                    </tr>
+                    <tr>
+                        <td>Límite Máximo por Embarque Anterior con Berkley:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionTrans.LimiteAnterior, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionTrans.LimiteAnterior), @placeholder = "0" })</td>
+                    </tr>
+                </table>
+            </div>
+        }
+    </div>
+
+    <table class="table">
+        <tr>            
+            <td align="right"><button type="submit" class="btn btn-primary">Calcular</button></td>            
+        </tr>
+    </table>
+}
+
+
+
+
+@section scripts {
+
+    <script>
+
+        var headers = $('#accordion .accordion-header');
+        var contentAreas = $('#accordion .ui-accordion-content').hide().first().show().end();
+        var expandLink = $('.accordion-expand-all');
+
+        // add the accordion functionality
+        headers.click(function () {
+            // close all panels
+            contentAreas.slideUp();
+            // open the appropriate panel
+            $(this).next().slideDown();
+            // reset Expand all button
+            expandLink.text('Expandir Todo')
+                .data('isAllOpen', false);
+            // stop page scroll
+            return false;
+        });
+
+        expandLink.click(function () {
+            var isAllOpen = !$(this).data('isAllOpen');
+            //console.log({ isAllOpen: isAllOpen, contentAreas: contentAreas })
+            contentAreas[isAllOpen ? 'slideDown' : 'slideUp']();
+
+            expandLink.text(isAllOpen ? 'Colapsar Todo' : 'Expandir Todo')
+                        .data('isAllOpen', isAllOpen);
+        });
+
+    $(function () {
+
+        ModalidadCobertura();
+        SelCommodityCla();
+        ocultarBuque();
+
+        $.ajaxSetup({ cache: false });
+
+        //$(".accordion").accordion({
+        //    active: 2,
+        //    collapsible: true,
+        //    heightStyle: "content"
+        //});
+
+        $(".multiSelect").multiselect({
+            multiple: false,
+            header: "Seleccionar una opción",
+            noneSelectedText: "Seleccionar una opción",
+            selectedList: 1,
+            position: { my: 'left top', at: 'left bottom' }
+        });
+
+        //$(".multiSelect2").multiselect({
+        //    multiple: false,
+        //    header: "Seleccionar una opción",
+        //    noneSelectedText: "Seleccionar una opción",
+        //    selectedList: 1,
+        //}).multiselectfilter();
+
+
+        //$("#accordion").accordion({ active: 1 });
+
+        //$(".selector").accordion("option", "active", 2);
+
+        //var selectAreas = contentAreas[1];
+        //selectAreas['slideDown']();
+        //$('.accordion .ui-accordion-header:not(.ui-state-active)').next().slideToggle();
+
+    });
+
+        function SelTipoBien()
+        {
+
+            var id = $('#ddlComodity').val();
+
+            $.ajax({
+                url: '@Url.Content("~/Cotizar/GetTipoBien/")',
+                data: {
+                    commodityID: id
+                },
+                traditional: true,
+                success: function (data) {
+                    $('#ddlTipoBien').val(data);
+                    SelCommodityCla();
+                }
+            });
+        }
+
+        function SelCommodityCla() {
+            var id = $('#ddlTipoBien').val();
+            if (id != null)
+            {
+                $.ajax({
+                url: '@Url.Content("~/Cotizar/GetCommodityClass/")',
+                data: {
+                    tipoBienID: id
+                },
+                traditional: true,
+                success: function (data) {               
+                    $('#txtCommodityClass').val(data);
+                }
+            });
+            }
+            else
+                $('#txtCommodityClass').val('');
+
+        }
+
+    function ModalidadCobertura() {
+
+        if($('#ddlModalidadCobertura').val() == 1)
+            $('#tblNombrados').css('display', 'none');
+        else
+            $("#tblNombrados").show();
+    }
+
+
+    @*function ModificarCuota() {
+
+        var prima = $('#txtPrima' + '@(Model.isNew ? "Nuevo" : "Renovacion")').val();
+
+
+        $('#errores').html('');
+
+        $.ajax({
+            url: '@Url.Content("~/Cotizar/SaveCuota/")',
+            data: {
+                prima: prima,
+                cotizacionId: @Model.CotizacionID
+            },
+            traditional: true,
+            success: function (data) {
+                $('#errores').html(data)
+                $('#txtCuota' + '@(Model.isNew ? "Nuevo" : "Renovacion")').val(Math.round((Number(prima.replace(',',''))/@(Model.bk_te_CotizacionTrans.EstimadoAnual.HasValue ? Model.bk_te_CotizacionTrans.EstimadoAnual.Value : 1))*10000)/100 + '%');
+            }
+
+        });
+    }*@
+
+
+        function ocultarBuque() {
+            
+            if ($('#txtLimiteBuque').val() > 0)
+                $('.classBuque').show();
+            else
+                $('.classBuque').hide();
+        }
+
+        function calcularPrima(){
+            //debugger;
+            var tipo, valor, total = 1;
+            $('#tblEvaluacion > tbody > tr').each(function () {
+                tipo = $(this).closest('tr').find('.classEvaluacion').val();
+                valor = $(this).closest('tr').find('.classValorEval').text();
+
+                if(tipo == 2)
+                    total = total*(1 + Number(valor));
+                if (tipo == 3)
+                    total = total*(1 - Number(valor));
+            });
+
+            var valorModificado = Math.round(@( Model.bk_te_CotizacionTrans.primaNetaNuevo.HasValue ? (Model.isNew ? Model.bk_te_CotizacionTrans.primaNetaNuevo : Model.bk_te_CotizacionTrans.primaNetaRenovacion) : 0)*total*100)/100;
+
+            $('#txtPrima').val(valorModificado);
+            $('#txtCuota').val(Math.round((valorModificado/parseFloat($('#txtEstimadoAnual').val().replace(/,/g, '')))*10000000)/100000 + '%');
+        }
+    </script>
+}
+

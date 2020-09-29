@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Risk Tool</title>
+    <link href="~/BO.ico" rel="shortcut icon" type="image/x-icon" />
+    
+    @Styles.Render("~/Content/flatUiCssBundle")
+    @Styles.Render("~/Content/timeout")
+    @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("css", required: false)
+
+    @Styles.Render("~/Content/menu_Personal")
+    @*<link href="~/Content/menu/menu.css" rel="stylesheet" />*@
+
+
+</head>
+<body>
+        @Html.Partial("NavigationLeft")
+        @Html.Partial("Navigation")
+        <div class="container body-content">
+
+            <div id="DivError" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4>ERROR</h4>
+                </div>
+                <div class="modal-body">
+                   <span id="spnErrorException"></span>
+                </div>                
+            </div>
+
+
+            @RenderBody()
+        </div>
+
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/flatUiJsBundle")
+        @Scripts.Render("~/bundles/jqueryui")
+        @Scripts.Render("~/bundles/js")
+        @Scripts.Render("~/bundles/timeout")
+
+        <script type="text/javascript">
+            
+            $(function () {
+                var fnTimeOut = function () {
+                    jQuery.timeoutDialog.setupDialogTimer({
+                        timeout: 3600,
+                        countdown: 60,
+                        logout_redirect_url: '@Url.Action("LogOff", "Account")',
+                        keep_alive_url: '@Url.Action("Keepalive", "Account")'
+                    });
+                };
+                fnTimeOut();
+            });
+
+            function MostrarErrorAjax(mensaje) {
+                if (mensaje != null) {
+                    $('.modal').modal('hide');
+
+                    $("#DivError").dialog({
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+
+                    $('#spnErrorException').text(mensaje);
+                }
+            }
+
+            function isNumberKey(evt) {
+                var charCode = (evt.which) ? evt.which : event.keyCode;
+                //console.log(charCode);
+                if (charCode != 46 && charCode != 45 && charCode > 31
+                && (charCode < 48 || charCode > 57))
+                    return false;
+
+                return true;
+            }
+
+           
+            $('input.number').keyup(function (event) {
+                //debugger;
+                // skip for arrow keys
+                if (event.which >= 37 && event.which <= 40) return;
+
+                // format number
+                $(this).val(function (index, value) {
+                    //return value
+                    //.replace(/\D/g, "")
+                    //.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    //debugger;
+                    var parts = value.toString().split(".");
+                    parts[0] = parts[0].replace(/,/g, "");
+                    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    return parts.join(".");
+                });
+            });
+
+            $.fn.only = function (events, callback) {
+                //The handler is executed at most once for all elements for all event types.
+                var $this = $(this).on(events, myCallback);
+                function myCallback(e) {
+                    $this.off(events, myCallback);
+                    callback.call(this, e);
+                }
+                return this
+            };
+
+            var toggle = true;
+            CambiarToggle();
+            
+            $(".sidebar-icon").click(function () {
+                CambiarToggle()
+            });
+
+            function CambiarToggle()
+            {
+                if (toggle) {
+                    $(".page-container").addClass("sidebar-collapsed").removeClass("sidebar-collapsed-back");
+                    $("#menu span").css({ "position": "absolute" });
+                }
+                else {
+                    $(".page-container").removeClass("sidebar-collapsed").addClass("sidebar-collapsed-back");
+                    setTimeout(function () {
+                        $("#menu span").css({ "position": "relative" });
+                    }, 400);
+                }
+
+                toggle = !toggle;
+            }
+        </script>
+        @RenderSection("scripts", required: false)
+</body>
+</html>

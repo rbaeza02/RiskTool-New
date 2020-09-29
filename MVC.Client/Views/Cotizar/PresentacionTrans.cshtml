@@ -1,0 +1,36 @@
+﻿@model Domain.MainModule.Entities.PresentacionTrans
+@using MVC.Client.Extensions.HtmlHelpers;
+
+@{
+    ViewBag.Title = "PresentacionTrans";
+}
+
+@if (Model != null)
+{
+    if (!string.IsNullOrEmpty(Model.MensajeError))
+    {
+        <div>Inicio de Vigencia: @Model.Textos[0].VigenciaInicio.ToString("dd/MM/yyyy")</div>
+        <div>
+            @Html.Raw(MVC.Client.Extension.Messages.MessagesValidation.Error(Model.MensajeError))
+        </div>
+    }
+    else
+    {
+        <table width="740px">
+            <tr>
+                <td></td>
+                <td align="right">&nbsp;&nbsp;&nbsp;<a class="btn btn-info" href="@Url.Action("LogSISE", "Process")" @NLayerAppHtmlHelpers.SecuredActionEnabled("LogSISE", "Process")><span class="fui-play"></span>Emitir&nbsp;</a></td>
+            </tr>
+            <tr>
+                <td align="right" width="200px"><a class="btn btn-link" target="_blank" href="@Url.Action("DetailsReportTransPDF", "Cotizar")" @NLayerAppHtmlHelpers.SecuredActionEnabled("DetailsReportTransPDF", "Cotizar")><span class="fui-clip"></span>Exportar PDF&nbsp;</a></td>
+                <td align="center"><a class="btn btn-link" target="_blank" href="@Url.Action("DetailsReportTransWord", "Cotizar")" @NLayerAppHtmlHelpers.SecuredActionEnabled("DetailsReportTransWord", "Cotizar")><span class="fui-clip"></span>Exportar Word&nbsp;</a></td>
+            </tr>
+            <tr>
+                <td colspan="2"><div id="divError"></div></td>
+            </tr>
+        </table>
+
+        @Html.Partial(@"../ASPX/PresentacionTrans", Model)
+        }
+
+        }

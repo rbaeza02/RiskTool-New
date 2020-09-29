@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="Berkley_Comercial_10" xmlns:wsdlns="Berkley_Comercial_10" name="WSConsultaPersona" targetNamespace="Berkley_Comercial_10" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" elementFormDefault="qualified" targetNamespace="Berkley_Comercial_10">
+      <xsd:complexType name="SDTConsultaPersonaIn">
+        <xsd:sequence>
+          <xsd:element name="RFC" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="SDTConsultaPersonaOut">
+        <xsd:sequence>
+          <xsd:element name="Persona" type="wsdlns:SDTConsultaPersonaOut.Persona" />
+          <xsd:element name="Errores" type="wsdlns:SDTConsultaPersonaOut.Errores" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="SDTConsultaPersonaOut.Persona">
+        <xsd:sequence>
+          <xsd:element name="PerCod" type="xsd:long" />
+          <xsd:element name="PerTipPer" type="xsd:string" />
+          <xsd:element name="PerTipDsc" type="xsd:string" />
+          <xsd:element name="RFC" type="xsd:string" />
+          <xsd:element name="PerNom" type="xsd:string" />
+          <xsd:element name="PerNomExt" type="xsd:string" />
+          <xsd:element name="PerNomExt2" type="xsd:string" />
+          <xsd:element name="Direccion">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element minOccurs="0" maxOccurs="unbounded" name="DireccionItem" type="wsdlns:SDTConsultaPersonaOut.Persona.DireccionItem" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="Asegurado">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element minOccurs="0" maxOccurs="unbounded" name="AseguradoItem" type="wsdlns:SDTConsultaPersonaOut.Persona.AseguradoItem" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="SDTConsultaPersonaOut.Errores">
+        <xsd:sequence>
+          <xsd:element name="ErrorCod" type="xsd:short" />
+          <xsd:element name="ErrorDsc" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ArrayOfSDTConsultaPersonaOut.Persona.DireccionItem">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="SDTConsultaPersonaOut.Persona.DireccionItem" type="wsdlns:SDTConsultaPersonaOut.Persona.DireccionItem" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="SDTConsultaPersonaOut.Persona.DireccionItem">
+        <xsd:sequence>
+          <xsd:element name="PerDomici" type="xsd:string" />
+          <xsd:element name="PerLocaliMex" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ArrayOfSDTConsultaPersonaOut.Persona.AseguradoItem">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="SDTConsultaPersonaOut.Persona.AseguradoItem" type="wsdlns:SDTConsultaPersonaOut.Persona.AseguradoItem" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="SDTConsultaPersonaOut.Persona.AseguradoItem">
+        <xsd:sequence>
+          <xsd:element name="AseCod" type="xsd:int" />
+          <xsd:element name="AseNom" type="xsd:string" />
+          <xsd:element name="AseNomEx" type="xsd:string" />
+          <xsd:element name="AseNomEx2" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="WSConsultaPersona.Execute">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="Sdtconsultapersonain" type="wsdlns:SDTConsultaPersonaIn" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="WSConsultaPersona.ExecuteResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="Sdtconsultapersonaout" type="wsdlns:SDTConsultaPersonaOut" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </types>
+  <message name="WSConsultaPersona.ExecuteSoapIn">
+    <part name="parameters" element="wsdlns:WSConsultaPersona.Execute" />
+  </message>
+  <message name="WSConsultaPersona.ExecuteSoapOut">
+    <part name="parameters" element="wsdlns:WSConsultaPersona.ExecuteResponse" />
+  </message>
+  <portType name="WSConsultaPersonaSoapPort">
+    <operation name="Execute">
+      <input message="wsdlns:WSConsultaPersona.ExecuteSoapIn" />
+      <output message="wsdlns:WSConsultaPersona.ExecuteSoapOut" />
+    </operation>
+  </portType>
+  <binding name="WSConsultaPersonaSoapBinding" type="wsdlns:WSConsultaPersonaSoapPort">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="Execute">
+      <soap:operation soapAction="Berkley_Comercial_10action/AWSCONSULTAPERSONA.Execute" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+  <service name="WSConsultaPersona">
+    <port name="WSConsultaPersonaSoapPort" binding="wsdlns:WSConsultaPersonaSoapBinding">
+      <soap:address location="https://testcol.berkleyonline.com.ar:8443/BIWebMXTest/servlet/com.berkleycomercial10.awsconsultapersona" />
+    </port>
+  </service>
+</definitions>

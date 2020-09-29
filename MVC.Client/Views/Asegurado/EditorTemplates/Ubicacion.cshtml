@@ -1,0 +1,134 @@
+﻿@model Domain.MainModule.Entities.Ubicacion
+@Html.HiddenFor(p => p.AseguradoID)
+@Html.HiddenFor(p => p.UbicacionID)
+@Html.HiddenFor(p => p.nroUbicacion)
+
+@Html.HiddenFor(p => p.Eliminado, new { @id = "hdEliminado" + ViewData.TemplateInfo.HtmlFieldPrefix })
+@Html.HiddenFor(p => p.Mostrar, new { @id = "hdMostrar" + ViewData.TemplateInfo.HtmlFieldPrefix })
+@Html.HiddenFor(p => p.CiudadID)
+@Html.HiddenFor(p => p.ColoniaID, new { @id = "hdColoniaID" + ViewData.TemplateInfo.HtmlFieldPrefix })
+@Html.HiddenFor(p => p.IncendioTipoRiesgoID)
+@Html.HiddenFor(p => p.ZonaHidroID, new { @id = "hdZonaHidroID" + ViewData.TemplateInfo.HtmlFieldPrefix })
+@Html.HiddenFor(p => p.ZonaTEVID, new { @id = "hdZonaTEVID" + ViewData.TemplateInfo.HtmlFieldPrefix })
+
+
+<table class="table-curved" style="width:1300px;@(Model.Mostrar ? "" : "display:none")" id="@("tblUbicacion" + ViewData.TemplateInfo.HtmlFieldPrefix)">
+    <tr>
+        <td style="padding:0 8px 0 8px" rowspan="6"><h4>@Html.DisplayFor(p => p.nroUbicacion)</h4></td>
+        <td style="padding:0 8px 0 8px"><label>C.P.:</label></td>
+        <td style="padding:0 8px 0 8px">@Html.TextBoxFor(p => p.CodigoPostal, new { @class = "form-control", @onchange = "BuscarCP('" + ViewData.TemplateInfo.HtmlFieldPrefix + "')", @id = "txtCP" + ViewData.TemplateInfo.HtmlFieldPrefix, @placeholder = "00000", @maxlength = "5", @onkeypress = "return isNumberKey(event)", @onblur = "LlenarCeroCP(" + ViewData.TemplateInfo.HtmlFieldPrefix + ")" })</td>
+        <td style="padding:0 8px 0 8px"><label>Calle:</label></td>
+        <td style="padding:0 8px 0 8px">@Html.TextBoxFor(p => p.Domicilio_Calle, new { @class = "form-control" })</td>
+        <td style="padding:0 8px 0 8px"><label>Tipo Cons. INC:</label></td>
+        <td style="padding:0 8px 0 8px">@Html.DropDownListFor(p => p.TipoConstructivoIncendioID, (IEnumerable<SelectListItem>)ViewBag.TipoConstIncendioList, new { @id = "ddlTipoConstructivoIncendio" + ViewData.TemplateInfo.HtmlFieldPrefix, @class = "form-control multiSelect", @onchange = "BuscarTipoConstructivoTerremoto('" + ViewData.TemplateInfo.HtmlFieldPrefix + "');", Style = "width:220px" })</td>
+        <td style="padding:0 8px 0 8px"><label>Año Construc.:</label></td>
+        <td style="width:80px; padding:0 8px 0 8px">@Html.TextBoxFor(p => p.añoConstruccion, new { @class = "form-control", @maxlength = "4", @onkeypress = "return isNumberKey(event)" })</td>
+    </tr>
+    <tr>
+        <td style="padding:0 8px 0 8px"><label>País:</label></td>
+        <td style="padding:0 8px 0 8px">@Html.TextBoxFor(p => p.Pais, new { @class = "form-control", disabled = "disabled", @id = "txtPais" + ViewData.TemplateInfo.HtmlFieldPrefix })</td>
+        <td style="padding:0 8px 0 8px"><label>Nro Ext.:</label></td>
+        <td style="padding:0 8px 0 8px">@Html.TextBoxFor(p => p.Domicilio_NroExterior, new { @class = "form-control" })</td>
+        <td style="padding:0 8px 0 8px"><label>Tipo Cons. TEV:</label></td>
+        <td style="padding:0 8px 0 8px">@Html.DropDownListFor(p => p.TipoConstructivoTerremotoID, (IEnumerable<SelectListItem>)ViewBag.TipoConstTerremotoList, new { @id = "ddlTipoConstructivoTerremoto" + ViewData.TemplateInfo.HtmlFieldPrefix, @class = "form-control multiSelect2", Style = "width:220px" })</td>
+        <td style="padding:0 8px 0 8px"><label>Pisos Altos:</label></td>
+        <td style="padding:0 8px 0 8px">@Html.TextBoxFor(p => p.nroPiso, new { @class = "form-control", @onkeypress = "return isNumberKey(event)" })</td>
+    </tr>
+    <tr>
+        <td style="padding:0 8px 0 8px"><label>Estado:</label></td>
+        <td style="padding:0 8px 0 8px">@Html.TextBoxFor(p => p.Estado, new { @class = "form-control", disabled = "disabled", @id = "txtEstado" + ViewData.TemplateInfo.HtmlFieldPrefix })</td>
+        <td style="padding:0 8px 0 8px"><label>Nro Int.:</label></td>
+        <td style="padding:0 8px 0 8px">@Html.TextBoxFor(p => p.Domicilio_NroInterior, new { @class = "form-control" })</td>
+        <td style="padding:0 8px 0 8px"><label>SIC:</label></td>
+        <td style="padding:0 8px 0 8px">
+            <div class="input-group">
+                @Html.TextBoxFor(p => p.SIC, new { @class = "form-control", @id = "txtSIC" + ViewData.TemplateInfo.HtmlFieldPrefix, @onchange = "SICInput('" + ViewData.TemplateInfo.HtmlFieldPrefix + "');", @maxlength = "4", @onkeypress = "return isNumberKey(event)", @onblur = "LlenarCeroSIC(" + ViewData.TemplateInfo.HtmlFieldPrefix + ")" })
+                <span class="input-group-btn">
+                    <span class="input-group-addon"><a href="javascript:OpenSIC('@ViewData.TemplateInfo.HtmlFieldPrefix')">...</a></span>
+                </span>
+            </div>
+        </td>
+        <td style="padding:0 8px 0 8px"><label>Sótanos:</label></td>
+        <td style="padding:0 8px 0 8px">@Html.TextBoxFor(p => p.nroSotano, new { @class = "form-control", @onkeypress = "return isNumberKey(event)" })</td>
+    </tr>
+    <tr>
+        <td style="padding:0 8px 0 8px"><label>Municipio:</label></td>
+        <td style="padding:0 8px 0 8px">@Html.TextBoxFor(p => p.Municipio, new { @class = "form-control", disabled = "disabled", @id = "txtMunicipio" + ViewData.TemplateInfo.HtmlFieldPrefix })</td>
+        <td style="padding:0 8px 0 8px"><label>Laititud:</label></td>
+        <td style="padding:0 8px 0 8px">@Html.TextBoxFor(p => p.Latitud, new { @class = "form-control", @id = "txtLatitud" + ViewData.TemplateInfo.HtmlFieldPrefix })</td>
+        <td style="padding:0 8px 0 8px"><label>Zona Hidro:</label></td>
+        <td style="padding:0 8px 0 8px">@Html.DropDownListFor(p => p.ZonaHidroID, (IEnumerable<SelectListItem>)ViewBag.ZonaHidroList, new { @class = "form-control multiSelect", @id = "ddlZonaHidro" + ViewData.TemplateInfo.HtmlFieldPrefix, style = "width:100px", @disabled = "disabled" })</td>
+        <td style="padding:0 8px 0 8px"><label>Costa:</label></td>
+        <td style="padding:0 8px 0 8px">
+            <label class="checkbox primary" for="@("chkCosta" + ViewData.TemplateInfo.HtmlFieldPrefix)">
+                <input type="checkbox" data-toggle="radio" value="" id="@("chkCosta" + ViewData.TemplateInfo.HtmlFieldPrefix)" @(Model.UbicacionCosta ? "checked" : "") onchange="CambiarChk(this,'Costa')" disabled ="disabled" >
+            </label>
+            @Html.HiddenFor(p => p.UbicacionCosta, new { @id = "hdUbicacionCosta" + ViewData.TemplateInfo.HtmlFieldPrefix })
+        </td>
+    </tr>
+    <tr>
+        <td style="padding:0 8px 0 8px"><label>Ciudad:</label></td>
+        <td style="padding:0 8px 0 8px">
+            @if (Model.CiudadList == null)
+            {
+                <select class="form-control multiSelect" id="@("ddlCiudad" + ViewData.TemplateInfo.HtmlFieldPrefix)" onchange="BuscarColonia('@ViewData.TemplateInfo.HtmlFieldPrefix');" style="width:100px" />
+            }
+            else
+            {
+                @*@Html.DropDownListFor(p => p.bk_tc_Colonia.CiudadID, (IEnumerable<SelectListItem>)Model.CiudadList, new { @class = "form-control multiSelect", @onchange = "BuscarColonia('" + ViewData.TemplateInfo.HtmlFieldPrefix + "');", style = "width:100px", @id = "ddlCiudad" + ViewData.TemplateInfo.HtmlFieldPrefix })*@
+                <select class="form-control multiSelect" id="@("ddlCiudad" + ViewData.TemplateInfo.HtmlFieldPrefix)" onchange="BuscarColonia('@ViewData.TemplateInfo.HtmlFieldPrefix');" style="width:100px">
+                @foreach(var item in (IEnumerable<SelectListItem>)Model.CiudadList)
+                {
+                    <option value="@item.Value" @(Model.CiudadID.ToString() == item.Value ? "selected" : "")>@item.Text</option>   
+                }
+                </select>
+            }   
+        </td>        
+        <td style="padding:0 8px 0 8px"><label>Longitud:</label></td>
+        <td style="padding:0 8px 0 8px">@Html.TextBoxFor(p => p.Longitud, new { @class = "form-control", @id = "txtLongitud" + ViewData.TemplateInfo.HtmlFieldPrefix })</td>
+        <td style="padding:0 8px 0 8px"><label>Zona TEV:</label></td>
+        <td style="padding:0 8px 0 8px">@Html.DropDownListFor(p => p.ZonaTEVID, (IEnumerable<SelectListItem>)ViewBag.ZonaTEVList, new { @class = "form-control multiSelect", @id = "ddlZonaTEV" + ViewData.TemplateInfo.HtmlFieldPrefix, style = "width:100px", @disabled = "disabled" })</td>
+        <td style="padding:0 8px 0 8px"><label>Análisis Fire:</label></td>
+        <td style="padding:0 8px 0 8px">
+            <label class="checkbox primary" for="@("chkFire" + ViewData.TemplateInfo.HtmlFieldPrefix)">
+                <input type="checkbox" data-toggle="radio" value="" id="@("chkFire" + ViewData.TemplateInfo.HtmlFieldPrefix)" @(Model.AnalisisFire ? "checked" : "") onchange="CambiarChk(this,'Fire')">
+            </label>
+            @Html.HiddenFor(p => p.AnalisisFire, new { @id = "hdUbicacionFire" + ViewData.TemplateInfo.HtmlFieldPrefix })
+        </td>
+    </tr>
+    <tr>
+        <td style="padding:0 8px 0 8px"><label>Colonia:</label></td>
+        <td style="padding:0 8px 0 8px" colspan="3">
+
+            @*@if (Model.CiudadList == null)
+        {
+            <select class="form-control multiSelect" id="@("ddlColonia" + ViewData.TemplateInfo.HtmlFieldPrefix)" style="width:500px" onchange="CambiarColonia(this)" />
+        }
+        else
+        {*@           
+
+            @*@Html.DropDownList("ddlColonia" + ViewData.TemplateInfo.HtmlFieldPrefix, (IEnumerable<SelectListItem>)Model.ColoniaList, new { @class = "form-control multiSelect", @onchange = "CambiarColonia(this);", style = "width:500px", @id = "ddlColonia" + ViewData.TemplateInfo.HtmlFieldPrefix })*@
+            <select class="form-control multiSelect" id="@("ddlColonia" + ViewData.TemplateInfo.HtmlFieldPrefix)" onchange="CambiarColonia('@ViewData.TemplateInfo.HtmlFieldPrefix')" style="width:500px">
+                @foreach (var item in (IEnumerable<SelectListItem>)Model.ColoniaList)
+                {
+                    <option value="@item.Value" @(Model.ColoniaID.ToString() == item.Value ? "selected" : "")>@item.Text</option>
+                }
+            </select>
+
+            @* } *@
+        </td>
+        @*<td style="padding:0 8px 0 8px"><label>Primer Riesgo:</label></td>
+        <td style="padding:0 8px 0 8px">
+            <label class="checkbox primary" for="@("chkPrimerRiesgo" + ViewData.TemplateInfo.HtmlFieldPrefix)">
+                <input type="checkbox" data-toggle="radio" value="" id="@("chkPrimerRiesgo" + ViewData.TemplateInfo.HtmlFieldPrefix)" @(Model.isPrimerRiesgo ? "checked" : "") onchange="CambiarChk(this,'PrimerRiesgo')">
+            </label>
+            @Html.HiddenFor(p => p.isPrimerRiesgo, new { @id = "hdUbicacionPrimerRiesgo" + ViewData.TemplateInfo.HtmlFieldPrefix })
+        </td>*@
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><a class="btn btn-danger" id="@("btnEliUbicacion" + ViewData.TemplateInfo.HtmlFieldPrefix)" href="javascript:DeleteUbicacion('@ViewData.TemplateInfo.HtmlFieldPrefix')"><span class="fui-cross-circle"></span>&nbsp;&nbsp;Eliminar</a>
+            <a class="btn btn-warning" id="@("btnDesUbicacion" + ViewData.TemplateInfo.HtmlFieldPrefix)" style="display:none" href="javascript:DeshacerUbicacion('@ViewData.TemplateInfo.HtmlFieldPrefix')"><span class="fui-alert-circle"></span>&nbsp;&nbsp;Deshacer</a>
+        </td>        
+    </tr>
+</table>

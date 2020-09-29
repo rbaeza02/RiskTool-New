@@ -1,0 +1,36 @@
+﻿@model List<Domain.MainModule.Entities.Asegurado>
+
+
+<table id="tblAsegurado" class="table table-striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th>RFC</th>
+            <th>Razón Social</th>
+            <th>CURP</th>
+            <th>C.P.</th>            
+        </tr>
+    </thead>
+@if (Model != null)
+    {
+    foreach (var item in Model)
+        {   
+        <tr>
+            <td><a class="btn btn-primary" href="@Url.Action("Index", "Asegurado", new { id = item.AseguradoID })" title="Editar Asegurado"><span class="fui-new"></span></a>
+            @if(item.isOFAC.HasValue ? !item.isOFAC.Value : true)
+            { 
+                <a class="btn btn-primary" href="@Url.Action("Ubicacion", "Asegurado", new { aseguradoIDs = item.AseguradoID })" title="Editar Ubicaciones"><span class="fui-link"></span></a>
+                <a class="btn btn-primary" href="@Url.Action("RedirectNewCotizacion", "Asegurado", new { rfc = item.RFC })" title="Crear Cotización"><span class="fui-document"></span></a>
+            }
+            </td>
+            <td>@item.RFC</td>
+            <td>@item.NombreCompleto</td>
+            <td>@item.CURP</td>
+            <td>@item.CodigoPostal</td>            
+        </tr>
+        }
+   }
+
+    
+</table>
+

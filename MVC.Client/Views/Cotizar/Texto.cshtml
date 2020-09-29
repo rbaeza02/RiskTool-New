@@ -1,0 +1,96 @@
+﻿@model IEnumerable<Domain.MainModule.Entities.Texto>
+@{
+    ViewBag.Title = "Texto";
+}
+
+<div><span id="spnMensaje"></span></div>
+<form>
+    <table id="tblTexto" class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    <label class="checkbox" for="chkAllTexto">
+                        <input type="checkbox" value="0" id="chkAllTexto" data-toggle="checkbox">
+                    </label>
+                </th>
+                <th style="vertical-align:middle;text-align:center;">TEXTO A INCLUIR</th>
+            </tr>
+        </thead>
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td style="vertical-align:top">
+                        <label class="checkbox" for="@("chk" + item.TextoID.ToString())">
+                            <input type="checkbox" value="@item.TextoID" id="@("chk" + item.TextoID.ToString())" data-toggle="checkbox" @(item.isObligatorio.Value ? "checked" : "")>
+                        </label>
+                    </td>
+                    <td>@Html.Raw(item.valor)
+                    @if (item.isAdicional != null)
+                    {
+                        <input type="text" class="form-control" id=@("txtValorAdicional" + item.TextoID.ToString()) value="@item.isAdicional" />
+                    }
+                    </td>
+                </tr>
+            }
+        }
+        
+        <tr>
+            <td></td>
+            <td align="right"><button type="button" class="btn btn-success" onclick="Grabar();">Guardar</button></td>            
+        </tr>
+
+    </table>
+    
+</form>
+
+@section scripts {
+    <script>
+        $('#chkAllTexto').change(function () {
+            var checkboxes = $(this).closest('form').find(':checkbox');
+            if ($(this).is(':checked')) {
+                checkboxes.prop('checked', true);
+            } else {
+                checkboxes.prop('checked', false);
+            }
+        });
+
+
+        function Grabar() {
+
+            var dataTexto = [];
+            var dataTextoID = [];
+            
+            var searchIDs = $("#tblTexto input:checkbox:checked").map(function () {
+                if ($('#txtValorAdicional' + $(this).val()).length)
+                {
+                    dataTexto.push($('#txtValorAdicional' + $(this).val()).val())
+                    dataTextoID.push($(this).val());
+                }
+                return $(this).val();
+            }).get(); 
+                       
+            $.ajaxSetup({ cache: false });
+
+            if (searchIDs != null) {
+                $.ajax({
+                    url: '@Url.Content("~/Cotizar/SaveTexto/")',
+                    data: {
+                        cotizacionID: @(ViewBag.CotizacionID),
+                        valores: searchIDs,
+                        textoAdicional: dataTexto,
+                        textoIDs: dataTextoID
+                    },
+                    traditional: true,
+                    success: function (data) {
+                        $('#spnMensaje').html(data)
+                    }, error: function () {
+                        $('#spnMensaje').html('Error');
+                    }
+                });
+            }
+            
+        }
+    </script>
+}

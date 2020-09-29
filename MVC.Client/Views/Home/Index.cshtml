@@ -1,0 +1,53 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="container" style="margin-left:auto">
+    <div class="row">
+        <div class="col-lg-10">
+            <div class="row">
+                <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
+                    <div class="tile">
+                        <a href="@Url.Action("List", "Asegurado")">
+                            <img src="~/Images/flatui/icons/svg/book.svg" alt="Asegurado" class="tile-image">
+                        </a>
+                        <h3 class="tile-title">Asegurado</h3>
+                        <p>Datos <br /> generales</p>
+                        <a class="btn btn-primary btn-large btn-block" href="@Url.Action("List", "Asegurado")">Acceder</a>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
+                    <div class="tile">
+                        <a href="@Url.Action("Index", "Cotizar")">
+                            <img src="~/Images/flatui/icons/svg/pencils.svg" alt="Cotizador" class="tile-image">
+                        </a>
+                            <h3 class="tile-title">Cotizador</h3>
+                            <p>Propiedad, Resp. Civil, Transportes</p>
+                            <a class="btn btn-primary btn-large btn-block" href="@Url.Action("Index", "Cotizar")">Acceder</a>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
+                    <div class="tile">
+                        <a href="@Url.Action("Index", "RiskReport")">
+                            <img src="~/Images/flatui/icons/svg/clipboard.svg" alt="Risk Report" class="tile-image big-illustration">
+                        </a>
+                            <h3 class="tile-title">Risk Report</h3>
+                            <p>Reporte <br /> de Riesgos</p>
+                            <a class="btn btn-primary btn-large btn-block" href="@Url.Action("Index", "RiskReport")">Acceder</a>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
+                    <div class="tile">
+                        <a href="@Url.Action("Index", "Account")">
+                            <img src="~/Images/flatui/icons/svg/map.svg" alt="Administracion" class="tile-image">
+                        </a>                        
+                        <h3 class="tile-title">Administración</h3>
+                        <p>Usuarios, <br /> permisos</p>
+                        <a class="btn btn-primary btn-large btn-block" href="@Url.Action("Index", "Account")">Acceder</a>
+                    </div>
+                </div>
+            </div> <!-- /row -->
+        </div>
+    </div> <!-- /row -->
+</div><!-- /.container -->
+

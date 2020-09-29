@@ -1,0 +1,120 @@
+﻿
+@model List<Domain.MainModule.Entities.Ubicacion>
+
+@if (ViewBag.Mensaje != null)
+{
+    <div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'><span class="fui-cross"></span></button>@ViewBag.Mensaje</div>
+}
+
+@Html.ValidationSummary("", new { @class = "text-danger" })
+
+<ul class="nav nav-tabs">
+@if (Model != null)
+{    
+    foreach (var item in Model)
+    {
+        <li class="@(item.nroUbicacion == 1? "active" : "")"><a data-toggle="tab" href="@("#nro" + item.nroUbicacion.ToString())">Ubicación @item.nroUbicacion</a></li>
+    }
+}
+
+</ul>
+
+
+@using (Html.BeginForm("Valores", "Cotizar", FormMethod.Post, new { id = "frm" }))
+    {
+    
+    <div class="tab-content">
+        @Html.EditorForModel()
+    </div>
+        <table class="table">
+            <tr>
+                <td align="right">
+                    <table>
+                        <tr>                            
+                            <td><button type="submit" class="btn btn-success">Grabar</button></td>
+                            <td width="50px;"></td>                           
+                        </tr>
+                    </table>
+                </td>
+
+            </tr>
+        </table>
+        }
+   
+
+
+@section scripts {
+    <script>
+        $(function () {
+            $(".accordion").accordion({
+                collapsible: true,
+                heightStyle: "content"
+            });
+
+            $(".multiSelect").multiselect({
+                multiple: false,
+                header: "Seleccionar una opción",
+                noneSelectedText: "Seleccionar una opción",
+                selectedList: 1,
+                position: { my: 'left top', at: 'left bottom' }
+            });
+
+            $.ajaxSetup({ cache: false });
+            //$(".accordion-resizer").resizable({
+            //    minHeight: 300,
+            //    minWidth: 200,
+            //    resize: function () {
+            //        $(".accordion").accordion("refresh");
+            //    }
+            //});
+        });
+
+        function desHabilitarPerCons(a,b)
+        {
+            //debugger;
+            if(a == 8)
+            {
+                if ($('#txtCob_' + a + '_' + b).val() != "")
+                {
+                    $("#txtCob_11_" + b).prop("disabled", true);
+                    $("#txtCob_10_" + b).prop("disabled", true);
+                }
+                else
+                {
+                    $("#txtCob_11_" + b).prop("disabled", false);
+                    $("#txtCob_10_" + b).prop("disabled", false);
+                }
+            }
+
+            if(a == 10 || a == 11)
+            {
+                if ($('#txtCob_11_' + b).val() != "" || $('#txtCob_10_' + b).val() != "")                
+                    $('#txtCob_8_' + b).prop("disabled", true);
+                else
+                    $('#txtCob_8_' + b).prop("disabled", false);
+            }
+        }
+
+        function CopiarDatos(a,b)
+        {
+            //debugger;
+            var valor = $('#ddl_' + a + '_' + b).val();
+            //$("input[name^='ddl_" + a + "_']").val(valor);
+            $('[id*="ddl_' + a + '_' + '"]').val(valor);
+            
+            $('#spn_' + a + '_' + b).show();
+
+            $(".multiSelect").multiselect({
+                multiple: false,
+                header: "Seleccionar una opción",
+                noneSelectedText: "Seleccionar una opción",
+                selectedList: 1,
+                position: { my: 'left top', at: 'left bottom' }
+            });
+
+            //$select.multiselect('refresh');
+        }
+
+
+    </script>
+}

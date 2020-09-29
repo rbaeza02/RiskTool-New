@@ -1,0 +1,43 @@
+﻿@model Domain.MainModule.Entities.Presentacion
+@using MVC.Client.Extensions.HtmlHelpers;
+@{
+    ViewBag.Title = "Presentacion";
+}
+
+@if (Model != null)
+{
+    if (!string.IsNullOrEmpty(Model.MensajeError))
+    {
+        <div>Inicio de Vigencia: @Model.DatosGenerales[0].VigenciaInicio.ToString("dd/MM/yyyy")</div>
+        <div>@Html.Raw(MVC.Client.Extension.Messages.MessagesValidation.Error(Model.MensajeError))</div>
+        <a class="btn btn-success" href="@Url.Action("ProcessCotizacion", "Process")"><span class="fui-gear"></span>Reprocesar&nbsp;</a>
+    }
+    else
+    {
+
+        <table>
+            <tr>
+                @*<td align="right" width="540px"><a class="btn btn-success" href="@Url.Action("ProcessCotizacion", "Process")"><span class="fui-gear"></span>Procesar&nbsp;</a></td>*@
+                <td width="540px">&nbsp;</td>
+                <td align="right">&nbsp;&nbsp;&nbsp;<a class="btn btn-info" href="@Url.Action("LogSISE", "Process")" @NLayerAppHtmlHelpers.SecuredActionEnabled("LogSISE", "Process")><span class="fui-play"></span>Emitir&nbsp;</a></td>
+            </tr>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td align="right" width="200px"><a class="btn btn-link" target="_blank" href="@Url.Action("DetailsReportPDF", "Cotizar", new { id = 1})" @NLayerAppHtmlHelpers.SecuredActionEnabled("DetailsReportPDF", "Cotizar")><span class="fui-clip"></span>Exportar PDF&nbsp;</a></td>
+                            <td align="center"><a class="btn btn-link" target="_blank" href="@Url.Action("DetailsReportExcel", "Cotizar", new { id = 1})" @NLayerAppHtmlHelpers.SecuredActionEnabled("DetailsReportExcel", "Cotizar")><span class="fui-clip"></span>Exportar Excel&nbsp;</a></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><div id="divError"></div></td>
+            </tr>
+        </table>
+
+        @Html.Partial(@"../ASPX/PresentacionRC", Model)
+
+    }
+}
+

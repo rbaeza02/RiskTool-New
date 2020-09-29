@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Domain.MainModule.Entities.Cotizacion>
+
+@section css {
+    @Styles.Render("~/Content/dynatable_personal")
+}
+
+@{
+    ViewBag.Title = "Risk Report";
+}
+
+<h5>Risk Report</h5>
+
+<table>
+    <tr>
+        <td style="padding:0 8px 0 8px"><label for="txtFechaInicial">Creado Desde:</label></td>
+        <td style="padding:0 8px 0 8px"><input type="text" id="txtFechaInicial" class="form-control jqueryui-marker-datepicker" placeholder="dd/mm/yyyy"></td>
+        <td style="padding:0 8px 0 8px"><label for="txtFechaFinal">Creado Hasta:</label></td>
+        <td style="padding:0 8px 0 8px"><input type="text" id="txtFechaFinal" class="form-control jqueryui-marker-datepicker" placeholder="dd/mm/yyyy"></td>
+        <td style="padding:0 8px 0 8px"><label for="txtRFC">RFC:</label></td>
+        <td style="padding:0 8px 0 8px"><input type="text" id="txtRFC" class="form-control"></td>
+        <td><button class="btn btn-primary" onclick="Buscar();">Buscar</button></td>        
+    </tr>
+    <tr>
+        <td colspan="6"><div id="errores"></div></td>
+    </tr>
+</table>
+
+<div id="datos"></div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dynatable")
+
+    <script>
+    $(function () {
+        $.ajaxSetup({ cache: false });
+    });
+
+    function Buscar() {
+        var FechaInicial = $('#txtFechaInicial').val();
+        var FechaFinal = $('#txtFechaFinal').val();
+        var RFC = $('#txtRFC').val();
+
+        $('#errores').html("");
+        $('#datos').html("");
+
+        $.ajax({
+            url: '@Url.Content("~/RiskReport/GetListCotizaciones/")',
+                data: {
+                    vigenciaInicio: FechaInicial,
+                    vigenciaFin: FechaFinal,
+                    rfc: RFC
+                },
+                traditional: true,
+                success: function (data) {
+                    if (data.mensaje == "") {
+                        $('#datos').html(data.datos);
+
+                        $('#tblCotizacion').dynatable(
+                           {
+                               features: {
+                                   paginate: true,
+                                   recordCount: false,
+                                   perPageSelect: false
+                               },
+                               dataset: {
+                                   perPageDefault: 10
+                               }
+                           }
+                           );
+                    }
+                    else {
+                        $('#errores').html(data.mensaje);
+                    }
+                }
+
+            });
+        }
+    </script>
+}

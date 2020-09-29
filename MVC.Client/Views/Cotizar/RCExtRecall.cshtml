@@ -1,0 +1,630 @@
+﻿@model Domain.MainModule.Entities.Cotizacion
+
+@section css {
+    @Styles.Render("~/Content/dynatable_personal")
+}
+
+@{
+    ViewBag.Title = "RCExtRecall";
+}
+
+@if (ViewBag.Mensaje != null)
+{
+    <div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'><span class="fui-cross"></span></button>@ViewBag.Mensaje</div>
+}
+
+@Html.Partial("Templates/_BuscarSIC")
+
+@using (Html.BeginForm("RCExtRecall", "Cotizar", FormMethod.Post, new { @class = "form-horizontal", @id = "frm", @name = "frm" }))
+{
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.CotizacionID)
+    @Html.HiddenFor(model => model.GastosAdministracion)
+    @Html.HiddenFor(model => model.Utilidad)
+    @Html.HiddenFor(model => model.Comision)
+    @Html.HiddenFor(model => model.TipoCambio)
+    @Html.HiddenFor(model => model.ContactoID)
+    @Html.HiddenFor(model => model.isActivo)
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="divPais">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h5 class="modal-title small" id="myModalLabel">Otros Países / Rest of World ("Average Country Mod" & "% Prem/Ops Exposure" Calculations)</h5>
+
+                </div>
+                <div class="modal-body">
+                    <table id="tblPais">
+                        <thead>
+                            <tr>
+                                <td data-dynatable-column="country" data-dynatable-sorts="country" data-dynatable-default-sort="true">Country</td>
+                                <td>Row</td>
+                                @*<td>Are there physical locations in this country?</td>*@
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.bk_te_CotizacionRCProductoExtPais != null)
+                            {
+                                for (int i = 0; i < Model.bk_te_CotizacionRCProductoExtPais.Count(); i++)
+                                {
+                                    @Html.HiddenFor(model => Model.bk_te_CotizacionRCProductoExtPais[i].paisID)
+                                    @Html.HiddenFor(model => Model.bk_te_CotizacionRCProductoExtPais[i].CotizacionID)
+                                    <tr>
+                                        <td>@Model.bk_te_CotizacionRCProductoExtPais[i].NombrePais</td>
+                                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCProductoExtPais[i].GrossSales, new { @class = "form-control number qty", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCProductoExtPais[i].GrossSales), @onkeypress = "return isNumberKey(event)", @onblur = "findTotal()" })</td>
+                                        @*<td>
+                                    <label class="checkbox primary" for="@("chkisPhysical" + i.ToString())">
+                                        <input type="checkbox" data-toggle="radio" value="" id="@("chkisPhysical" + i.ToString())" @(Model.bk_te_CotizacionRCProductoExtPais.OrderBy(x => x.NombrePais).ToList()[i].isPhysicalLocation.Value ? "checked" : "") onchange="CambiarChk('@("chkisPhysical" + i.ToString())')">
+                                    </label>
+                                    @Html.HiddenFor(p => Model.bk_te_CotizacionRCProductoExtPais.OrderBy(x => x.NombrePais).ToList()[i].isPhysicalLocation, new { @id = "hdisPhysical" + i.ToString() })
+                                </td>*@
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>                
+            </div>
+        </div>
+    </div>
+
+    <p class="accordion-expand-holder">
+        <a class="accordion-expand-all" href="#">Expandir Todo</a>
+    </p>
+
+    <div id="accordion" class="ui-accordion ui-widget ui-helper-reset">
+
+        @if (Model.bk_te_CotizacionRCProductoExt != null)
+        {
+            @Html.HiddenFor(model => model.bk_te_CotizacionRCProductoExt.CotizacionID)
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                RC PRODUCTOS EN EL EXTRANJERO
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table class="table-condensed">
+                    <tr>
+                        <td></td>
+                        <td style="background-color:#0E4341;color:white;" align="center" width="200px">MÉXICO</td>
+                        <td style="background-color:#0E4341;color:white;" align="center" width="200px">USA</td>
+                        <td style="background-color:#0E4341;color:white;" align="center" width="200px">OTROS PAÍSES</td>
+                    </tr>                    
+                    <tr>
+                        <td align="right">Límite por evento:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCProductoExtResultado[0].LimiteEvento, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCProductoExtResultado[0].LimiteEvento) })</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCProductoExtResultado[1].LimiteEvento, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCProductoExtResultado[1].LimiteEvento) })</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCProductoExtResultado[2].LimiteEvento, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCProductoExtResultado[2].LimiteEvento) })</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Límite Agregado Anual (Act e Inm):</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCProductoExt.RCActInmLimAgregadoID, Model.bk_te_CotizacionRCProductoExt.ActInmLimAgregadoList, new { @class = "form-control multiSelect", style = "width:200px" })</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Límite Agregado Anual (Productos):</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCProductoExt.RCProdLimAgregadoID, Model.bk_te_CotizacionRCProductoExt.ProdLimAgregadoList, new { @class = "form-control multiSelect", style = "width:200px" })</td>
+                    </tr>
+
+
+                    @Html.HiddenFor(model => model.bk_te_CotizacionRCProductoExtResultado[0].CotizacionID)
+                    @Html.HiddenFor(model => model.bk_te_CotizacionRCProductoExtResultado[1].CotizacionID)
+                    @Html.HiddenFor(model => model.bk_te_CotizacionRCProductoExtResultado[2].CotizacionID)
+                    @Html.HiddenFor(model => model.bk_te_CotizacionRCProductoExtResultado[0].RCProdGrupoPaisID)
+                    @Html.HiddenFor(model => model.bk_te_CotizacionRCProductoExtResultado[1].RCProdGrupoPaisID)
+                    @Html.HiddenFor(model => model.bk_te_CotizacionRCProductoExtResultado[2].RCProdGrupoPaisID)
+                    @Html.HiddenFor(model => model.bk_te_CotizacionRCProductoExtResultado[0].SICClassMapID, new { @id = "hdSICClassMapID1" })
+                    @Html.HiddenFor(model => model.bk_te_CotizacionRCProductoExtResultado[1].SICClassMapID, new { @id = "hdSICClassMapID2" })
+                    @Html.HiddenFor(model => model.bk_te_CotizacionRCProductoExtResultado[2].SICClassMapID, new { @id = "hdSICClassMapID3" })
+
+                    <tr>
+                        <td align="right">Costos de Defensa adicionales al Límite?:</td>
+                        <td style="align-content:center; align-items:center;align-self:center;">
+                            <label class="checkbox primary" for="chkCosto1">
+                                <input type="checkbox" data-toggle="radio" value="" id="chkCosto1" @(Model.bk_te_CotizacionRCProductoExtResultado[0].isCostoAdicional.Value ? "checked" : "") onchange="CambiarChk('Costo1')">
+                            </label>
+                            @Html.HiddenFor(p => p.bk_te_CotizacionRCProductoExtResultado[0].isCostoAdicional, new { @id = "hdCosto1" })
+                        </td>
+                        <td>
+                            <label class="checkbox primary" for="chkCosto2">
+                                <input type="checkbox" data-toggle="radio" value="" id="chkCosto2" @(Model.bk_te_CotizacionRCProductoExtResultado[1].isCostoAdicional.Value ? "checked" : "") onchange="CambiarChk('Costo2')">
+                            </label>
+                            @Html.HiddenFor(p => p.bk_te_CotizacionRCProductoExtResultado[1].isCostoAdicional, new { @id = "hdCosto2" })
+                        </td>
+                        <td>
+                            <label class="checkbox primary" for="chkCosto3">
+                                <input type="checkbox" data-toggle="radio" value="" id="chkCosto3" @(Model.bk_te_CotizacionRCProductoExtResultado[2].isCostoAdicional.Value ? "checked" : "") onchange="CambiarChk('Costo3')">
+                            </label>
+                            @Html.HiddenFor(p => p.bk_te_CotizacionRCProductoExtResultado[2].isCostoAdicional, new { @id = "hdCosto3" })
+                        </td>
+                    <tr>
+                        <td align="right">Código SIC - Descripción:</td>
+                        <td><label id="lblNameSIC1">@Model.bk_te_CotizacionRCProductoExtResultado[0].nombreSIC</label></td>
+                        <td><label id="lblNameSIC2">@Model.bk_te_CotizacionRCProductoExtResultado[1].nombreSIC</label></td>
+                        <td><label id="lblNameSIC3">@Model.bk_te_CotizacionRCProductoExtResultado[2].nombreSIC</label></td>
+                    </tr>
+                    <tr>
+                        <td align="right">Clasificación detallada del SIC:</td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.bk_te_CotizacionRCProductoExtResultado[0].nombreClassMap" id="txtNameClass1" disabled />
+                                <span class="input-group-btn">
+                                    <span class="input-group-addon"><a href="javascript:OpenSIC('1')">...</a></span>
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.bk_te_CotizacionRCProductoExtResultado[1].nombreClassMap" id="txtNameClass2" disabled />
+                                <span class="input-group-btn">
+                                    <span class="input-group-addon"><a href="javascript:OpenSIC('2')">...</a></span>
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.bk_te_CotizacionRCProductoExtResultado[2].nombreClassMap" id="txtNameClass3" disabled />
+                                <span class="input-group-btn">
+                                    <span class="input-group-addon"><a href="javascript:OpenSIC('3')">...</a></span>
+                                </span>
+                            </div>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td align="right">Tipo de Cobertura:</td>
+                        <td>@Html.DropDownListFor(p => Model.bk_te_CotizacionRCProductoExtResultado[0].RCProdTipoCoberturaID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.TipoCoberturaList, "Value", "Label", Model.bk_te_CotizacionRCProductoExtResultado[0].RCProdTipoCoberturaID), new { @class = "form-control multiSelect", style = "width:200px" })</td>
+                        <td>@Html.DropDownListFor(p => Model.bk_te_CotizacionRCProductoExtResultado[1].RCProdTipoCoberturaID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.TipoCoberturaList, "Value", "Label", Model.bk_te_CotizacionRCProductoExtResultado[1].RCProdTipoCoberturaID), new { @class = "form-control multiSelect", style = "width:200px" })</td>
+                        <td>@Html.DropDownListFor(p => Model.bk_te_CotizacionRCProductoExtResultado[2].RCProdTipoCoberturaID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.TipoCoberturaList, "Value", "Label", Model.bk_te_CotizacionRCProductoExtResultado[2].RCProdTipoCoberturaID), new { @class = "form-control multiSelect", style = "width:200px" })</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Monto de la Exposición:</td>
+                        <td>@Html.TextBoxFor(p => Model.bk_te_CotizacionRCProductoExtResultado[0].MontoExposicion, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCProductoExtResultado[0].MontoExposicion) })</td>
+                        <td>@Html.TextBoxFor(p => Model.bk_te_CotizacionRCProductoExtResultado[1].MontoExposicion, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCProductoExtResultado[1].MontoExposicion) })</td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control decimal" value="@String.Format("{0:N}", Model.bk_te_CotizacionRCProductoExtResultado[2].MontoExposicion)" id="txtMontoExp3" disabled />
+                                <span class="input-group-btn">
+                                    <span class="input-group-addon"><a data-toggle="modal" data-target="#divPais">...</a></span>
+                                </span>
+                            </div>
+                        </td>
+                        @Html.HiddenFor(p => Model.bk_te_CotizacionRCProductoExtResultado[2].MontoExposicion, new { @id = "hdMontoExp3" })
+                    </tr>
+                    <tr>
+                        <td align="right">Monto de los Ingresos:</td>
+                        <td>@Html.TextBoxFor(p => Model.bk_te_CotizacionRCProductoExtResultado[0].MontoIngreso, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCProductoExtResultado[0].MontoIngreso) })</td>
+                        <td>@Html.TextBoxFor(p => Model.bk_te_CotizacionRCProductoExtResultado[1].MontoIngreso, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCProductoExtResultado[1].MontoIngreso) })</td>
+                        <td>@Html.TextBoxFor(p => Model.bk_te_CotizacionRCProductoExtResultado[2].MontoIngreso, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCProductoExtResultado[2].MontoIngreso) })</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Deducible:</td>
+                        <td>@Html.TextBoxFor(p => Model.bk_te_CotizacionRCProductoExtResultado[0].Deducible, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCProductoExtResultado[0].Deducible) })</td>
+                        <td>@Html.TextBoxFor(p => Model.bk_te_CotizacionRCProductoExtResultado[1].Deducible, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCProductoExtResultado[1].Deducible) })</td>
+                        <td>@Html.TextBoxFor(p => Model.bk_te_CotizacionRCProductoExtResultado[2].Deducible, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCProductoExtResultado[2].Deducible) })</td>
+                    </tr>
+                    <tr>
+                        <td align="right">El Deducible incluye los Gastos de Defensa?:</td>
+                        <td>
+                            <label class="checkbox primary" for="chkDefensa1">
+                                <input type="checkbox" data-toggle="radio" value="" id="chkDefensa1" @(Model.bk_te_CotizacionRCProductoExtResultado[0].isInclGastosDefensa.Value ? "checked" : "") onchange="CambiarChk('Defensa1')">
+                            </label>
+                            @Html.HiddenFor(p => Model.bk_te_CotizacionRCProductoExtResultado[0].isInclGastosDefensa, new { @id = "hdDefensa1" })
+                        </td>
+                        <td>
+                            <label class="checkbox primary" for="chkDefensa2">
+                                <input type="checkbox" data-toggle="radio" value="" id="chkDefensa2" @(Model.bk_te_CotizacionRCProductoExtResultado[1].isInclGastosDefensa.Value ? "checked" : "") onchange="CambiarChk('Defensa2')">
+                            </label>
+                            @Html.HiddenFor(p => Model.bk_te_CotizacionRCProductoExtResultado[1].isInclGastosDefensa, new { @id = "hdDefensa2" })
+                        </td>
+                        <td>
+                            <label class="checkbox primary" for="chkDefensa3">
+                                <input type="checkbox" data-toggle="radio" value="" id="chkDefensa3" @(Model.bk_te_CotizacionRCProductoExtResultado[2].isInclGastosDefensa.Value ? "checked" : "") onchange="CambiarChk('Defensa3')">
+                            </label>
+                            @Html.HiddenFor(p => Model.bk_te_CotizacionRCProductoExtResultado[2].isInclGastosDefensa, new { @id = "hdDefensa3" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">Base del Deducible:</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCProductoExtResultado[0].RCProdBaseDeducibleID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.BaseDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCProductoExtResultado[0].RCProdBaseDeducibleID), new { @class = "form-control multiSelect", style = "width:200px" })</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCProductoExtResultado[1].RCProdBaseDeducibleID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.BaseDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCProductoExtResultado[1].RCProdBaseDeducibleID), new { @class = "form-control multiSelect", style = "width:200px" })</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCProductoExtResultado[2].RCProdBaseDeducibleID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.BaseDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCProductoExtResultado[2].RCProdBaseDeducibleID), new { @class = "form-control multiSelect", style = "width:200px" })</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Desea cotizar la cobertura de Act e Inm?:</td>
+                        <td>
+                            <label class="checkbox primary" for="chkRCActInm1">
+                                <input type="checkbox" data-toggle="radio" value="" id="chkRCActInm1" @(Model.bk_te_CotizacionRCProductoExtResultado[0].isRCActInm.Value ? "checked" : "") onchange="CambiarChk('RCActInm1')">
+                            </label>
+                            @Html.HiddenFor(p => Model.bk_te_CotizacionRCProductoExtResultado[0].isRCActInm, new { @id = "hdRCActInm1" })
+                        </td>
+                        <td>
+                            <label class="checkbox primary" for="chkRCActInm2">
+                                <input type="checkbox" data-toggle="radio" value="" id="chkRCActInm2" @(Model.bk_te_CotizacionRCProductoExtResultado[1].isRCActInm.Value ? "checked" : "") onchange="CambiarChk('RCActInm2')">
+                            </label>
+                            @Html.HiddenFor(p => Model.bk_te_CotizacionRCProductoExtResultado[1].isRCActInm, new { @id = "hdRCActInm2" })
+                        </td>
+                        <td>
+                            <label class="checkbox primary" for="chkRCActInm3">
+                                <input type="checkbox" data-toggle="radio" id="chkRCActInm3" @(Model.bk_te_CotizacionRCProductoExtResultado[2].isRCActInm.Value ? "checked" : "") onchange="CambiarChk('RCActInm3')">
+                            </label>
+                            @Html.HiddenFor(p => Model.bk_te_CotizacionRCProductoExtResultado[2].isRCActInm, new { @id = "hdRCActInm3" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">Desea cotizar la cobertura de Productos?:</td>
+                        <td>
+                            <label class="checkbox primary" for="chkRCProducto1">
+                                <input type="checkbox" data-toggle="radio" id="chkRCProducto1" @(Model.bk_te_CotizacionRCProductoExtResultado[0].isRCProducto.Value ? "checked" : "") onchange="CambiarChk('RCProducto1')">
+                            </label>
+                            @Html.HiddenFor(p => Model.bk_te_CotizacionRCProductoExtResultado[0].isRCProducto, new { @id = "hdRCProducto1" })
+                        </td>
+                        <td>
+                            <label class="checkbox primary" for="chkRCProducto2">
+                                <input type="checkbox" data-toggle="radio" id="chkRCProducto2" @(Model.bk_te_CotizacionRCProductoExtResultado[1].isRCProducto.Value ? "checked" : "") onchange="CambiarChk('RCProducto2')">
+                            </label>
+                            @Html.HiddenFor(p => Model.bk_te_CotizacionRCProductoExtResultado[1].isRCProducto, new { @id = "hdRCProducto2" })
+                        </td>
+                        <td>
+                            <label class="checkbox primary" for="chkRCProducto3">
+                                <input type="checkbox" data-toggle="radio" id="chkRCProducto3" @(Model.bk_te_CotizacionRCProductoExtResultado[2].isRCProducto.Value ? "checked" : "") onchange="CambiarChk('RCProducto3')">
+                            </label>
+                            @Html.HiddenFor(p => Model.bk_te_CotizacionRCProductoExtResultado[2].isRCProducto, new { @id = "hdRCProducto3" })
+                        </td>
+                    </tr>
+
+
+
+
+                </table>
+            </div>
+        }
+
+        @if (Model.bk_te_CotizacionRCRecall != null)
+        {
+            @Html.HiddenFor(model => model.bk_te_CotizacionRCRecall.CotizacionID)
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                RATING MODEL
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table>
+                    <tr>
+                        <td align="right">Categories:</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCRecall.RCRecallCategoryID, Model.bk_te_CotizacionRCRecall.CategoryList, new { @id = "ddlCategory", @class = "form-control multiSelect", style = "width:200px", @onchange = "BuscarRangeBasic()" })</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Coverage:</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCRecall.RCRecallCoverageID, Model.bk_te_CotizacionRCRecall.CoverageList, new { @class = "form-control multiSelect", style = "width:200px" })</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Occupancy:</td>                        
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCRecall.RCRecallOccupancyID, Model.bk_te_CotizacionRCRecall.OccupancyList, new { @class = "form-control multiSelect2", style = "width:400px", @onchange = "CambiarExposure()", @id="ddlOccupancy" })</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Exposure Type:</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCRecall.RCRecallExposureTypeID, Model.bk_te_CotizacionRCRecall.ExposureTypeList, new { @id = "ddlExposureType", @class = "form-control multiSelect", style = "width:200px", @onchange = "BuscarRangeBasic()" })</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Sales (capture en USD):</td>                        
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_CotizacionRCRecall.Sales, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCRecall.Sales) })
+                                    <span class="input-group-addon">Million</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">Batch Size/Amount Subject:</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCRecall.RCRecallBatchAmountID, Model.bk_te_CotizacionRCRecall.BatchAmountList, new { @class = "form-control multiSelect", style = "width:200px" })</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Limit (capture en USD):</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCRecall.RCRecallLimitID, Model.bk_te_CotizacionRCRecall.LimitList, new { @id = "ddlLimit", @class = "form-control multiSelect", style = "width:200px", @onchange = "BuscarRangeBasic()" })</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Basic Rate Range:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCRecall.BasicRateRange, new {@id="txtBasicRate", @class = "form-control", disabled = "disabled" })</td>
+                        @Html.HiddenFor(model => model.bk_te_CotizacionRCRecall.BasicRateRangeMin, new { @id = "hdBasicRateMin" })
+                        @Html.HiddenFor(model => model.bk_te_CotizacionRCRecall.BasicRateRangeMax, new { @id = "hdBasicRateMax" })
+                    </tr>
+                    <tr>
+                        <td align="right">First/Third Party Factor (0-50%):</td>                        
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_CotizacionRCRecall.PartyFactor, "{0:n2}", new { @id = "txtFactor", @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)", @onchange = "BuscarAdjustedBasic()" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">Adjusted Rate Range:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCRecall.AdjustedRateRange, new { @id = "txtAdjustedRate", @class = "form-control", disabled = "disabled" })</td>
+                        @Html.HiddenFor(model => model.bk_te_CotizacionRCRecall.AdjustedRateRangeMin, new { @id = "hdAdjustedRateMin" })
+                        @Html.HiddenFor(model => model.bk_te_CotizacionRCRecall.AdjustedRateRangeMax, new { @id = "hdAdjustedRateMax" })
+                    </tr>
+                    <tr>
+                        <td align="right">Selected Rate on Sales:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCRecall.SelectedRateSales, new { @id = "txtSelectedRate", @class = "form-control decimal", placeholder = "0.00" , @onkeypress = "return isNumberKey(event)"})</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Quality of the Underwriting data - Product Dispersion Factor:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCRecall.Factor, new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Quality of the Underwriting data - ID and Tracking Systems:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCRecall.Systems, new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Quality of the Underwriting data - Labor and Technical Cost:</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCRecall.Cost, new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Selected Deductibles (USD):</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCRecall.RCRecallDeducibleID, Model.bk_te_CotizacionRCRecall.DeducibleList, new { @class = "form-control multiSelect", style = "width:200px" })</td>
+                    </tr>
+                </table>
+            </div>
+        }
+    </div>
+
+    <table>
+        <tr>            
+            <td><button type="submit" class="btn btn-success" @(Model.isActivo ? "" : "disabled")>Guardar</button></td>
+        </tr>
+    </table>
+}
+
+@section scripts {
+
+    @Scripts.Render("~/bundles/dynatable")
+
+    <script>
+        var headers = $('#accordion .accordion-header');
+        var contentAreas = $('#accordion .ui-accordion-content ').hide().first().show().end();
+        var expandLink = $('.accordion-expand-all');
+
+        // add the accordion functionality
+        headers.click(function () {
+            // close all panels
+            contentAreas.slideUp();
+            // open the appropriate panel
+            $(this).next().slideDown();
+            // reset Expand all button
+            expandLink.text('Expandir Todo')
+                .data('isAllOpen', false);
+            // stop page scroll
+            return false;
+        });
+
+        expandLink.click(function () {
+            var isAllOpen = !$(this).data('isAllOpen');
+            console.log({ isAllOpen: isAllOpen, contentAreas: contentAreas })
+            contentAreas[isAllOpen ? 'slideDown' : 'slideUp']();
+
+            expandLink.text(isAllOpen ? 'Colapsar Todo' : 'Expandir Todo')
+                        .data('isAllOpen', isAllOpen);
+        });
+
+        $(function () {
+
+            $(".accordion").accordion({
+                collapsible: true,
+                heightStyle: "content"
+            });
+
+            $.ajaxSetup({ cache: false });
+
+            $('#tblPais').dynatable(
+                {
+                    features: {
+                        paginate: false,
+                        recordCount: false,
+                        perPageSelect: false,
+                        sort: true,
+                        search: true
+                    }
+                }
+                );
+
+        });
+
+
+        $(".multiSelect").multiselect({
+            multiple: false,
+            header: "Seleccionar una opción",
+            noneSelectedText: "Seleccionar una opción",
+            selectedList: 1,
+            position: { my: 'left top', at: 'left bottom' }
+            //minWidth: 150
+        });
+
+        $(".multiSelect2").multiselect({
+            multiple: false,
+            header: "Seleccionar una opción",
+            noneSelectedText: "Seleccionar una opción",
+            selectedList: 1,
+            position: { my: 'left top', at: 'left bottom' }
+        }).multiselectfilter();
+
+        function OpenSIC(a) {
+            $('#divBuscarSIC').modal('toggle');
+            $('#hdGrupoPais').val(a);
+            BuscarGrupo();
+        }
+
+        function BuscarGrupo() {
+            var selectionDivision = $('#ddlDivision').val();
+            $('#ddlGrupo').html('');
+
+            if (selectionDivision != null) {
+                $.ajax({
+                    url: '@Url.Content("~/Asegurado/GetGrupoToSelection/")',
+                    data: {
+                        divisionID: selectionDivision
+                    },
+                    dataType: 'JSON',
+                    success: function (data) {
+                        var $select = $('#ddlGrupo');
+                        $.each(data, function (key, val) {
+                            $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                        })
+
+                        $select.multiselect('refresh');
+
+                        BuscarSIC();
+                    }, error: function () {
+                        $('#ddlGrupo').append('<option id="-1">none available</option>');
+                    }
+                });
+            }
+        }
+
+        function BuscarSIC() {
+            var selectionGrupo = $('#ddlGrupo').val();
+            $('#ddlSIC').html('');
+
+            if (selectionGrupo != null) {
+                $.ajax({
+                    url: '@Url.Content("~/Asegurado/GetSICToSelection/")',
+                    data: {
+                        grupoID: selectionGrupo
+                    },
+                    dataType: 'JSON',
+                    success: function (data) {
+                        var $select = $('#ddlSIC');
+                        $.each(data, function (key, val) {
+                            $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                        })
+
+                        $select.multiselect('refresh');
+
+                        BuscarSICDetallado();
+                    }, error: function () {
+                        $('#ddlSIC').append('<option id="-1">none available</option>');
+                    }
+                });
+            }
+        }
+
+        function BuscarSICDetallado() {
+            var selectionSIC = $('#ddlSIC').val();
+            $('#ddlSICDetallado').html('');
+
+            if (selectionSIC != null) {
+                $.ajax({
+                    url: '@Url.Content("~/Cotizar/GetSICDetalladoToSelection/")',
+                    data: {
+                        sicID: selectionSIC
+                    },
+                    dataType: 'JSON',
+                    success: function (data) {
+                        var $select = $('#ddlSICDetallado');
+                        $.each(data, function (key, val) {
+                            $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                        })
+
+                        $select.multiselect('refresh');
+
+                    }, error: function () {
+                        $('#ddlSICDetallado').append('<option id="-1">none available</option>');
+                    }
+                });
+            }
+        }
+
+        function SeleccionarSIC() {
+            //debugger;
+            var valor = $('#hdGrupoPais').val();
+
+            if ($('#ddlSICDetallado').val() != null) {
+                $("#hdSICClassMapID" + valor).val($('#ddlSICDetallado').val());
+                $("#lblNameSIC" + valor).text($("#ddlSIC option:selected").text());
+                $("#txtNameClass" + valor).val($("#ddlSICDetallado option:selected").text())
+                $('#divBuscarSIC').modal('hide');
+
+
+            }
+        }
+
+        function CambiarChk(a) {
+            //debugger;
+            $("input[id='hd" + a + "']").val($("input[id='chk" + a + "']").is(':checked'));
+        }
+
+        function CambiarExposure() {
+            //debugger;
+            var occ = $('#ddlOccupancy option:selected').text();
+            var sub = occ.substring(occ.lastIndexOf('-') + 2, 100);
+
+            $("#ddlExposureType option").filter(function () {
+                return this.text == sub;
+            }).attr('selected', true);
+            
+            $('#ddlExposureType').multiselect('refresh');
+
+            BuscarRangeBasic();
+        }
+
+
+        function BuscarRangeBasic() {
+            var category = $('#ddlCategory').val();
+            var exposure = $('#ddlExposureType').val();
+            var limit = $('#ddlLimit').val();
+
+            if (category != null && exposure != null && limit != null) {
+                $.ajax({
+                    url: '@Url.Content("~/Cotizar/GetRCRecallRate/")',
+                    data: {
+                        categoryID: category,
+                        exposureTypeID: exposure,
+                        limitID: limit
+                    },
+                    dataType: 'JSON',
+                    success: function (data) {
+                        if(data!= null)
+                        {
+                            $('#hdBasicRateMin').val(data.minValue);
+                            $('#hdBasicRateMax').val(data.maxValue);
+                            $('#txtBasicRate').val(data.minValue + ' - ' + data.maxValue);
+                        }
+
+                        BuscarAdjustedBasic()
+                    }, error: function () {
+                        $('#txtBasicRate').val('ERROR');
+                    }
+                });
+            }
+        }
+
+        function BuscarAdjustedBasic() {
+            var factor = $('#txtFactor').val();
+            var minBasic = $('#hdBasicRateMin').val();
+            var maxBasic = $('#hdBasicRateMax').val();
+
+            if (factor != null && minBasic != null && maxBasic != null) {
+                $('#hdAdjustedRateMin').val(Math.round(minBasic * (1-factor/100) * 100) / 100);
+                $('#hdAdjustedRateMax').val(Math.round(maxBasic * (1-factor/100) * 100) / 100);
+                $('#txtAdjustedRate').val($('#hdAdjustedRateMin').val() + ' - ' + $('#hdAdjustedRateMax').val());
+            }
+        }
+
+        
+        function findTotal() {
+            //debugger;
+            var arr = document.getElementsByClassName('qty');
+            var tot = 0;
+            for (var i = 0; i < arr.length; i++) {
+                if (parseInt(arr[i].value))
+                    tot += parseInt(arr[i].value);
+            }
+            document.getElementById('txtMontoExp3').value = tot;
+            $('#hdMontoExp3').val(tot);
+        }
+
+    </script>
+}
+

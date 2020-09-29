@@ -1,0 +1,476 @@
+﻿@model Domain.MainModule.Entities.Asegurado
+@using MVC.Client.Extensions.HtmlHelpers;
+@{
+    ViewBag.Title = "Index";
+}
+
+@Html.Partial("_BuscarSIC")
+
+@if(Model!= null)
+{
+    if (Model.isOFAC.HasValue ? (Model.isOFAC.Value ? true : false) : false)
+{
+    @Html.Raw(ViewBag.OFAC)
+}
+else
+{
+    if (ViewBag.Mensaje != null)
+    {
+        <div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'><span class="fui-cross"></span></button>@ViewBag.Mensaje</div>
+    }
+}
+
+    using (Html.BeginForm("Index", "Asegurado", FormMethod.Post, new { @class = "form-horizontal", role = "form", @id = "frm" }))
+{
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    @*@Html.HiddenFor(model => Model.AseguradoID)*@
+    <input type="hidden" value="@Html.AttributeEncode(Model.AseguradoID)" id="AseguradoID" name="AseguradoID" />
+    <input type="hidden" value="@Html.AttributeEncode(Model.isOFAC)" id="isOFAC" name="isOFAC" />
+    @*<input data-val="true" data-val-number="The field AseguradoID must be a number." data-val-required="The AseguradoID field is required." id="AseguradoID" name="AseguradoID" type="hidden" value="0" />*@
+
+    <div class="tabbable" id="divAsegurado">
+        <div class="tab-content col-md-9" style="width:1100px;">
+            <div class="tab-pane active">                
+                <table>
+                    <tr>
+                        <td align="right" colspan="7">
+                        @if (Model.isOFAC.HasValue ? (Model.isOFAC.Value ? true : false) : false)
+                        {
+                            <table>
+                                <tr>
+                                    <td width="50">OFAC</td>
+                                    <td width="20"><span class="fui-lock"></span></td>                                    
+                                    <td>
+                                        <div class="bootstrap-switch-square">
+                                            <input type="checkbox" data-toggle="switch" id="chkOFAC" checked onclick="changeIsOFAC()" />
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>    
+                        }                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Persona:</label></td>
+                        <td>
+                            @Html.DropDownListFor(model => model.TipoPersonaID, Model.TipoPersonaList, new { @id = "ddlPersona", @class = "form-control multiSelect", @onchange = "CambiarPersona()", @tabindex = "0", style = "width:100px;" })
+                        </td>
+                        <td><label>RFC:</label></td>
+                        <td>
+                            @Html.TextBoxFor(model => model.RFC, new { @class = "form-control", @readonly = "readonly", @maxlength = "11" })
+                        </td>
+                        <td style="padding:0 8px 0 8px"><label>C.P.:</label></td>
+                        <td>
+                            @Html.TextBoxFor(model => model.CodigoPostal, new { @class = "form-control", @onchange = "BuscarCP()", @id = "txtCP", @placeholder = "00000", @maxlength = "5", @onkeypress = "return isNumberKey(event)", @tabindex = "9", @onblur = "LlenarCeroCP()" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding:0 8px 0 8px" rowspan="9" valign="top">
+                            <table id="tdPersonaFisica">
+                                <tr>
+                                    <td><label>Nombre:</label>&nbsp;&nbsp;</td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.Nombres, new { @class = "form-control", @tabindex = "1" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label>Apellido Paterno:</label>&nbsp;&nbsp;</td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.Apellido1, new { @class = "form-control", @tabindex = "2" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label>Apellido Materno:</label>&nbsp;&nbsp;</td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.Apellido2, new { @class = "form-control", @tabindex = "3" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label>CURP:</label>&nbsp;&nbsp;</td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.CURP, new { @class = "form-control", @tabindex = "4" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label>Género:</label>&nbsp;&nbsp;</td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.GeneroID, Model.GeneroList, new { @id = "ddlGenero", @class = "form-control multiSelect", @tabindex = "5", style = "width:100px;" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label>Estado Civil:</label>&nbsp;&nbsp;</td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.EstadoCivilID, Model.EstadoCivilList, new { @id = "ddlEstadoCivil", @class = "form-control multiSelect", @tabindex = "6", style = "width:100px;" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label>Lugar Nacimiento:</label>&nbsp;&nbsp;</td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.LugarNacimiento, new { @class = "form-control", @tabindex = "7" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label>Fecha Nacimiento:</label>&nbsp;&nbsp;</td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.FechaNacimiento, "{0:dd/MM/yyyy}", new { @class = "form-control jqueryui-marker-datepicker", @placeholder = "dd/mm/yyyy", @tabindex = "8", @id = "txtFechaNacimiento" })
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table id="tdPersonaMoral">
+                                <tr>
+                                    <td><label>Razón Social:</label>&nbsp;&nbsp;</td>
+                                    <td>
+                                        @Html.TextAreaFor(model => model.RazonSocial, new { @class = "form-control", rows = 5, @tabindex = "1" })
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label>Fecha Constitución:</label>&nbsp;&nbsp;</td>
+                                    <td>
+                                        <input class="form-control jqueryui-marker-datepicker" id="txtFechaConstitucion" placeholder="dd/mm/yyyy" tabindex="2" type="text" value="@Model.FechaNacimiento.ToString("dd/MM/yyyy")" onchange="CambiarFechaNac()" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </td>
+
+                        <td><label>País:</label>&nbsp;&nbsp;</td>
+                        <td>
+                            @Html.TextBoxFor(model => model.bk_tc_Colonia.bk_tc_Municipio.bk_tc_Estado.bk_tc_Pais.Descripcion, new { @class = "form-control", disabled = "disabled", @id = "txtPais" })
+                        </td>
+                        <td style="padding:0 8px 0 8px"><label>Calle:</label>&nbsp;&nbsp;</td>
+                        <td>
+                            @Html.TextBoxFor(model => model.DomicilioFiscal_Calle, new { @class = "form-control", @tabindex = "10", @maxlength = "30" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Estado:</label>&nbsp;&nbsp;</td>
+                        <td>
+                            @Html.TextBoxFor(model => model.bk_tc_Colonia.bk_tc_Municipio.bk_tc_Estado.Descripcion, new { @class = "form-control", disabled = "disabled", @id = "txtEstado" })
+                        </td>
+                        <td style="padding:0 8px 0 8px"><label>Nro Exterior:</label>&nbsp;&nbsp;</td>
+                        <td>
+                            @Html.TextBoxFor(model => model.DomicilioFiscal_NroExterior, new { @class = "form-control", @tabindex = "11", @maxlength = "10" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Municipio:</label>&nbsp;&nbsp;</td>
+                        <td>
+                            @Html.TextBoxFor(model => model.bk_tc_Colonia.bk_tc_Municipio.Descripcion, new { @class = "form-control", disabled = "disabled", @id = "txtMunicipio" })
+                        </td>
+                        <td style="padding:0 8px 0 8px"><label>Nro Interior:</label>&nbsp;&nbsp;</td>
+                        <td>
+                            @Html.TextBoxFor(model => model.DomicilioFiscal_NroInterior, new { @class = "form-control", @tabindex = "12", @maxlength = "10" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Ciudad:</label>&nbsp;&nbsp;</td>
+                        <td>
+                            <select class="form-control multiSelect" id="ddlCiudad" onchange="BuscarColonia();" style="width:100px" tabindex="13" />
+                        </td>
+                        <td style="padding:0 8px 0 8px"><label>SIC:</label>&nbsp;&nbsp;</td>
+                        <td>
+                            <div class="input-group">
+                                @Html.TextBoxFor(model => model.SIC, new { @class = "form-control", @id = "txtSIC", @maxlength = "4", @onkeypress = "return isNumberKey(event)", @tabindex = "14", @onblur = "LlenarCeroSIC()" })
+                                <span class="input-group-btn">
+                                    @*<button class="btn btn-default" type="button">Buscar</button>*@
+                                    <span class="input-group-addon"><a href="javascript:OpenSIC()">...</a></span>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Colonia:</label>&nbsp;&nbsp;</td>
+                        <td colspan="3">
+                            <select class="form-control multiSelect" id="ddlColonia" style="width:500px" tabindex="15" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Tipo Tel.:</label>&nbsp;&nbsp;</td>
+                        <td>
+                            @Html.DropDownListFor(model => model.TipoTelefonoID, Model.TipoTelefonoList, new { @id = "ddlTipoTelefono", @class = "form-control multiSelect", @tabindex = "16", style = "width:100px;" })
+                        </td>
+                        <td><label>Teléfono:</label>&nbsp;&nbsp;</td>
+                        <td>
+                            @Html.TextBoxFor(model => model.Telefono, new { @class = "form-control", @id = "txtTelefono", @tabindex = "17" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Página Web:</label>&nbsp;&nbsp;</td>
+                        <td colspan="4">
+                            @Html.TextBoxFor(model => model.webPage, new { @class = "form-control", @id = "txtWebPage", Style = "width:600px;", @tabindex = "18" })
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Giro:</label>&nbsp;&nbsp;</td>
+                        <td colspan="4">
+                            @Html.TextAreaFor(model => model.giro, new { @class = "form-control", rows = 3, Style = "width:600px;", @tabindex = "19" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            <hr color="blue" size=3 />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6"></td>
+                        <td align="right">
+                            <table>
+                                <tr>
+                                    <td><button type="submit" class="btn btn-success">Grabar</button></td>
+                                </tr>
+                            </table>
+                        </td>
+
+                    </tr>
+                </table>               
+            </div>
+        </div>
+    </div>
+    
+     
+                
+              
+
+
+}
+
+}
+
+
+
+
+@section scripts {
+    <script>
+    $(function () {
+
+        $.ajaxSetup({ cache: false });
+
+        CambiarPersona();
+
+        $(".multiSelect").multiselect({
+            multiple: false,
+            header: "Seleccionar una opción",
+            noneSelectedText: "Seleccionar una opción",
+            selectedList: 1,
+            position: { my: 'left top', at: 'left bottom' }
+            //minWidth: 150
+        });
+
+        $(".multiSelect2").multiselect({
+            multiple: false,
+            header: "Seleccionar una opción",
+            noneSelectedText: "Seleccionar una opción",
+            selectedList: 1,
+            position: { my: 'left top', at: 'left bottom' }
+        }).multiselectfilter();
+
+        if ($('#txtCP').val() != "") {
+            BuscarCP();            
+            $('#ddlCiudad').val('@(Model == null ? 0 : Model.bk_tc_Colonia == null ? 0 : Model.bk_tc_Colonia.CiudadID)');
+            $('#ddlColonia').val('@(Model == null ? 0 : Model.ColoniaID)');            
+        }
+
+        @if(Model != null)
+        { 
+            if ((Model.isOFAC.HasValue ? Model.isOFAC.Value : false) && !NLayerAppHtmlHelpers.SecuredAction("ChangeOFAC", "Asegurado"))
+            {
+                <text>
+                    $("#divAsegurado *").attr("disabled", "disabled");
+                </text>
+            }
+        }
+
+    });
+
+    function CambiarPersona() {
+        if ($('#ddlPersona').val() == '1') {
+            $('#tdPersonaMoral').css('display', 'none');
+            $("#tdPersonaFisica").show();
+        }
+        else {
+            $('#tdPersonaFisica').css('display', 'none');
+            $("#tdPersonaMoral").show();
+        }
+    }
+
+
+    
+
+    function BuscarCP() {
+
+        var valor = $('#txtCP').val();
+        $('#ddlCiudad').html('');
+
+        if (valor != null) {
+            if (valor.length > 4) {
+                $.ajax({
+                    url: '@Url.Content("~/Asegurado/BuscarCP/")',
+                    data: {
+                        cp: valor
+                    },
+                    traditional: true,
+                    success: function (data) {
+                        $('#txtPais').val(data.Pais);
+                        $('#txtEstado').val(data.Estado);
+                        $('#txtMunicipio').val(data.Municipio);
+
+                        var $select = $('#ddlCiudad');
+
+                        $.each(data.Ciudades, function (key, val) {
+                            $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                        })
+
+                        $select.multiselect('refresh');
+
+                        BuscarColonia();
+                    }
+                });
+            }
+        }
+    }
+
+    function BuscarColonia() {
+
+        var valor = $('#txtCP').val();
+        var valor2 = $('#ddlCiudad').val();
+
+        $('#ddlColonia').html('');
+
+        $.ajax({
+            url: '@Url.Content("~/Asegurado/BuscarColonia/")',
+            data: {
+                cp: valor,
+                ciudadID: valor2
+            },
+            traditional: true,
+            success: function (data) {
+                //debugger;
+                var $select = $('#ddlColonia');
+
+                $.each(data, function (key, val) {
+                    $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                })
+
+                $select.multiselect('refresh');
+
+                
+            }
+        });
+
+    }
+
+    $('#frm').submit(function () {
+        var url = '@Url.Action("Index", "Asegurado")';
+
+        var selectionColonia = $('#ddlColonia').val();
+
+        $('#frm').prop('action', url + "?colonia=" + selectionColonia);
+
+        return true;
+    });
+
+        function OpenSIC(a) {
+            $('#divBuscarSIC').modal('toggle');
+            BuscarGrupo();
+        }
+
+        function BuscarGrupo() {
+            var selectionDivision = $('#ddlDivision').val();
+            $('#ddlGrupo').html('');
+
+            if (selectionDivision != null) {
+                $.ajax({
+                    url: '@Url.Content("~/Asegurado/GetGrupoToSelection/")',
+                    data: {
+                        divisionID: selectionDivision
+                    },
+                    dataType: 'JSON',
+                    success: function (data) {
+                        var $select = $('#ddlGrupo');
+                        $.each(data, function (key, val) {
+                            $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                        })
+
+                        $select.multiselect('refresh');
+
+                        BuscarSIC();
+                    }, error: function () {
+                        $('#ddlGrupo').append('<option id="-1">none available</option>');
+                    }
+                });
+            }
+        }
+
+        function BuscarSIC() {
+            var selectionGrupo = $('#ddlGrupo').val();
+            $('#ddlSIC').html('');
+
+            if (selectionGrupo != null) {
+                $.ajax({
+                    url: '@Url.Content("~/Asegurado/GetSICToSelection/")',
+                    data: {
+                        grupoID: selectionGrupo
+                    },
+                    dataType: 'JSON',
+                    success: function (data) {
+                        var $select = $('#ddlSIC');
+                        $.each(data, function (key, val) {
+                            $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                        })
+
+                      $select.multiselect('refresh');
+
+                     
+
+                    }, error: function () {
+                        $('#ddlSIC').append('<option id="-1">none available</option>');
+                    }
+                });
+            }
+        }
+
+        function SeleccionarSIC() {
+            //debugger;
+            if ($('#ddlSIC').val() != null) {
+                $("#txtSIC").val($('#ddlSIC').val());
+                $('#divBuscarSIC').modal('hide');
+            }
+        }
+
+        function CambiarPagUbicacion(a) {
+            //debugger;
+            var url = '@Url.Action("Ubicacion", "Asegurado", new {id="param"})';
+
+            window.location.href = url.replace('param', a);
+        }
+
+        function LlenarCeroSIC() {
+            var valor = $('#txtSIC').val();
+            if(valor.length == 3)
+                $('#txtSIC').val('0' + valor);
+        }
+
+        function LlenarCeroCP() {
+            var valor = $('#txtCP').val();
+            if (valor.length == 4) {
+                $('#txtCP').val('0' + valor);
+                BuscarCP();
+            }
+        }
+
+        function CambiarFechaNac() {            
+            $('#txtFechaNacimiento').val($('#txtFechaConstitucion').val());
+        }
+
+        function changeIsOFAC() {
+
+            $('#isOFAC').val('False');
+        }
+    </script>
+}

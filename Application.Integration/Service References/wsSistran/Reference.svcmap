@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="a157d171-b265-44e1-ae2b-1d618863fa9a" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.Collections.Generic.List`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://172.19.10.191/Sistran.IntegracionAseg/Data.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Data.xsd" MetadataType="Schema" ID="4d696ae6-685b-4a4f-baa7-c59deab577ec" SourceId="1" SourceUrl="http://172.19.10.191/Sistran.IntegracionAseg/Data.svc?xsd=xsd1" />
+    <MetadataFile FileName="Data.wsdl" MetadataType="Wsdl" ID="eb2a5c7b-89f6-448b-9d91-148b2d17ee12" SourceId="1" SourceUrl="http://172.19.10.191/Sistran.IntegracionAseg/Data.svc?wsdl" />
+    <MetadataFile FileName="Data1.xsd" MetadataType="Schema" ID="65a89a29-43ed-4617-b797-e3757ad0c6b5" SourceId="1" SourceUrl="http://172.19.10.191/Sistran.IntegracionAseg/Data.svc?xsd=xsd2" />
+    <MetadataFile FileName="Data.disco" MetadataType="Disco" ID="7522b028-3586-4aab-8fcd-aed8e3be61b0" SourceId="1" SourceUrl="http://172.19.10.191/Sistran.IntegracionAseg/Data.svc?disco" />
+    <MetadataFile FileName="Data2.xsd" MetadataType="Schema" ID="da1c7af5-0298-4dbd-a1e6-b871e998c1a4" SourceId="1" SourceUrl="http://172.19.10.191/Sistran.IntegracionAseg/Data.svc?xsd=xsd0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

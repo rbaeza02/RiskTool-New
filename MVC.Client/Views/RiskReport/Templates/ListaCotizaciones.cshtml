@@ -1,0 +1,38 @@
+﻿@model List<Domain.MainModule.Entities.Cotizacion>
+
+
+<table id="tblCotizacion" class="table table-striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Fecha</th>
+            <th>RFC</th>
+            <th>Asegurado</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th>Moneda</th>
+            <th>Tipo Cambio</th>
+            <th>Comisión</th>
+        </tr>
+    </thead>
+@if (Model != null)
+    {
+    foreach (var item in Model)
+        {   
+        <tr>
+            <td><a class="btn btn-primary" href="@Url.Action("RedirectDatos", "RiskReport", new { id = item.CotizacionID })"><span class="fui-new"></span></a></td>
+            <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+            <td>@item.bk_tc_Asegurado.RFC</td>
+            <td>@(item.bk_tc_Asegurado.TipoPersonaID == 1 ? item.bk_tc_Asegurado.Nombres + " " + item.bk_tc_Asegurado.Apellido1 + " " + item.bk_tc_Asegurado.Apellido2 : item.bk_tc_Asegurado.RazonSocial)</td>
+            <td>@item.VigenciaInicio.ToString("dd/MM/yyyy")</td>
+            <td>@item.VigenciaFin.ToString("dd/MM/yyyy")</td>
+            <td>@item.bk_tc_Moneda.nombre</td>
+            <td>@item.TipoCambio</td>
+            <td>@item.Comision</td>
+        </tr>
+        }
+   }
+
+    
+</table>
+

@@ -1,0 +1,26 @@
+﻿@model List<Domain.MainModule.Entities.SelectBeneficiario_Result>
+
+
+
+<table id="tblBeneficiario" class="table table-striped">    
+    <tr>
+        <td>Tipo Beneficiario</td>
+        <td>RFC</td>
+        <td>Beneficiario</td>
+        <td></td>
+    </tr>
+    @if (Model != null)
+    {
+        var valor = 0;
+        for (int i = 0; i < Model.Count(); i++)
+        {
+            <tr id="@("trBenef_" + Model[i].PersonaID)">
+                <td>@Html.DropDownList("TipoBeneficiario", new SelectList(Model[i].TipoBeneficiario, "Value", "Label", Model[i].TipoBeneficiarioID), new { @class = "form-control multiSelect idTipoBeneficiario" })</td>
+                <td><input type="text" class="form-control" value="@Model[i].RFC" onblur="RevisarRFC(this, @Model[i].PersonaID)" /></td>
+                <td><span class="nombrePersona">@Model[i].Nombre</span></td>
+                <td><a class="btn btn-info" href="javascript:DeleteBeneficiario(@Model[i].PersonaID)"><span class="fui-cross-circle"></span></a></td>
+                <td><input type="hidden" value="@Model[i].PersonaID" class="idPersona" /> </td>
+            </tr>
+        }
+    }
+</table>

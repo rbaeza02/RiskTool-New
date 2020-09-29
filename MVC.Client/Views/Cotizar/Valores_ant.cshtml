@@ -1,0 +1,133 @@
+﻿@model List<Domain.MainModule.Entities.CotizacionCoberturaUbicacion>
+
+<div class="tabbable" style="margin-left:-200px;">
+    <ul class="nav nav-pills nav-stacked col-md-3" style="width:200px;">
+        <li><a href="#" data-toggle="tab" onclick="CambiarPagDatos('@ViewBag.CotizacionID')" @(ViewBag.CotizacionID == 0 ? "disabled" : "")>Datos Generales</a></li>
+        <li><a href="#" data-toggle="tab" onclick="CambiarPagIncendio('@ViewBag.CotizacionID')" @(ViewBag.CotizacionID == 0 ? "disabled" : "")>Coberturas Incendio</a></li>
+        <li class="active"><a href="#" data-toggle="tab">Valores Incendio</a></li>
+    </ul>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th rowspan="2" style="text-align:center;vertical-align:middle;">#</th>
+            <th rowspan="2" style="text-align:center;vertical-align:middle;" valign="middle">Bien</th>
+            @if (Model != null)
+            {
+                if (Model.Where(p => p.bk_tr_CotizacionCobertura.bk_tc_Cobertura.TipoCoberturaID == 1).Count() > 0)
+                {
+                    <th colspan="@(Model.Where(p => p.bk_tr_CotizacionCobertura.bk_tc_Cobertura.TipoCoberturaID == 1).Select(x => x.bk_tr_CotizacionCobertura.bk_tc_Cobertura).Distinct().Count())" style='text-align:center;'>Edificio</th>
+                }
+                if (Model.Where(p => p.bk_tr_CotizacionCobertura.bk_tc_Cobertura.TipoCoberturaID == 2).Count() > 0)
+                {
+                    <th colspan='@(Model.Where(p => p.bk_tr_CotizacionCobertura.bk_tc_Cobertura.TipoCoberturaID == 2).Select(x => x.bk_tr_CotizacionCobertura.bk_tc_Cobertura).Distinct().Count())' style='text-align:center;'>Contenidos</th>
+                }
+                if(Model.Where(p => p.bk_tr_CotizacionCobertura.bk_tc_Cobertura.TipoCoberturaID == 3).Count() > 0)
+                { 
+                    <th colspan='@(Model.Where(p => p.bk_tr_CotizacionCobertura.bk_tc_Cobertura.TipoCoberturaID == 3).Select(x => x.bk_tr_CotizacionCobertura.bk_tc_Cobertura).Distinct().Count())' style='text-align:center;'>Pérdidas Consecuenciales</th>
+                }
+            }                        
+        </tr>
+        <tr>
+            @if(Model != null)
+            {
+                int i = 0, j = 0;
+                foreach(var item in Model.Select(p => p.bk_tr_CotizacionCobertura.bk_tc_Cobertura.bk_tc_TipoCobertura).Distinct().ToList())
+                {
+                    i = Model.Where(p => p.bk_tr_CotizacionCobertura.bk_tc_Cobertura.TipoCoberturaID == item.TipoCoberturaID).Select(x => x.bk_tr_CotizacionCobertura.bk_tc_Cobertura.bk_tc_TipoCobertura).Distinct().Count();
+                    j = 0;
+                    foreach (var item2 in Model.Where(x => x.bk_tr_CotizacionCobertura.bk_tc_Cobertura.TipoCoberturaID == item.TipoCoberturaID).Select(p => p.bk_tr_CotizacionCobertura.bk_tc_Cobertura).Distinct().OrderBy(x=> x.CoberturaID).ToList())
+                    { 
+                        <th style='text-align:center;'><h5 class='small'>@item2.nombre</h5></th>
+                        j++;
+                    }
+                    if(j < i)
+                    {
+                        for(int z = 0; z<i-j; z++)
+                        {
+                            <th style='text-align:center;'><h5 class='small'></h5></th>
+                        }
+                    }                    
+                }
+            }            
+        </tr>
+    </thead>
+    @if (Model != null)
+    {
+        var TipoCobertura = Model.Select(x => x.bk_tr_CotizacionCobertura.bk_tc_Cobertura.bk_tc_TipoCobertura).Distinct();
+        
+        foreach(var item in Model.Select(x=>x.bk_tc_Ubicacion).Distinct())
+        {                
+                foreach (var item2 in Model.Where(x => x.UbicacionID == item.UbicacionID).Select(y => y.bk_tr_CotizacionCobertura.bk_tc_LineaNegocio).Distinct())
+                {
+                    int t = 0;            
+                    <tr>
+                        <td></td>
+                        <td><label>@item2.nombre</label></td>                        
+
+                        @foreach (var item3 in Model.Where(y => y.UbicacionID == item.UbicacionID && y.bk_tr_CotizacionCobertura.LineaNegocioID == item2.LineaNegocioID).Select(p => p.bk_tr_CotizacionCobertura.bk_tc_Cobertura.bk_tc_TipoCobertura).Distinct().ToList())
+                        {                            
+                            while (item3.TipoCoberturaID != TipoCobertura.ToArray()[t].TipoCoberturaID && t <= TipoCobertura.Count())                                
+                                { 
+                                    <td></td>
+                                    t++;
+                                }
+                            t++;
+                                
+                            var coberturas = Model.Where(p => p.bk_tr_CotizacionCobertura.bk_tc_Cobertura.TipoCoberturaID == item3.TipoCoberturaID).Select(x => x.bk_tr_CotizacionCobertura.bk_tc_Cobertura).Distinct().OrderBy(x => x.CoberturaID);
+
+                            int j = 0;
+                            foreach (var item4 in Model.Where(y => y.UbicacionID == item.UbicacionID && y.bk_tr_CotizacionCobertura.LineaNegocioID == item2.LineaNegocioID && y.bk_tr_CotizacionCobertura.bk_tc_Cobertura.TipoCoberturaID == item3.TipoCoberturaID).OrderBy(x => x.bk_tr_CotizacionCobertura.CoberturaID))
+                            {                                
+                                while(item4.bk_tr_CotizacionCobertura.CoberturaID != coberturas.ToArray()[j].CoberturaID && j<= coberturas.Count())                                
+                                { 
+                                    <td></td>
+                                    j++;
+                                }
+                                
+                                if (item4.bk_tr_CotizacionCobertura.CoberturaID == coberturas.ToArray()[j].CoberturaID)
+                                {
+                                    <td><input type="text" class="form-control" placeholder="00.00" value="@(item4.ValorAsegurable.HasValue ? item4.ValorAsegurable.Value.ToString("0,000.00") : "")" id="@(item4.CotizacionCoberturaID.ToString() + "_" + item4.UbicacionID.ToString())" onchange="GrabarTemporal(this)" /></td>
+                                }
+
+                                j++;
+                            }                            
+                        }
+                    </tr>
+                }
+
+        }
+    }
+</table>
+<table class="table">
+    <tr>
+        <td width="80%"></td>
+        <td><button type="button" class="btn btn-primary">Cancelar</button></td>
+        <td><button type="button" class="btn btn-success" onclick="saltar()">Grabar</button></td>
+    </tr>
+</table>
+
+@section Scripts {
+
+    <script>
+
+        var valores=[];
+
+        function GrabarTemporal(a) {
+            
+        }
+
+        function CambiarPagDatos(a) {
+            var url = '@Url.Action("Crear", "Cotizar", new { id = "param" })';
+            window.location.href = url.replace('param', a);
+        }
+
+        function CambiarPagIncendio(a) {
+            var url = '@Url.Action("CotizarIncendio", "Cotizar", new { cotizacionID = "param" })';
+            window.location.href = url.replace('param', a);
+        }
+
+    </script>
+
+}

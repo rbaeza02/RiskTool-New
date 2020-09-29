@@ -1,0 +1,808 @@
+﻿@model Domain.MainModule.Entities.Cotizacion
+
+@{
+    ViewBag.Title = "RC";
+}
+
+@if (ViewBag.Mensaje != null)
+{
+    <div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'><span class="fui-cross"></span></button>@ViewBag.Mensaje</div>
+}
+
+@using (Html.BeginForm("RC", "Cotizar", FormMethod.Post, new { @class = "form-horizontal", @id = "frm", @name = "frm" }))
+{
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.CotizacionID)
+    @Html.HiddenFor(model => model.GastosAdministracion)
+    @Html.HiddenFor(model => model.Utilidad)
+    @Html.HiddenFor(model => model.Comision)
+    @Html.HiddenFor(model => model.TipoCambio)
+    @Html.HiddenFor(model => model.ContactoID)
+    @Html.HiddenFor(model => model.isActivo)
+
+
+    <div id="divCalculo" style="position:fixed;top:30%;right:0;width:20%;background-color:white;z-index:4;display:none;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <table>
+                    <tr>
+                        <td>
+                            <b>Conceptos (%)</b>
+                        </td>
+                        <td width="100px">&nbsp;</td>
+                        <td>
+                            <a href="javascript:ModalComision(0)"><span class="fui-cross"></span></a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="input-group">
+                                    <span class="input-group-addon">Comisión</span>
+                                    @Html.TextBoxFor(p => p.Comision, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)", @id = "txtComision" })
+                                </div>
+                            </td>
+                            <td width="20px"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="input-group">
+                                    <span class="input-group-addon">Utilidad</span>
+                                    @Html.TextBoxFor(p => p.Utilidad, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)", @id = "txtUtilidad" })
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="input-group">
+                                    <span class="input-group-addon">Otros Gastos Adq.</span>
+                                    @Html.TextBoxFor(p => p.OtrosGastosAdq, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)", @id = "txtOtrosGastosAdq" })
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="input-group">
+                                    <span class="input-group-addon">Gastos Adm.</span>
+                                    @Html.TextBoxFor(p => p.GastosAdministracion, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)", @id = "txtGastosAdm" })
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> <input type="button" class="btn-success" onclick="ModificarParam()" value="Calcular" /> </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <table width="100%">
+        <tr>
+            <td>
+                <p class="accordion-expand-holder">
+                    <a class="accordion-expand-all" href="#">Expandir Todo</a>
+                </p>
+            </td>
+            <td><a href="javascript:ModalComision(1)"><span class="fui-windows"></span></a></td>
+        </tr>
+    </table>
+
+
+
+    <div id="accordion" class="ui-accordion ui-widget ui-helper-reset">
+        @if (Model.bk_te_CotizacionRCActInm != null)
+        {
+            @Html.HiddenFor(model => model.bk_te_CotizacionRCActInm.CotizacionID)
+            @Html.HiddenFor(model => model.bk_te_CotizacionRCActInm.Comision)
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                RC ACTIVIDADES E INMUEBLES
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table class="table table-hover" style="width:900px">
+                    <tr class="palette palette-midnight-blue">
+                        <td colspan="2" rowspan="2" align="center">Valores</td>
+                        <td colspan="5" align="center">Deducibles</td>   
+                    </tr>
+                    <tr class="palette palette-midnight-blue">
+                        <td align="center">Valor</td>
+                        <td align="center">Unidad</td>
+                        <td align="center">Aplica</td>
+                        <td align="center">Mínimo</td>
+                        <td align="center">Unidad</td>
+                    </tr>
+                    <tr>
+                        <td width="300px">% Comisión:</td>                        
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_CotizacionRCActInm.Comision, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)", @disabled = "disabled" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>Límite al 100%</td>                        
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCActInm.Limite_100, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCActInm.Limite_100), @onblur = "cambiarTxtAct()", @id = "txtActInmuebles" })</td>
+                        <td class="tdActInm">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.DeducibleValorID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCActInm.DeducibleValorID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdActInm">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.DeducibleUnidadID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCActInm.DeducibleUnidadID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdActInm">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.DeducibleAplicaID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleAplicaList, "Value", "Label", Model.bk_te_CotizacionRCActInm.DeducibleAplicaID), new { @class = "form-control", style = "width:150px;" })</td>
+                        <td class="tdActInm">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.DeducibleValorIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCActInm.DeducibleValorIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdActInm">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.DeducibleUnidadIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCActInm.DeducibleUnidadIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                    </tr>
+                    <tr>
+                        <td>% Siniestralidad</td>                        
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_CotizacionRCActInm.Siniestralidad, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td colspan="5"></td>
+                    </tr>                    
+                    <tr>
+                        <td>Giro</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCActInm.GrupoIncendioID, Model.bk_te_CotizacionRCActInm.GrupoIncendioList, new { @id = "ddlGrupoIncedio", @class = "form-control multiSelect", @onchange = "cambiarDdl('ddlGrupoIncedio')", style = "width:100px;" })</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>Tipo de Riesgo</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCActInm.RCActInmTipoRiesgoID, Model.bk_te_CotizacionRCActInm.TipoRiesgoList, new { @class = "form-control multiSelect", style = "width:100px;" })</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr class="palette palette-midnight-blue">
+                        <td align="center">ADICIONALES</td>
+                        <td align="center">SUBLIMITES</td>                        
+                    </tr>                    
+                    <tr>
+                        <td>Ferias y Exposiciones</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCActInm.Feria, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCActInm.Feria), @disabled = "disabled", @id="txtFeria" })</td>
+                        <td colspan="5"></td>
+                        @Html.HiddenFor(p => p.bk_te_CotizacionRCActInm.Feria, new { @id = "hdFeria" })
+                    </tr>
+                    <tr>
+                        <td>Carga y Descarga</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCActInm.CargaDescarga, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCActInm.CargaDescarga), @disabled = "disabled", @id = "txtCargaDescarga" })</td>
+                        <td colspan="5"></td>
+                        @Html.HiddenFor(p => p.bk_te_CotizacionRCActInm.CargaDescarga, new { @id = "hdCargaDescarga" })
+                    </tr>
+                    <tr>
+                        <td>Pagos Voluntarios por urgencia médica</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCActInm.VolUrgenciaMedica, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCActInm.VolUrgenciaMedica), @id = "txtVolUrgenciaMedica" })</td>
+                        <td colspan="5"></td>
+                        @*@Html.HiddenFor(p => p.bk_te_CotizacionRCActInm.VolUrgenciaMedica, new { @id = "hdVolUrgenciaMedica" })*@
+                    </tr>
+                    <tr>
+                        <td>Gastos de Defensa incluídos en la Suma Asegurada hasta el 50%</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCActInm.GastosDefensa, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCActInm.GastosDefensa), @disabled = "disabled", @id = "txtGastosDefensa" })</td>
+                        <td colspan="5"></td>
+                        @Html.HiddenFor(p => p.bk_te_CotizacionRCActInm.GastosDefensa, new { @id = "hdGastosDefensa" })
+                    </tr>
+                    <tr>
+                        <td>Arrendatario</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCActInm.Arrendatario, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCActInm.Arrendatario), @onblur = "Ocultar('tdArrendatario', 'txtArrendatario')", @id="txtArrendatario" })</td>
+                        <td class="tdArrendatario">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.ArrendatarioDeducibleValorID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCActInm.ArrendatarioDeducibleValorID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdArrendatario">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.ArrendatarioDeducibleUnidadID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCActInm.ArrendatarioDeducibleUnidadID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdArrendatario">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.ArrendatarioDeducibleAplicaID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleAplicaList, "Value", "Label", Model.bk_te_CotizacionRCActInm.ArrendatarioDeducibleAplicaID), new { @class = "form-control", style = "width:150px;" })</td>
+                        <td class="tdArrendatario">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.ArrendatarioDeducibleValorIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCActInm.ArrendatarioDeducibleValorIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdArrendatario">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.ArrendatarioDeducibleUnidadIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCActInm.ArrendatarioDeducibleUnidadIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                    </tr>
+                    <tr>
+                        <td>RC Bienes bajo cuidado, control y custodia</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCActInm.ControlCustodia, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCActInm.ControlCustodia), @onblur = "Ocultar('tdBienes', 'txtBienes')", @id="txtBienes" })</td>
+                        <td class="tdBienes">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.BienesDeducibleValorID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCActInm.BienesDeducibleValorID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdBienes">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.BienesDeducibleUnidadID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCActInm.BienesDeducibleUnidadID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdBienes">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.BienesDeducibleAplicaID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleAplicaList, "Value", "Label", Model.bk_te_CotizacionRCActInm.BienesDeducibleAplicaID), new { @class = "form-control", style = "width:150px;" })</td>
+                        <td class="tdBienes">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.BienesDeducibleValorIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCActInm.BienesDeducibleValorIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdBienes">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.BienesDeducibleUnidadIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCActInm.BienesDeducibleUnidadIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                    </tr>                    
+                    <tr>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCActInm.RCActInmCruzadaID, Model.bk_te_CotizacionRCActInm.CruzadaList, new { @class = "form-control multiSelect", style = "width:250px;" })</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCActInm.Cruzada, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCActInm.Cruzada), @onblur = "Ocultar('tdCruzada', 'txtCruzada')", @id="txtCruzada" })</td>
+                        <td class="tdCruzada">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.CruzadaDeducibleValorID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCActInm.CruzadaDeducibleValorID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdCruzada">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.CruzadaDeducibleUnidadID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCActInm.CruzadaDeducibleUnidadID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdCruzada">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.CruzadaDeducibleAplicaID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleAplicaList, "Value", "Label", Model.bk_te_CotizacionRCActInm.CruzadaDeducibleAplicaID), new { @class = "form-control", style = "width:150px;" })</td>
+                        <td class="tdCruzada">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.CruzadaDeducibleValorIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCActInm.CruzadaDeducibleValorIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdCruzada">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.CruzadaDeducibleUnidadIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCActInm.CruzadaDeducibleUnidadIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                    </tr>                    
+                    <tr>
+                        <td>Contaminación</td>                        
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCActInm.Contaminacion, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCActInm.Contaminacion), @onblur = "Ocultar('tdContaminacion', 'txtContaminacion')", @id="txtContaminacion" })</td>
+                        <td class="tdContaminacion">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.ContaminacionDeducibleValorID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCActInm.ContaminacionDeducibleValorID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdContaminacion">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.ContaminacionDeducibleUnidadID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCActInm.ContaminacionDeducibleUnidadID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdContaminacion">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.ContaminacionDeducibleAplicaID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleAplicaList, "Value", "Label", Model.bk_te_CotizacionRCActInm.ContaminacionDeducibleAplicaID), new { @class = "form-control", style = "width:150px;" })</td>
+                        <td class="tdContaminacion">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.ContaminacionDeducibleValorIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCActInm.ContaminacionDeducibleValorIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdContaminacion">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.ContaminacionDeducibleUnidadIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCActInm.ContaminacionDeducibleUnidadIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                    </tr>                    
+                    <tr>
+                        <td>Asumida</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCActInm.Asumida, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCActInm.Asumida), @onblur = "Ocultar('tdAsumida', 'txtAsumida')", @id="txtAsumida" })</td>                        
+                        <td class="tdAsumida">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.AsumidaDeducibleValorID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCActInm.AsumidaDeducibleValorID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdAsumida">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.AsumidaDeducibleUnidadID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCActInm.AsumidaDeducibleUnidadID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdAsumida">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.AsumidaDeducibleAplicaID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleAplicaList, "Value", "Label", Model.bk_te_CotizacionRCActInm.AsumidaDeducibleAplicaID), new { @class = "form-control", style = "width:150px;" })</td>
+                        <td class="tdAsumida">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.AsumidaDeducibleValorIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCActInm.AsumidaDeducibleValorIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdAsumida">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.AsumidaDeducibleUnidadIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCActInm.AsumidaDeducibleUnidadIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                    </tr>
+                    <tr>
+                        <td>Contratistas Independientes</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCActInm.ContratistaIndependiente, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCActInm.ContratistaIndependiente), @onblur = "Ocultar('tdContIndependiente', 'txtContIndependiente')",@id="txtContIndependiente" })</td>
+                        <td class="tdContIndependiente">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.ContIndependienteDeducibleValorID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCActInm.ContIndependienteDeducibleValorID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdContIndependiente">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.ContIndependienteDeducibleUnidadID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCActInm.ContIndependienteDeducibleUnidadID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdContIndependiente">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.ContIndependienteDeducibleAplicaID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleAplicaList, "Value", "Label", Model.bk_te_CotizacionRCActInm.ContIndependienteDeducibleAplicaID), new { @class = "form-control", style = "width:150px;" })</td>
+                        <td class="tdContIndependiente">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.ContIndependienteDeducibleValorIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCActInm.ContIndependienteDeducibleValorIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdContIndependiente">@Html.DropDownListFor(model => model.bk_te_CotizacionRCActInm.ContIndependienteDeducibleUnidadIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCActInm.ContIndependienteDeducibleUnidadIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                    </tr>    
+                    <tr>
+                        <td>Cuota Base RC Actividades e Inmuebles</td>
+                        <td><input type="text" id="txtCuotaBaseAI" class="form-control" style="text-align:right" value="@String.Format("{0:0.00000}",Model.bk_te_CotizacionRCActInm.CuotaBase/10)" disabled="disabled" /> </td>
+                        <td>‰</td>
+                    </tr>
+                    <tr>
+                        <td>Cuota RC Actividades e Inmuebles</td>
+                        <td><input type="text" id="txtCuotaAI" class="form-control" style="text-align:right" value="@String.Format("{0:0.00000}", Model.bk_te_CotizacionRCActInm.Cuota/10)" disabled="disabled" /> </td>
+                        <td>‰</td>.
+                    </tr>
+                    <tr>
+                        <td><b>Prima RC Actividades e Inmuebles</b></td>
+                        <td><input type="text" id="txtPrimaAI" class="form-control" style="text-align:right" value="@String.Format("{0:0,000.00}", Model.bk_te_CotizacionRCActInm.Prima)" disabled="disabled" /> </td>
+                    </tr>
+                </table>
+            </div>
+        }
+       
+        @if (Model.bk_te_CotizacionRCTrabajoTerm != null)
+        {
+            @Html.HiddenFor(model => model.bk_te_CotizacionRCTrabajoTerm.CotizacionID)            
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                RC PRODUCTOS Y TRABAJOS TERMINADOS EN MÉXICO
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table class="table table-hover" style="width:1050px">
+                    <tr class="palette palette-midnight-blue">
+                        <td colspan="2" rowspan="2" align="center">Valores</td>
+                        <td colspan="5" align="center">Deducibles</td>
+                    </tr>
+                    <tr class="palette palette-midnight-blue">
+                        <td align="center">Valor</td>
+                        <td align="center">Unidad</td>
+                        <td align="center">Aplica</td>
+                        <td align="center">Mínimo</td>
+                        <td align="center">Unidad</td>
+                    </tr>
+                    <tr>
+                        <td width="300px">Sublímite al 100%</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCTrabajoTerm.Limite_100, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCTrabajoTerm.Limite_100), @onblur = "Ocultar('tdTrabajoTerm', 'txtArrendatario')", @id="txtTrabajoTerm" })</td>
+                        <td class="tdTrabajoTerm">@Html.DropDownListFor(model => model.bk_te_CotizacionRCTrabajoTerm.DeducibleValorID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCTrabajoTerm.DeducibleValorID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdTrabajoTerm">@Html.DropDownListFor(model => model.bk_te_CotizacionRCTrabajoTerm.DeducibleUnidadID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCTrabajoTerm.DeducibleUnidadID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdTrabajoTerm">@Html.DropDownListFor(model => model.bk_te_CotizacionRCTrabajoTerm.DeducibleAplicaID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleAplicaList, "Value", "Label", Model.bk_te_CotizacionRCTrabajoTerm.DeducibleAplicaID), new { @class = "form-control", style = "width:150px;" })</td>
+                        <td class="tdTrabajoTerm">@Html.DropDownListFor(model => model.bk_te_CotizacionRCTrabajoTerm.DeducibleValorIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCTrabajoTerm.DeducibleValorIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdTrabajoTerm">@Html.DropDownListFor(model => model.bk_te_CotizacionRCTrabajoTerm.DeducibleUnidadIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCTrabajoTerm.DeducibleUnidadIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                    </tr>
+                    <tr>
+                        <td>% Siniestralidad</td>
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_CotizacionRCTrabajoTerm.Siniestralidad, "{0:n2}", new { @class = "form-control decimal" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>Giro</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCTrabajoTerm.GrupoIncendioID, Model.bk_te_CotizacionRCTrabajoTerm.GiroList, new { @id = "ddlGrupoIncedioDep2", @class = "form-control multiSelect", disabled = "disabled", Style = "width:220px" })</td>
+                        <td colspan="5"></td>
+                        @Html.HiddenFor(model => model.bk_te_CotizacionRCTrabajoTerm.GrupoIncendioID, new { @id = "hdGrupoIncedioDep2" })
+                    </tr>
+                    <tr>
+                        <td>Unión, mezcla, transformación química y transformación física</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCTrabajoTerm.UnionMezcla, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCTrabajoTerm.UnionMezcla), @onblur = "Ocultar('tdUnionMezcla', 'txtUnionMezcla')", @id="txtUnionMezcla" })</td>
+                        <td class="tdUnionMezcla">@Html.DropDownListFor(model => model.bk_te_CotizacionRCTrabajoTerm.UnionMezclaDeducibleValorID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCTrabajoTerm.UnionMezclaDeducibleValorID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdUnionMezcla">@Html.DropDownListFor(model => model.bk_te_CotizacionRCTrabajoTerm.UnionMezclaDeducibleUnidadID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCTrabajoTerm.UnionMezclaDeducibleUnidadID), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdUnionMezcla">@Html.DropDownListFor(model => model.bk_te_CotizacionRCTrabajoTerm.UnionMezclaDeducibleAplicaID, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleAplicaList, "Value", "Label", Model.bk_te_CotizacionRCTrabajoTerm.UnionMezclaDeducibleAplicaID), new { @class = "form-control", style = "width:150px;" })</td>
+                        <td class="tdUnionMezcla">@Html.DropDownListFor(model => model.bk_te_CotizacionRCTrabajoTerm.UnionMezclaDeducibleValorIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.DeducibleValorList, "Value", "Label", Model.bk_te_CotizacionRCTrabajoTerm.UnionMezclaDeducibleValorIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                        <td class="tdUnionMezcla">@Html.DropDownListFor(model => model.bk_te_CotizacionRCTrabajoTerm.UnionMezclaDeducibleUnidadIDMin, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.UnidadDeducibleList, "Value", "Label", Model.bk_te_CotizacionRCTrabajoTerm.UnionMezclaDeducibleUnidadIDMin), new { @class = "form-control", style = "width:100px;" })</td>
+                    </tr>
+                    <tr>
+                        <td>Cuota Base RC Productos</td>
+                        <td><input type="text" id="txtCuotaBasePr" class="form-control" style="text-align:right" value="@String.Format("{0:0.0000%}",Model.bk_te_CotizacionRCTrabajoTerm.CuotaBase)" disabled="disabled" /> </td>
+                    </tr>
+                    <tr>
+                        <td>Cuota RC Productos</td>
+                        <td><input type="text" id="txtCuotaPr" class="form-control" style="text-align:right" value="@String.Format("{0:0.0000%}", Model.bk_te_CotizacionRCTrabajoTerm.Cuota)" disabled="disabled" /> </td>
+                    </tr>
+                    <tr>
+                        <td><b>Prima RC Productos</b></td>
+                        <td><input type="text" id="txtPrimaPr" class="form-control" style="text-align:right" value="@String.Format("{0:0,000.00}", Model.bk_te_CotizacionRCTrabajoTerm.Prima)" disabled="disabled" /> </td>
+                    </tr>
+                    <tr>
+                        <td>Ventas / Ingresos Anuales en México</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCTrabajoTerm.VentaAnual, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCTrabajoTerm.VentaAnual) })</td>
+                        <td colspan="5"></td>
+                    </tr>
+                </table>
+            </div>
+        }
+
+        @if (Model.bk_te_CotizacionRCTaller != null)
+        {
+            @Html.HiddenFor(model => model.bk_te_CotizacionRCTaller.CotizacionID)
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                RC TALLERES
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table class="table table-hover" style="width:500px">
+                    <tr>
+                        <td width="200px">Sublímite al 100%</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCTaller.Limite_100, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCTaller.Limite_100) })</td>
+                    </tr>
+                    <tr>
+                        <td>% Siniestralidad</td>
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_CotizacionRCTaller.Siniestralidad, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Número de Cajones</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCTaller.nroCajones, new { @class = "form-control decimal", @onkeypress = "return isNumberKey(event)" })</td>
+                    </tr>
+                    <tr>
+                        <td>Límite por Cajón</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCTaller.Limite_cajon, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCTaller.Limite_cajon) })</td>
+                    </tr>
+                    <tr>
+                        <td>Radio de Pruebas</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCTaller.RatioPruebas, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCTaller.RatioPruebas) })</td>
+                    </tr>
+                </table>
+            </div>
+        }
+
+        @if (Model.bk_te_CotizacionRCEstacionamiento != null)
+        {
+            @Html.HiddenFor(model => model.bk_te_CotizacionRCEstacionamiento.CotizacionID)
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                RC ESTACIONAMIENTO
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table>
+                    <tr>
+                        <td width="200px">Sublímite al 100%</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCEstacionamiento.Limite_100, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCEstacionamiento.Limite_100) })</td>
+                    </tr>
+                    <tr>
+                        <td>% Siniestralidad</td>                        
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_CotizacionRCEstacionamiento.Siniestralidad, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Número de Cajones</td>                        
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCEstacionamiento.nroCajones, new { @class = "form-control decimal", @onkeypress = "return isNumberKey(event)" })</td>
+                    </tr>
+                    <tr>
+                        <td>Límite por Cajón</td>                        
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCEstacionamiento.Limite_cajon, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCEstacionamiento.Limite_cajon) })</td>
+                    </tr>
+                    <tr>
+                        <td>Tiene servicio de acomodadores (Valet Parking)?:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionRCEstacionamiento.isValetParking, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionRCEstacionamiento.isValetParking, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        }
+
+        @if (Model.bk_te_CotizacionRCVehiculoExc != null)
+        {
+            @Html.HiddenFor(model => model.bk_te_CotizacionRCVehiculoExc.CotizacionID)
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                RC VEHÍCULOS EN EXCESO
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table>
+                    <tr>
+                        <td width="200px">Sublímite al 100%</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCVehiculoExc.Limite_100, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCVehiculoExc.Limite_100) })</td>
+                    </tr>
+                    <tr>
+                        <td>En exceso de</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCVehiculoExc.Exceso, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCVehiculoExc.Exceso) })</td>
+                    </tr>
+                    <tr>
+                        <td>% Siniestralidad</td>                        
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_CotizacionRCVehiculoExc.Siniestralidad, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Número de Unidades que llevan carga tipo "A" o "B"</td>                        
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCVehiculoExc.nroVehiculoAB, new { @class = "form-control decimal", @onkeypress = "return isNumberKey(event)" })</td>
+                    </tr>
+                    <tr>
+                        <td>Número de Unidades que llevan carga tipo "C"</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCVehiculoExc.nroVehiculoC, new { @class = "form-control decimal", @onkeypress = "return isNumberKey(event)" })</td>
+                    </tr>
+                    <tr>
+                        <td>Contaminación por la carga tipo C</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCVehiculoExc.isContaminacionC, new { @class = "form-control decimal", @onkeypress = "return isNumberKey(event)" })</td>
+                    </tr>
+                    <tr>
+                        <td>Accidentes a ocupantes de vehículos</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCVehiculoExc.Ocupantes, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCVehiculoExc.Ocupantes) })</td>
+                    </tr>
+                    <tr>
+                        <td>Daños por la carga en México (tipo "A" y "B")</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCVehiculoExc.DañoAB, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCVehiculoExc.DañoAB) })</td>
+                    </tr>
+                    <tr>
+                        <td>Contaminación por la carga (tipo "A" y "B")</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCVehiculoExc.ContaminacionAB, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCVehiculoExc.ContaminacionAB) })</td>
+                    </tr>
+                </table>
+            </div>
+        }
+        
+        @if (Model.bk_te_CotizacionRCConstruccion != null)
+        {
+            @Html.HiddenFor(model => model.bk_te_CotizacionRCConstruccion.CotizacionID)
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                RC CONSTRUCCION
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table>
+                    <tr>
+                        <td width="200px">Sublímite al 100%</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCConstruccion.SubLimite_100, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCConstruccion.SubLimite_100) })</td>
+                    </tr>                    
+                    <tr>
+                        <td>% Siniestralidad</td>
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_CotizacionRCConstruccion.Siniestralidad, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Valor de la Obra</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCConstruccion.Obra, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCConstruccion.Obra) })</td>
+                    </tr>
+                    <tr>
+                        <td>Daños a Instalaciones Subterráneas</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCConstruccion.DSubterraneo, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCConstruccion.DSubterraneo) })</td>
+                    </tr>
+                    <tr>
+                        <td>Daños a Instalaciones Subacuáticas</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCConstruccion.DSubacuatico, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCConstruccion.DSubacuatico) })</td>
+                    </tr>
+                    <tr>
+                        <td>Daños por trabajos de soldadura</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCConstruccion.DSoldadura, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCConstruccion.DSoldadura) })</td>
+                    </tr>
+                    <tr>
+                        <td>Daños por trabajos de demolición y/o cimentación</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCConstruccion.DDemoCimi, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCConstruccion.DDemoCimi) })</td>
+                    </tr>
+                    <tr>
+                        <td>Daños por uso de máquinas o equipos de trabajo</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCConstruccion.DMaquinaria, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCConstruccion.DMaquinaria) })</td>
+                    </tr>
+                    <tr>
+                        <td>Daños por apuntalamientos</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCConstruccion.DApuntalamiento, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCConstruccion.DApuntalamiento) })</td>
+                    </tr>
+                    <tr>
+                        <td>Sublímite Obras Especiales</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCConstruccion.ObraEspecial, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCConstruccion.ObraEspecial) })</td>
+                    </tr>
+                    <tr>
+                        <td>Sublímite Uso de explosivos</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCConstruccion.Explosivos, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCConstruccion.Explosivos) })</td>
+                    </tr>                    
+                </table>
+            </div>
+        }
+
+        @if (Model.bk_te_CotizacionRCHoteleria != null)
+        {
+            @Html.HiddenFor(model => model.bk_te_CotizacionRCHoteleria.CotizacionID)
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                RC HOTELERIA
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table>
+                    <tr>
+                        <td width="200px">Sublímite al 100%</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCHoteleria.SubLimite_100, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCHoteleria.SubLimite_100) })</td>
+                    </tr>
+                    <tr>
+                        <td>% Siniestralidad</td>
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(p => p.bk_te_CotizacionRCHoteleria.Siniestralidad, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Número de Habitaciones</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCHoteleria.nroHabitaciones, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCHoteleria.nroHabitaciones) })</td>
+                    </tr>
+                    <tr>
+                        <td>Guardarropa</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCHoteleria.Guardarropa, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCHoteleria.Guardarropa) })</td>
+                    </tr>
+                    <tr>
+                        <td>Lavado y Planchado</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCHoteleria.LavadoPlanchado, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCHoteleria.LavadoPlanchado) })</td>
+                    </tr>
+                    <tr>
+                        <td>Equipaje y efectos de huéspedes</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCHoteleria.EfectosHuespedes, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCHoteleria.EfectosHuespedes) })</td>
+                    </tr>
+                    <tr>
+                        <td>Dinero y Valores en cajas de seguridad</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCHoteleria.DineroValores, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCHoteleria.DineroValores) })</td>
+                    </tr>
+                    <tr>
+                        <td>Intoxicación por le suministro de alimentos y bebidas sin alcohol</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCHoteleria.Intoxicacion, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCHoteleria.Intoxicacion) })</td>
+                    </tr>
+                    <tr>
+                        <td>Daños por el uso de vehículos</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCHoteleria.DañosVehiculo, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCHoteleria.DañosVehiculo) })</td>
+                    </tr>
+                    <tr>
+                        <td>Servicio médico</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCHoteleria.ServicioMedico, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCHoteleria.ServicioMedico) })</td>
+                    </tr>
+                    <tr>
+                        <td>Accidentes a ocupantes de vehículos</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCHoteleria.AccOcupanteVeh, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCHoteleria.AccOcupanteVeh) })</td>
+                    </tr>
+                    <tr>
+                        <td>Sublímite para Reclamos provenientes del extranjero</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCHoteleria.ReclamoExtranjero, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCHoteleria.ReclamoExtranjero) })</td>
+                    </tr>
+                    <tr>
+                        <td>Sublímite para Venta y Suministro de Licores</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCHoteleria.VentaLicor, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCHoteleria.VentaLicor) })</td>
+                    </tr>                    
+                </table>
+            </div>
+        }
+
+        @if (Model.bk_te_CotizacionRCAdicional != null)
+        {
+            @Html.HiddenFor(model => model.bk_te_CotizacionRCAdicional.CotizacionID)
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                CONCEPTOS ADICIONALES PARA RC
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <table>
+                    <tr>
+                        <td width="400px">Ajustar a Prima Mínima:</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionRCAdicional.isPrimaMinima, true)</td>
+                                    <td>SI</td>
+                                    <td width="20px"></td>
+                                    <td>@Html.RadioButtonFor(p => p.bk_te_CotizacionRCAdicional.isPrimaMinima, false)</td>
+                                    <td>NO</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Prima Neta Mínima USD a Ajustar</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCAdicional.PrimaNetaMinUSD, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionRCAdicional.PrimaNetaMinUSD) })</td>
+                    </tr>
+                    <tr>
+                        <td>El Asegurado entregó toda la información requerida por suscripción para la valuación del riesgo?</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCAdicional.RCEvaluacionID, Model.bk_te_CotizacionRCAdicional.EvaluacionList, new { @class = "form-control multiSelect", Style = "width:220px" })</td>
+                    </tr>
+                    <tr>
+                        <td>Inclinación de la Aseguradora sobre este riesgo:</td>
+                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionRCAdicional.RCInclinacionID, Model.bk_te_CotizacionRCAdicional.InclinacionList, new { @class = "form-control multiSelect", Style = "width:220px" })</td>
+                    </tr>
+                    <tr>
+                        <td>Descripción de los bienes bajo cuidado, control y custodia:</td>                        
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCAdicional.DesBienes, new { @class = "form-control" })</td>
+                    </tr>
+                    <tr>
+                        <td>Descripción de la Obra (RC Construcción):</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCAdicional.DesObra, new { @class = "form-control" })</td>
+                    </tr>
+                    <tr>
+                        <td>Descripción de la Obras Especiales  (RC Construcción):</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCAdicional.DesObraEspecial, new { @class = "form-control" })</td>
+                    </tr>
+                    <tr>
+                        <td>Detalle para "RC Contratistas Independientes":</td>
+                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionRCAdicional.DetalleRCContratista, new { @class = "form-control" })</td>
+                    </tr>                    
+                </table>
+            </div>
+        }
+    </div>
+    
+    <table>
+        <tr>
+            <td><button type="button" class="btn btn-primary">Cancelar</button></td>
+            <td><button type="submit" class="btn btn-success">Guardar</button></td>
+        </tr>
+    </table>
+}
+
+
+
+@section scripts {
+    <script>
+
+        var headers = $('#accordion .accordion-header');
+        var contentAreas = $('#accordion .ui-accordion-content ').hide().first().show().end();
+        var expandLink = $('.accordion-expand-all');
+
+        // add the accordion functionality
+        headers.click(function () {
+            // close all panels
+            contentAreas.slideUp();
+            // open the appropriate panel
+            $(this).next().slideDown();
+            // reset Expand all button
+            expandLink.text('Expandir Todo')
+                .data('isAllOpen', false);
+            // stop page scroll
+            return false;
+        });
+
+        expandLink.click(function () {
+            var isAllOpen = !$(this).data('isAllOpen');
+            console.log({ isAllOpen: isAllOpen, contentAreas: contentAreas })
+            contentAreas[isAllOpen ? 'slideDown' : 'slideUp']();
+
+            expandLink.text(isAllOpen ? 'Colapsar Todo' : 'Expandir Todo')
+                        .data('isAllOpen', isAllOpen);
+        });
+
+        $(function () {
+
+            $(".accordion").accordion({
+                collapsible: true,
+                heightStyle: "content"
+            });
+
+            $(".multiSelect").multiselect({
+                multiple: false,
+                header: "Seleccionar una opción",
+                noneSelectedText: "Seleccionar una opción",
+                selectedList: 1,
+                position: { my: 'left top', at: 'left bottom' }
+            });
+
+            $.ajaxSetup({ cache: false });
+                      
+            Ocultar('tdArrendatario', 'txtArrendatario');
+            Ocultar('tdBienes', 'txtBienes');
+            Ocultar('tdCruzada', 'txtCruzada');
+            Ocultar('tdContaminacion', 'txtContaminacion');
+            Ocultar('tdAsumida', 'txtAsumida');
+            Ocultar('tdContIndependiente', 'txtContIndependiente');
+        });
+
+        function cambiarDdl(a) {
+
+            $('#' + a.replace('ddl', 'hd') + 'Dep').val($('#' + a).val());
+            $('#' + a + 'Dep').val($('#' + a).val());
+            $('#' + a + 'Dep').multiselect('refresh');
+
+            $('#' + a.replace('ddl', 'hd') + 'Dep2').val($('#' + a).val());
+            $('#' + a + 'Dep2').val($('#' + a).val());
+            $('#' + a + 'Dep2').multiselect('refresh');
+        }
+
+        //function cambiarTxt(a) {
+        //    $('#' + a.replace('txt', 'hd') + 'Dep').val($('#' + a).val());
+        //    $('#' + a + 'Dep').val($('#' + a).val());
+        //}
+
+        function cambiarTxtAct() {
+            //debugger;
+            $('#txtFeria').val($('#txtActInmuebles').val());
+            $('#hdFeria').val($('#txtActInmuebles').val());
+            $('#txtCargaDescarga').val($('#txtActInmuebles').val());
+            $('#hdCargaDescarga').val($('#txtActInmuebles').val());
+
+            var valor = parseInt($('#txtActInmuebles').val().replace(/,/g, ""));
+
+            var maximo = @Model.bk_te_CotizacionRCActInm.MaxPagoVoluntarioUrgenciaMedica;
+            //$('#txtVolUrgenciaMedica').val(numberWithCommas(valor>maximo ? maximo : valor));
+            //$('#hdVolUrgenciaMedica').val($('#txtVolUrgenciaMedica').val());
+
+
+            $('#txtGastosDefensa').val(numberWithCommas(valor / 2));
+            $('#hdGastosDefensa').val($('#txtGastosDefensa').val());
+
+            Ocultar('tdActInm', 'txtActInmuebles');
+        }
+
+        function numberWithCommas(x) {
+            var parts = x.toString().split(".");
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return parts.join(".");
+        }
+
+        function Ocultar(clase, objecto){
+            var valor = parseInt($('#' + objecto).val().replace(/,/g, ""));
+            
+            if ($('#' + objecto).val() =="")
+                $("." + clase).css('display', 'none');
+            else
+                if (valor == 0)
+                    $("." + clase).css('display', 'none');
+                else
+                    $("." + clase).show();
+        }
+
+        function ModalComision(open) {
+            if (open == 1)
+                $('#divCalculo').show();
+            else
+                $('#divCalculo').css('display', 'none');
+        }
+
+    </script>
+}
+
+

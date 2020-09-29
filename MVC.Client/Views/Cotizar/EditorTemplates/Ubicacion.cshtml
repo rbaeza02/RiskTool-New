@@ -1,0 +1,190 @@
+﻿
+@model Domain.MainModule.Entities.Ubicacion
+
+
+    @Html.HiddenFor(p => p.UbicacionID)
+    @Html.HiddenFor(p => p.AseguradoID)
+    @Html.HiddenFor(p => p.CodigoPostal)
+    @Html.HiddenFor(p => p.Domicilio_Calle)
+    @Html.HiddenFor(p => p.Domicilio_NroExterior)
+    @Html.HiddenFor(p => p.Domicilio_NroInterior)
+    @Html.HiddenFor(p => p.ColoniaID)
+    @Html.HiddenFor(p => p.Latitud)
+    @Html.HiddenFor(p => p.Longitud)
+    @Html.HiddenFor(p => p.TipoConstructivoIncendioID)
+    @Html.HiddenFor(p => p.TipoConstructivoTerremotoID)
+    @Html.HiddenFor(p => p.ZonaTEVID)
+    @Html.HiddenFor(p => p.ZonaHidroID)
+    @Html.HiddenFor(p => p.nroPiso)
+    @Html.HiddenFor(p => p.nroSotano)    
+    @Html.HiddenFor(p => p.SIC)
+    @Html.HiddenFor(p => p.UbicacionCosta)
+    @Html.HiddenFor(p => p.AnalisisFire)
+    @Html.HiddenFor(p => p.nroUbicacion)
+
+
+<div id="@("nro" + Model.nroUbicacion)" class="tab-pane fade @(Model.nroUbicacion == 1? "in active" : "")">   
+        <div class="accordion">
+            @if (Model.bk_tr_CotizacionCoberturaUbi.Count() > 0)
+            { 
+                <h3>Incendio</h3>
+                <div>
+                    <table>
+                        <tr>
+                            <td>
+                                <table>
+                                    @for (var i = 0; i < Model.bk_tr_CotizacionCoberturaUbi.Count(); i++)
+                                    {
+                                        @Html.HiddenFor(model => model.bk_tr_CotizacionCoberturaUbi[i].CotizacionID)
+                                        @Html.HiddenFor(model => model.bk_tr_CotizacionCoberturaUbi[i].CoberturaID)
+                                        @Html.HiddenFor(model => model.bk_tr_CotizacionCoberturaUbi[i].UbicacionID)
+                                        @Html.HiddenFor(model => model.bk_tr_CotizacionCoberturaUbi[i].NombreCobertura)
+                                        @Html.HiddenFor(model => model.bk_tr_CotizacionCoberturaUbi[i].isPct_Mes)
+                                        @Html.HiddenFor(model => model.bk_tr_CotizacionCoberturaUbi[i].isPct)
+                                        @Html.HiddenFor(model => model.bk_tr_CotizacionCoberturaUbi[i].isMes)
+                                        <tr>
+                                            <td>@Model.bk_tr_CotizacionCoberturaUbi[i].NombreCobertura</td>
+                                            <td>@Html.TextBoxFor(model => model.bk_tr_CotizacionCoberturaUbi[i].ValorAsegurable, new { @class = "form-control number", Value = String.Format("{0:N0}", Model.bk_tr_CotizacionCoberturaUbi[i].ValorAsegurable), id = "txtCob_" + Model.bk_tr_CotizacionCoberturaUbi[i].CoberturaID.ToString() + "_" + Model.UbicacionID, @onchange = "desHabilitarPerCons('" + Model.bk_tr_CotizacionCoberturaUbi[i].CoberturaID + "','" + Model.UbicacionID + "')" })</td>
+                                            @if (Model.bk_tr_CotizacionCoberturaUbi[i].isPct_Mes)
+                                            {
+                                            <td>
+                                                @if (Model.bk_tr_CotizacionCoberturaUbi[i].CoberturaID == 8)
+                                                {
+                                                    @Html.DropDownListFor(p => p.bk_tr_CotizacionCoberturaUbi[i].valorAdicional, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.GanBrutasList, "Value", "Label", Model.bk_tr_CotizacionCoberturaUbi[i].valorAdicional), new { @class = "form-control multiSelect", style = "width:100px;", @id = "ddl_" + Model.bk_tr_CotizacionCoberturaUbi[i].CoberturaID + "_" + Model.UbicacionID })
+                                                }
+                                                @if (Model.bk_tr_CotizacionCoberturaUbi[i].CoberturaID == 9 || Model.bk_tr_CotizacionCoberturaUbi[i].CoberturaID == 10 || Model.bk_tr_CotizacionCoberturaUbi[i].CoberturaID == 13)
+                                                {                                                
+                                                    @Html.DropDownListFor(p => p.bk_tr_CotizacionCoberturaUbi[i].valorAdicional, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.IndemnizacionList, "Value", "Label", Model.bk_tr_CotizacionCoberturaUbi[i].valorAdicional), new { @class = "form-control multiSelect", style = "width:100px;", @id = "ddl_" + Model.bk_tr_CotizacionCoberturaUbi[i].CoberturaID + "_" + Model.UbicacionID })
+                                                }
+                                                @if (Model.bk_tr_CotizacionCoberturaUbi[i].CoberturaID == 11)
+                                                {                                                
+                                                    @Html.DropDownListFor(p => p.bk_tr_CotizacionCoberturaUbi[i].valorAdicional, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.RedIngresoList, "Value", "Label", Model.bk_tr_CotizacionCoberturaUbi[i].valorAdicional), new { @class = "form-control multiSelect", style = "width:100px;", @id = "ddl_" + Model.bk_tr_CotizacionCoberturaUbi[i].CoberturaID + "_" + Model.UbicacionID })
+                                                }
+                                                @if (Model.bk_tr_CotizacionCoberturaUbi[i].CoberturaID == 12)
+                                                {                                                
+                                                    @Html.DropDownListFor(p => p.bk_tr_CotizacionCoberturaUbi[i].valorAdicional, new SelectList((List<Domain.MainModule.Entities.Table>)ViewBag.SegContingList, "Value", "Label", Model.bk_tr_CotizacionCoberturaUbi[i].valorAdicional), new { @class = "form-control multiSelect", style = "width:100px;", @id = "ddl_" + Model.bk_tr_CotizacionCoberturaUbi[i].CoberturaID + "_" + Model.UbicacionID })
+                                                }
+                                            
+                                                @*<div>
+                                                    <div class="input-group">
+                                                        @Html.TextBoxFor(model => model.bk_tr_CotizacionCoberturaUbi[i].valorAdicional, "{0:F0}", new { @class = "form-control", placeholder = "0", style = "width:100px" })                                                    
+                                                        @if (Model.bk_tr_CotizacionCoberturaUbi[i].isPct)
+                                                        {
+                                                            <span class="input-group-addon">%</span>
+                                                        }
+                                                        @if (Model.bk_tr_CotizacionCoberturaUbi[i].isMes)
+                                                        {
+                                                            <span class="input-group-addon">M</span>
+                                                        }                                                    
+                                                    </div>
+                                                </div>*@
+                                            </td>
+                                                <td>
+                                                    <a class="btn btn-link" href="#" title="Copiar Valores a las demás ubicaciones" onclick="CopiarDatos('@Model.bk_tr_CotizacionCoberturaUbi[i].CoberturaID','@Model.UbicacionID')"><span class="fui-windows"></span></a>
+                                                </td>
+                                                <td><span class="text-danger" style="display:none;" id="@("spn_" + Model.bk_tr_CotizacionCoberturaUbi[i].CoberturaID.ToString() + "_" + Model.UbicacionID.ToString())"><i>Copiado</i></span></td>
+                                            }
+                                        </tr>
+                                    }
+
+                                </table>
+                            </td>
+                            <td width="50px"></td>
+                            <td valign="top">
+                                @if (Model.bk_te_CotizacionUbicacion.Count() > 0)
+                                { 
+                                <table>
+                                    <tr>
+                                        <td>Comision:</td>
+                                        <td>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    @Html.TextBoxFor(p => p.bk_te_CotizacionUbicacion[0].ComisionIncendio, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Deducible Inc (en USD):</td>
+                                        <td>@Html.TextBoxFor(p => p.bk_te_CotizacionUbicacion[0].DeducibleUSD, new { @class = "form-control number", Value = String.Format("{0:N}", Model.bk_te_CotizacionUbicacion[0].DeducibleUSD) })</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Coaseguro Terremoto:</td>
+                                        <td>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    @Html.TextBoxFor(p => p.bk_te_CotizacionUbicacion[0].CoaseguroTerremoto, "{0:n2}", new { @class = "form-control decimal", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Grupo:</td>
+                                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].GrupoIncendioID, new SelectList((List<Domain.MainModule.Entities.GrupoIncendio>)ViewBag.GrupoIncendioList, "GrupoIncendioID", "nombre", Model.bk_te_CotizacionUbicacion[0].GrupoIncendioID), new { @class = "form-control multiSelect", style = "width:100px;" })</td>
+                                        @*<td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].GrupoIncendioID, (IEnumerable<SelectListItem>)ViewBag.GrupoIncendioList, new { @class = "form-control multiSelect", style = "width:100px;" })</td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>Grado de Exposición:</td>
+                                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].GradoExposicionID, new SelectList((List<Domain.MainModule.Entities.GradoExposicion>)ViewBag.GradoExposicionList, "GradoExposicionID", "nombre", Model.bk_te_CotizacionUbicacion[0].GradoExposicionID), new { @class = "form-control multiSelect", style = "width:100px;" })</td>
+                                        @*<td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].GradoExposicionID, (IEnumerable<SelectListItem>)ViewBag.GradoExposicionList, new { @class = "form-control multiSelect", style = "width:100px;" })</td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>Protección Pública:</td>
+                                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].ProteccionPublicaID, new SelectList((List<Domain.MainModule.Entities.ProteccionPublica>)ViewBag.ProteccionPublicaList, "ProteccionPublicaID", "nombre", Model.bk_te_CotizacionUbicacion[0].ProteccionPublicaID), new { @class = "form-control multiSelect", style = "width:100px;" })</td>
+                                        @*<td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].ProteccionPublicaID, (IEnumerable<SelectListItem>)ViewBag.ProteccionPublicaList, new { @class = "form-control multiSelect", style = "width:100px;" })</td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>Protección Privada:</td>
+                                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].ProteccionPrivadaID, new SelectList((List<Domain.MainModule.Entities.ProteccionPrivada>)ViewBag.ProteccionPrivadaList, "ProteccionPrivadaID", "nombre", Model.bk_te_CotizacionUbicacion[0].ProteccionPrivadaID), new { @class = "form-control multiSelect", style = "width:100px;" })</td>
+                                        @*<td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].ProteccionPrivadaID, (IEnumerable<SelectListItem>)ViewBag.ProteccionPrivadaList, new { @class = "form-control multiSelect", style = "width:100px;" })</td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>Exposición Interna:</td>
+                                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].ExposicionIDInterna, new SelectList((List<Domain.MainModule.Entities.Exposicion>)ViewBag.ExposicionList, "ExposicionID", "nombre", Model.bk_te_CotizacionUbicacion[0].ExposicionIDInterna.ToString()), new { @class = "form-control multiSelect", style = "width:100px;" })</td>
+                                        @*<td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].ExposicionIDInterna, (IEnumerable<SelectListItem>)ViewBag.ExposicionList, new { @class = "form-control multiSelect", style = "width:100px;" })</td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>Exposición Externa:</td>
+                                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].ExposicionIDExterna, new SelectList((List<Domain.MainModule.Entities.Exposicion>)ViewBag.ExposicionList, "ExposicionID", "nombre", Model.bk_te_CotizacionUbicacion[0].ExposicionIDExterna.ToString()), new { @class = "form-control multiSelect", style = "width:100px;" })</td>
+                                        @*<td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].ExposicionIDExterna, (IEnumerable<SelectListItem>)ViewBag.ExposicionList, new { @class = "form-control multiSelect", style = "width:100px;" })</td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>Daños por Agua:</td>
+                                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].ExposicionIDAgua, new SelectList((List<Domain.MainModule.Entities.Exposicion>)ViewBag.ExposicionList, "ExposicionID", "nombre", Model.bk_te_CotizacionUbicacion[0].ExposicionIDAgua.ToString()), new { @class = "form-control multiSelect", style = "width:100px;" })</td>
+                                        @*<td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].ExposicionIDAgua, (IEnumerable<SelectListItem>)ViewBag.ExposicionList, new { @class = "form-control multiSelect", style = "width:100px;" })</td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>Daños por Humo:</td>
+                                        <td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].ExposicionIDHumo, new SelectList((List<Domain.MainModule.Entities.Exposicion>)ViewBag.ExposicionList, "ExposicionID", "nombre", Model.bk_te_CotizacionUbicacion[0].ExposicionIDHumo.ToString()), new { @class = "form-control multiSelect", style = "width:100px;" })</td>
+                                        @*<td>@Html.DropDownListFor(p => p.bk_te_CotizacionUbicacion[0].ExposicionIDHumo, (IEnumerable<SelectListItem>)ViewBag.ExposicionList, new { @class = "form-control multiSelect", style = "width:100px;" })</td>*@
+                                    </tr>
+                                </table>
+                                }
+                            </td>
+                        </tr>
+                    </table>
+                
+                </div>
+
+            }
+            <h3>Otros</h3>
+            <div>
+                <table>
+                    @for (var i = 0; i < Model.bk_tr_CotizacionSubLineaUbi.Count(); i++)
+                    {
+                        @Html.HiddenFor(model => model.bk_tr_CotizacionSubLineaUbi[i].CotizacionID)
+                        @Html.HiddenFor(model => model.bk_tr_CotizacionSubLineaUbi[i].SubLineaNegocioID)
+                        @Html.HiddenFor(model => model.bk_tr_CotizacionSubLineaUbi[i].UbicacionID)
+                        @Html.HiddenFor(model => model.bk_tr_CotizacionSubLineaUbi[i].NombreSubLinea)
+                        <tr>
+                            <td>@Model.bk_tr_CotizacionSubLineaUbi[i].NombreSubLinea</td>
+                            <td>@Html.TextBoxFor(model => model.bk_tr_CotizacionSubLineaUbi[i].ValorAsegurable, new { @class = "form-control number", Value = String.Format("{0:N2}", Model.bk_tr_CotizacionSubLineaUbi[i].ValorAsegurable) })</td>
+                        </tr>
+                    }
+
+                </table>
+            </div>   
+    </div>
+</div>

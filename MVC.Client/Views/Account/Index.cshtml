@@ -1,0 +1,82 @@
+﻿@model IEnumerable<Domain.MainModule.Entities.Usuario>
+
+@section css {
+    @Styles.Render("~/Content/dynatable_personal")
+}
+
+
+@{
+    ViewBag.Title = "Usuarios";
+}
+
+<h5>Usuarios</h5>
+
+<button type="button" class="btn btn-success" onclick="NuevoUsuario();">Crear Nuevo Usuario</button>
+<button type="button" class="btn btn-success" onclick="Roles();">Roles</button>
+
+<table id="tblUsuario" class="table table-striped">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Usuario</th>
+            <th>Nombre</th>
+            <th>Rol</th>
+            <th>Email</th>            
+            <th>Activo</th>
+        </tr>
+    </thead>
+    @if (Model != null)
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td><a class="btn btn-primary" href="@Url.Action("Register", "Account",new { id = item.UsuarioID})"><span class="fui-new"></span></a></td>
+                <td>@item.NombreUsuario</td>
+                <td>@item.Nombre</td>
+                <td>@item.bk_tc_Rol.nombre</td>
+                <td>@item.email</td>
+                <td>
+                    <label class="checkbox" for="checkbox1">
+                        <input type="checkbox" value="" id="checkbox1" data-toggle="checkbox" @(item.isActivo.Value ? "checked" : "")  disabled>
+                    </label>
+                </td>
+            </tr>
+        }
+    }
+    
+
+</table>
+
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/dynatable")
+
+        <script>
+    $(function () {
+        $('#tblUsuario').dynatable(
+            {
+                features: {
+                    paginate: true,
+                    recordCount: false,
+                    perPageSelect: false
+                },
+                dataset: {
+                    perPageDefault: 10
+                }
+
+
+            }
+            );
+    });
+
+    function NuevoUsuario() {
+        var url = '@Url.Action("Register", "Account")';
+                window.location.href = url;
+            }
+
+            function Roles() {
+                var url = '@Url.Action("Rol", "Account")';
+                window.location.href = url;
+            }
+        </script>
+    }

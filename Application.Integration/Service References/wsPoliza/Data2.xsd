@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Sistran.Integracion.Integracion.Integracion.Application" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="ArrayOfPasoAERO">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PasoAERO" nillable="true" type="tns:PasoAERO" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPasoAERO" nillable="true" type="tns:ArrayOfPasoAERO" />
+  <xs:complexType name="PasoAERO">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Aaaa_const" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_aero_base" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_item" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_limite_geo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_aero" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_aeropuerto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_uso_aero" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_pv" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Matricula" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Num_pasajeros" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Num_tripulantes" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tipo_riesgo" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PasoAERO" nillable="true" type="tns:PasoAERO" />
+  <xs:complexType name="ArrayOfPasoAge">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PasoAge" nillable="true" type="tns:PasoAge" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPasoAge" nillable="true" type="tns:ArrayOfPasoAge" />
+  <xs:complexType name="PasoAge">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Cod_agente" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_ramo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_suc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_agente" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_pv" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_art41" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_comis_extra_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_comis_normal_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_comis_extra" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_comis_normal" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_tasa_art41" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PasoAge" nillable="true" type="tns:PasoAge" />
+  <xs:complexType name="ArrayOfPasoCli">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PasoCli" nillable="true" type="tns:PasoCli" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPasoCli" nillable="true" type="tns:ArrayOfPasoCli" />
+  <xs:complexType name="PasoCli">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Aaaamm_vto_tarj" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_aseg" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_banco_emisor_tarj" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_ciudad1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_ciudad2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_colonia1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_colonia2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_conducto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_dpto1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_dpto2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_est_civil" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_item" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_municipio1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_municipio2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_pais1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_pais2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_postal" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_dir1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_dir2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_doc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_persona" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_telef1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_telef2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fec_nac" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_pv" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nro_cta_tarj" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nro_dia_cobro" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nro_doc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nro_exterior1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nro_exterior2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nro_interior1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nro_interior2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nro_pol" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Sn_new_comb" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_apellido1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_apellido2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_calle1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_calle2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_curp" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_desc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_lugar_nac" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_nom_factura" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_nombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_observaciones" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_rfc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_sexo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_telef1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_telef2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_titular" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PasoCli" nillable="true" type="tns:PasoCli" />
+  <xs:complexType name="ArrayOfPasoCob">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PasoCob" nillable="true" type="tns:PasoCob" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPasoCob" nillable="true" type="tns:ArrayOfPasoCob" />
+  <xs:complexType name="PasoCob">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Cod_class_peril" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_coas_pact" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_coverage" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_deduc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_deduc_aplica" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_giro_negocio" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_ind_cob" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_item" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_line" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_major_line" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_minor_line" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_objeto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_profit_center" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_ramo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_subline" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_subprofit_center" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_subprofit_center_local" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tarifa" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_tasa" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_unidad_deduc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_pv" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_agreg_anual" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_deduc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_parte_de" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_prima" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_prima_ajuste" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_prima_inflacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_prima_recdesc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_prima_tasa" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_resp_max" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_resp_max_acc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_suma_aseg" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_suma_asegurable" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_suma_inflacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nro_pol" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_inflacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_inflacion_prima" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_tasa" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Sn_acum_prima_total" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Sn_acum_suma_total" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_detalle" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PasoCob" nillable="true" type="tns:PasoCob" />
+  <xs:complexType name="ArrayOfPasoEMB">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PasoEMB" nillable="true" type="tns:PasoEMB" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPasoEMB" nillable="true" type="tns:ArrayOfPasoEMB" />
+  <xs:complexType name="PasoEMB">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Anio_construc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_area_nav" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_bandera" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_item" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_material" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_pto_base" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_emb" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_uso_nav" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Embar_clasif" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_pv" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PasoEMB" nillable="true" type="tns:PasoEMB" />
+  <xs:complexType name="ArrayOfPasoTRANSPORTE">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PasoTRANSPORTE" nillable="true" type="tns:PasoTRANSPORTE" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPasoTRANSPORTE" nillable="true" type="tns:ArrayOfPasoTRANSPORTE" />
+  <xs:complexType name="PasoTRANSPORTE">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Cod_item" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_medio_trans" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_origen_dest" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_merc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_prono" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_seg" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_pv" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_limite_maxE" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_prima_dep" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_pronostico" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PasoTRANSPORTE" nillable="true" type="tns:PasoTRANSPORTE" />
+  <xs:complexType name="ArrayOfPasoTEV">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PasoTEV" nillable="true" type="tns:PasoTEV" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPasoTEV" nillable="true" type="tns:ArrayOfPasoTEV" />
+  <xs:complexType name="PasoTEV">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Anio_ref" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Clas_sismo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_altura" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_claros" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_danosp" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_golpet" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_item" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_material" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_planta" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_suelo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tech" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_trabes" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_ubicac" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_uso" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cols_corta" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Comb_coas" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Comb_deduc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Comb_limit_max" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Contravent" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Hundimient" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_pv" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Inmuble_ind" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Latitud" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Longitud" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Muros_conc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Muros_pref" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Reforzada" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Reparados" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Riesgo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Riesgo_val" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Sobre_peso" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PasoTEV" nillable="true" type="tns:PasoTEV" />
+  <xs:complexType name="ArrayOfPasoPol">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PasoPol" nillable="true" type="tns:PasoPol" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPasoPol" nillable="true" type="tns:ArrayOfPasoPol" />
+  <xs:complexType name="PasoPol">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Aaaa_endoso" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_Sus" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_cia" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_clase_riesgo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_conducto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_grupo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_grupo_endo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_moneda" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_nivel_facturacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_nivel_imp_factura" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_operacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_periodo_pago" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_pto_vta" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_ramo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_suc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_endo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_poliza" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_riesgo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_usuario" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fec_tarifa" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fec_vig_desde" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fec_vig_hasta" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_pv" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_decreto_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_derecho_poliza_turista" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_deremi_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_descto_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_iva_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_premio_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_prima_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_recfin_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_suma_asegurada" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="No_ejecutivo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nro_endoso" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nro_pol" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_decreto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_derecho_poliza_turista" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_descuento" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_gastos_emision" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_iva" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_part" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_recargo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pol_estado" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Sn_agrupada" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Sn_gobierno" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_RFC" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_RFC_Pagador" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_observaciones" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PasoPol" nillable="true" type="tns:PasoPol" />
+  <xs:complexType name="ArrayOfPasoObs">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PasoObs" nillable="true" type="tns:PasoObs" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPasoObs" nillable="true" type="tns:ArrayOfPasoObs" />
+  <xs:complexType name="PasoObs">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Cod_item" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_pv" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_obs" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PasoObs" nillable="true" type="tns:PasoObs" />
+  <xs:complexType name="ArrayOfPasoOBRACIVIL">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PasoOBRACIVIL" nillable="true" type="tns:PasoOBRACIVIL" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPasoOBRACIVIL" nillable="true" type="tns:ArrayOfPasoOBRACIVIL" />
+  <xs:complexType name="PasoOBRACIVIL">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Cod_item" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_cons" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_seg" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Condicion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Duracion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_pv" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Valorfinal" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Valormaqe" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Valorproye" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Valorproyr" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PasoOBRACIVIL" nillable="true" type="tns:PasoOBRACIVIL" />
+  <xs:complexType name="ArrayOfPasoInc">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PasoInc" nillable="true" type="tns:PasoInc" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPasoInc" nillable="true" type="tns:ArrayOfPasoInc" />
+  <xs:complexType name="PasoInc">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Aaaa_construccion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Chip" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cnt_pisos" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cnt_pisos_sot" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_SIC" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_benef_1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_benef_2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_benef_3" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_calif_uw" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_ced_especialidad" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_ced_prof" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_ciudad" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_colonia" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_constr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_desc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_direcc_envio" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_dpto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_espe" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_giro_negocio" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_hazard_grade" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_ind_cob" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_item" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_municipio" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_pais" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_postal" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_profe" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_susceptibilidad" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_benef1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_benef2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_benef3" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_plan" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Constr_local" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Edad" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Enf_Ant" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_Color" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_Especie" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_Raza" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_pv" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_decreto_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_deremi_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_deremi_turista" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_descto_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_iva_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_participa_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_premio_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Imp_recfin_me" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nro__interior" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nro_exterior" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nro_pol" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Otra_Raza" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Otro_Color" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pedigree" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_eml" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="S_Particulares" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Sexo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Sn_condominio" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_direccion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_nombre_benef1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_nombre_benef2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Txt_nombre_benef3" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Zona_amis_huracan" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Zona_amis_terremoto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Zona_cresta_huracan" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Zona_cresta_terremoto" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PasoInc" nillable="true" type="tns:PasoInc" />
+  <xs:complexType name="ArrayOfPasoHIDRO">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PasoHIDRO" nillable="true" type="tns:PasoHIDRO" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPasoHIDRO" nillable="true" type="tns:ArrayOfPasoHIDRO" />
+  <xs:complexType name="PasoHIDRO">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Cod_1riesgo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_item" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Forma_cubie" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_pv" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Irr_planta" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Latitud" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Longitud" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Monto_1er" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Obj_azotea" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Obj_cercap" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Piso_riesg" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_crist" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pje_domo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pri_linealago" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pri_lineamar" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Rugosidad" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Sobreelev" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Sop_vent" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tab_pl_lam" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tcristal" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tip_domo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tip_venta" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tipo_cubie" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tipo_muro" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Uso_inmub" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PasoHIDRO" nillable="true" type="tns:PasoHIDRO" />
+  <xs:complexType name="ArrayOfPasoDetalle">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PasoDetalle" nillable="true" type="tns:PasoDetalle" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPasoDetalle" nillable="true" type="tns:ArrayOfPasoDetalle" />
+  <xs:complexType name="PasoDetalle">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Anio" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_ind_cob" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ID_PV" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Limite" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Marca" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NumConse" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="cod_item" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PasoDetalle" nillable="true" type="tns:PasoDetalle" />
+  <xs:complexType name="ArrayOfPasoAne">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PasoAne" nillable="true" type="tns:PasoAne" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPasoAne" nillable="true" type="tns:ArrayOfPasoAne" />
+  <xs:complexType name="PasoAne">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Cod_anexo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_ind_cob" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_item" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_suc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cod_tipo_anexo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id_pv" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nro_pol" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PasoAne" nillable="true" type="tns:PasoAne" />
+</xs:schema>

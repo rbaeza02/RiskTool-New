@@ -1,0 +1,828 @@
+﻿@model Domain.MainModule.Entities.Cotizacion
+@{
+    ViewBag.Title = "Cotizar";
+}
+
+@Html.Partial("_BuscarContacto")
+
+<div id="dviBuscarAsegurado" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h5>Buscar Asegurado</h5>
+    </div>
+    <div class="modal-body" style="background-color:white">
+        <table>
+            <tr>
+                <td style="padding:0 8px 0 8px"><label for="txtRFC">RFC:</label></td>
+                <td>
+                    <input type="text" id="txtRFC" class="form-control">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><div id="divError"></div></td>
+            </tr>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cerrar</button>
+        <button class="btn btn-primary" onclick="Buscar();">Buscar</button>
+    </div>
+</div>
+
+<table>
+    <tr class="custom2-row">
+        <td align="center" colspan="2">
+            <table>
+                <tr>
+                    <td>
+                        <label for="txtNombreAsegurado">Asegurado:</label>&nbsp;&nbsp;
+                    </td>
+                    <td>
+                        <input type="text" id="txtNombreAsegurado" class="form-control" style="width:600px;" disabled value="@Model.NombreAsegurado">
+                    </td>
+                    <td>                        
+                        <a class="btn btn-info" data-toggle="modal" href="#dviBuscarAsegurado"><i class="icon-plus-3 icon-white"></i>Buscar</a>
+                    </td>
+                    <td style="width:100px"></td>
+                    <td><label>@Model.RFCAsegurado</label></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+   <tr>
+       <td colspan="2">
+           @if (ViewBag.Mensaje != null)
+           {
+               <div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'><span class="fui-cross"></span></button>@ViewBag.Mensaje</div>
+           }
+       </td>
+   </tr>
+    
+
+        @using (Html.BeginForm("Crear", "Cotizar", FormMethod.Post, new { @class = "form-horizontal", @id = "frm", @name = "frm" }))
+        {
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.AseguradoID, new { @id = "hdAseguradoID" })
+            @Html.HiddenFor(model => model.CotizacionID)
+            @Html.HiddenFor(model => model.ContactoID, new { @id = "hdContactoID" })
+            @Html.HiddenFor(model => model.PrimerRiesgoSubLinea, new { @id = "hdPrimerRiesgoSubLinea" })
+            @Html.HiddenFor(model => model.PrimerTipoCobertura, new { @id = "hdPrimerTipoCobertura" })
+            @Html.HiddenFor(model => model.Incendio, new { @id = "hdIncendio" })
+            @Html.HiddenFor(model => model.Hidro, new { @id = "hdHidro" })
+            @Html.HiddenFor(model => model.Terremoto, new { @id = "hdTerremoto" })
+            @Html.HiddenFor(model => model.TerremotoBI, new { @id = "hdTerremotoBI" })
+            @Html.HiddenFor(model => model.Transporte, new { @id = "hdTransporte" })
+            @Html.HiddenFor(model => model.Miscelaneos, new { @id = "hdMiscelaneos" })
+            @Html.HiddenFor(model => model.Tecnicos, new { @id = "hdTecnicos" })
+            @Html.HiddenFor(model => model.RC, new { @id = "hdRC" })
+            @Html.HiddenFor(model => model.NombreAsegurado, new { @id = "hdNombreAsegurado" })
+            @Html.HiddenFor(model => model.RFCAsegurado, new { @id = "hdRFCAsegurado" })
+            @Html.HiddenFor(model => model.GastosAdquisicion, new { @id = "hdGastosAd" })
+            @Html.HiddenFor(model => model.isActivo)
+            @Html.HiddenFor(model => model.isOFAC, new { @id = "hdisOFAC" })
+            @Html.HiddenFor(model => model.Fecha)
+            //@Html.HiddenFor(model => model.TipoCambio)
+
+    <tr>
+        <td colspan="2">
+            @*<div class="tabbable" style="margin-left:-200px;">
+                <ul class="nav nav-pills nav-stacked col-md-3" style="width:200px;">
+                    <li class="active"><a href="#" data-toggle="tab">Datos Generales</a></li>
+                    <li><a href="#" data-toggle="tab" onclick="CambiarPagIncendio('@Model.CotizacionID')" @(Model.CotizacionID == 0 ? "disabled" : "")>Coberturas Incendio</a></li>
+                    <li><a href="#" data-toggle="tab" onclick="CambiarPagValores('@Model.CotizacionID')" @(Model.CotizacionID == 0 ? "disabled" : "")>Valores Incendio</a></li>
+                </ul>
+            </div>*@
+            <div class="tab-content col-md-9" style="width:1100px;">
+                <div class="tab-pane active">
+                    <table>
+                        <tr>
+                            <td valign="top">
+                                <table class="table-curved">
+                                    <tr>
+                                        <td colspan="3">
+                                            <h5>Datos Generales</h5>
+                                        </td>
+                                        <td colspan="2"></td>
+                                        <td align="right"><span id="spnNroDias"></span> días</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:0 8px 0 8px">
+                                            <label>Fecha:</label>
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(model => model.Fecha, "{0:dd/MM/yyyy}", new { @class = "form-control fecha", @placeholder = "dd/mm/yyyy", @disabled = "disabled" })
+                                        </td>
+                                        <td style="padding:0 8px 0 8px"><label>Poliza Nueva:</label></td>
+                                        <td style="padding:0 8px 0 8px">
+                                            <label class="checkbox primary" for="chkNew">
+                                                <input type="checkbox" data-toggle="radio" value="" id="chkNew" @(Model.isNew ? "checked" : "") onchange='CambiarChk()'>
+                                            </label>                                            
+                                            @Html.HiddenFor(p => p.isNew, new { @id = "hdNew" })
+                                        </td>
+                                        <td style="padding:0 8px 0 8px"><label>Poliza Anterior:</label></td>
+                                        <td style="padding:0 8px 0 8px">
+                                            @if (Model.isNew)
+                                            {
+                                                @Html.TextBoxFor(model => model.nroPolizaAnt, new { @class = "form-control", disabled = "disabled", @id = "txtPolizaAnterior" })
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(model => model.nroPolizaAnt, new { @class = "form-control", @id = "txtPolizaAnterior" })
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:0 8px 0 8px">
+                                            <label>Desde:</label>
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(model => model.VigenciaInicio, "{0:dd/MM/yyyy}", new { @class = "form-control fecha", @placeholder = "dd/mm/yyyy", @onchange="CambiarVigFinal()", @id = "txtVigenciaIni" })
+                                        </td>
+                                        <td style="padding:0 8px 0 8px">
+                                            <label>Hasta:</label>
+                                        </td>
+                                        <td style="padding:0 8px 0 8px">
+                                            @Html.TextBoxFor(model => model.VigenciaFin, "{0:dd/MM/yyyy}", new { @class = "form-control fecha", @placeholder = "dd/mm/yyyy", @id = "txtVigenciaFin", @onchange = "RestarFechas()" })
+                                        </td>
+                                        <td style="padding:0 8px 0 8px"><label>Forma Pago:</label></td>
+                                        <td>
+                                            @Html.DropDownListFor(p => p.FormaPagoID, (IEnumerable<SelectListItem>)ViewBag.FormaPagoList, new { @class = "form-control multiSelect", style = "width:100px;" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:0 8px 0 8px"><label>Comisión:</label></td>
+                                        <td>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    @Html.TextBoxFor(model => model.Comision, "{0:n2}", new { @class = "form-control", placeholder = "0.00", @onchange = "CambiarGastosAd()", @id = "txtComision", @onkeypress = "return isNumberKey(event)" })
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                            </div>
+
+                                        </td>
+                                        <td style="padding:0 8px 0 8px"><label>Otros Gastos Adq.:</label></td>
+                                        <td style="padding:0 8px 0 8px">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    @Html.TextBoxFor(model => model.OtrosGastosAdq, "{0:n2}", new { @class = "form-control", placeholder = "0.00", @onchange = "CambiarGastosAd()", @id = "txtOtrosGastosAdq", @onkeypress = "return isNumberKey(event)" })
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="padding:0 8px 0 8px"><label>Gastos Adq.:</label></td>
+                                        <td style="padding:0 8px 0 8px">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    @Html.TextBoxFor(model => model.GastosAdquisicion, "{0:n2}", new { @class = "form-control", placeholder = "0.00", @id = "txtGastosAdq", @onkeypress = "return isNumberKey(event)", disabled = "disabled" })
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"></td>                                        
+                                        <td style="padding:0 8px 0 8px"><label>Utilidad:</label></td>
+                                        <td style="padding:0 8px 0 8px">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    @Html.TextBoxFor(model => model.Utilidad, "{0:n2}", new { @class = "form-control", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="padding:0 8px 0 8px"><label>Gastos Adm:</label></td>
+                                        <td style="padding:0 8px 0 8px">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    @Html.TextBoxFor(model => model.GastosAdministracion, "{0:n2}", new { @class = "form-control", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:0 8px 0 8px"><label>Moneda:</label></td>
+                                        <td>
+                                            @Html.DropDownListFor(p => p.MonedaID, (IEnumerable<SelectListItem>)ViewBag.MonedaList, new { @class = "form-control multiSelect", style = "width:100px;" })
+                                        </td>
+                                        <td colspan="2"></td>
+                                        <td style="padding:0 8px 0 8px"><label>Tipo Operación:</label></td>
+                                        <td>
+                                            @Html.DropDownListFor(p => p.TipoOperacionID, (IEnumerable<SelectListItem>)ViewBag.TipoOperacionList, new { @class = "form-control multiSelect", style = "width:100px;", onchange="TipoOperacionChange()", id="ddlTipoOperacion" })
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:0 8px 0 8px"><label>Tipo Cambio:</label></td>
+                                        <td style="padding:0 8px 0 8px">
+                                            @Html.TextBoxFor(model => model.TipoCambio, "{0:n4}", new { @class = "form-control", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                        </td>
+                                        <td style="padding:0 8px 0 8px"><label>Contacto:</label></td>
+                                        <td style="padding:0 8px 0 8px">
+                                            <div class="input-group">
+                                                @Html.TextBox("txtContacto", Model.bk_tc_Contacto == null ? "" : Model.bk_tc_Contacto.NombreCompleto, new { @class = "form-control", @id = "txtContacto", disabled = "disabled" })
+                                                <span class="input-group-btn">                                                    
+                                                    <span class="input-group-addon"><a href="javascript:OpenContacto()">...</a></span>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td style="padding:0 8px 0 8px"><label>Participación:</label></td>
+                                        <td style="padding:0 8px 0 8px">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    @Html.TextBoxFor(model => model.Participacion, "{0:n2}", new { @class = "form-control", placeholder = "0.00", @onkeypress = "return isNumberKey(event)", @id="txtParticipacion" })
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr id="trInflacion">
+                                        <td style="padding:0 8px 0 8px"><label>Inflacion:</label></td>
+                                        <td style="padding:0 8px 0 8px">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    @Html.TextBoxFor(model => model.Inflacion, "{0:n2}", new { @class = "form-control", placeholder = "0.00", @onkeypress = "return isNumberKey(event)" })
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="padding:0 8px 0 8px"><label>Primer Riesgo:</label></td>
+                                        <td style="padding:0 8px 0 8px">
+                                            <label class="checkbox primary" for="chkPrimerRiesgo">
+                                                <input type="checkbox" data-toggle="radio" value="" id="chkPrimerRiesgo" @(Model.PrimerRiesgo ? "checked" : "") onchange='CambiarChkPrimerRiesgo()'>
+                                            </label>         
+                                            @Html.HiddenFor(p => p.PrimerRiesgo, new { @id = "hdPrimerRiesgo" })
+                                        </td>
+                                        <td style="padding:0 8px 0 8px"><label>Límite:</label></td>
+                                        <td style="padding:0 8px 0 8px">
+                                            @if (!Model.PrimerRiesgo)
+                                            {
+                                                @Html.TextBoxFor(model => model.LimitPrimerRiesgo, new { @class = "form-control number", disabled = "disabled", @id = "txtLimite", Value = String.Format("{0:N}", Model.LimitPrimerRiesgo) })
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(model => model.LimitPrimerRiesgo, new { @class = "form-control number", @id = "txtLimite", @onkeypress = "return isNumberKey(event)", Value = String.Format("{0:N}", Model.LimitPrimerRiesgo) })
+                                            }
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td colspan="2"><h5 class="small">Tipos de Bienes:</h5></td>                                        
+                                    </tr>
+                                    <tr>
+                                        <td id="tdIncendio">
+                                            <label class="checkbox" for="chkIncendio">
+                                                <input type="checkbox" value="" id="chkIncendio" data-toggle="checkbox" @(Model.Incendio ? "checked" : "")>
+                                                Incendio
+                                            </label>
+
+                                        </td>                                        
+                                        <td id="tdHidro">
+                                            <label class="checkbox" for="chkHidro">
+                                                <input type="checkbox" value="" id="chkHidro" data-toggle="checkbox" @(Model.Hidro ? "checked" : "")>
+                                                Hidro
+                                            </label>
+                                        </td>
+                                        <td id="tdTerremoto">
+                                            <label class="checkbox" for="chkTerremoto">
+                                                <input type="checkbox" value="" id="chkTerremoto" data-toggle="checkbox" @(Model.Terremoto ? "checked" : "")>
+                                                Terremoto
+                                            </label>
+                                        </td>
+                                        <td id="tdTerremotoBI">
+                                            <label class="checkbox" for="chkTerremotoBI">
+                                                <input type="checkbox" value="" id="chkTerremotoBI" data-toggle="checkbox" @(Model.TerremotoBI ? "checked" : "")>
+                                                TerremotoBI
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label class="checkbox" for="chkTransporte">
+                                                <input type="checkbox" value="" id="chkTransporte" data-toggle="checkbox" @(Model.Transporte ? "checked" : "") onchange="MonolineaTrans()">
+                                                Transporte
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr id="trTitulosMisc">
+                                        <td colspan="2"><label>Diversos Misceláneos:</label></td>
+                                        <td colspan="2"><label>Diversos Técnicos:</label></td>
+                                        <td><label>RC:</label></td>
+                                    </tr>
+                                    <tr id="trMisc">
+                                        <td colspan="2">
+                                            @Html.DropDownList("ddlMiscelaneos", (IEnumerable<SelectListItem>)ViewBag.MiscelaneoList, "Ninguno", new { @class = "form-control multiSelect", @id = "ddlMiscelaneos", style = "width:100px", @onchange = "AddTagInput('Miscelaneos');" })
+                                        </td>
+                                        <td colspan="2">
+                                            @Html.DropDownList("ddlTecnicos", (IEnumerable<SelectListItem>)ViewBag.TecnicoList, "Ninguno", new { @class = "form-control multiSelect", @id = "ddlTecnicos", style = "width:100px", @onchange = "AddTagInput('Tecnicos');" })
+                                        </td>
+                                        <td>
+                                            @Html.DropDownList("ddlRC", (IEnumerable<SelectListItem>)ViewBag.RCList, "Ninguno", new { @class = "form-control multiSelect", @id = "ddlRC", style = "width:100px", @onchange = "AddTagInput('RC');" })
+                                        </td>
+                                    </tr>
+                                    <tr id="trMiscInput">
+                                        <td colspan="2">
+                                            <input name="tiMiscelaneos" class="tagsinput" data-role="tagsinput" id="tiMiscelaneos" value="@Model.Miscelaneos" />
+                                        </td>
+                                        <td colspan="2">
+                                            <input name="tiTecnicos" class="tagsinput" data-role="tagsinput" id="tiTecnicos" value="@Model.Tecnicos" />
+                                        </td>
+                                        <td>
+                                            <input name="tiRC" class="tagsinput" data-role="tagsinput" id="tiRC" value="@Model.RC" />
+                                        </td>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table class="table-curved" width="100%" style='@(!Model.PrimerRiesgo ? "display:none" : "")' id="tblPrimerRiesgo">
+                                    <tr>
+                                        <td>
+                                            <h4 class="small">Primer Riesgo</h4>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" align="center"><label>Incendio</label></td>
+                                        <td colspan="2" align="center"><label>Diversos Técnicos</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="top">
+                                            <table>
+                                                @foreach (var item in ((List<Domain.MainModule.Entities.SubLineaNegocio>)ViewBag.PrimerRiesgoAll).Where(x => x.LineaNegocioID != 4))
+                                                {
+                                                    <tr>
+                                                        <td style="padding:0 8px 0 8px">@item.nombre</td>
+                                                        <td>
+                                                            <label class="checkbox primary" for="@("chkSubLinea" + item.SubLineaNegocioID.ToString())">
+                                                                <input type="checkbox" data-toggle="radio" value="" id="@("chkSubLinea" + item.SubLineaNegocioID.ToString())" @(((List<Domain.MainModule.Entities.SubLineaNegocio>)ViewBag.PrimerRiesgoSelection).Where(x => x.SubLineaNegocioID == item.SubLineaNegocioID).Count() > 0 ? "checked" : "")>
+                                                            </label>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </table>
+                                        </td>
+                                        <td valign="top">
+                                            <table>
+                                                @foreach (var item in ((List<Domain.MainModule.Entities.TipoCobertura>)ViewBag.PrimerRiesgoCobAll))
+                                                {
+                                                    <tr>
+                                                        <td style="padding:0 8px 0 8px">@item.nombrePrimerRiesgo</td>
+                                                        <td>
+                                                            <label class="checkbox primary" for="@("chkTipoCobertura" + item.TipoCoberturaID.ToString())">
+                                                                <input type="checkbox" data-toggle="radio" value="" id="@("chkTipoCobertura" + item.TipoCoberturaID.ToString())" @(((List<Domain.MainModule.Entities.TipoCobertura>)ViewBag.PrimerRiesgoCobSelection).Where(x => x.TipoCoberturaID == item.TipoCoberturaID).Count() > 0 ? "checked" : "")>
+                                                            </label>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </table>
+                                        </td>
+                                        <td valign="top">
+                                            <table>
+                                                @*@foreach(var item in ((List
+                                                <domain.mainmodule.entities.sublineanegocio>
+                                                    )ViewBag.PrimerRiesgoAll).Where(x => x.LineaNegocioID == 4))*@
+                                                    @for (var i = 0; i < ((List<Domain.MainModule.Entities.SubLineaNegocio>)ViewBag.PrimerRiesgoAll).Where(x => x.LineaNegocioID == 4).Count(); i += 2)
+                                                {
+                                                        <tr>
+                                                            <td style="padding:0 8px 0 8px">@((((List<Domain.MainModule.Entities.SubLineaNegocio>)ViewBag.PrimerRiesgoAll).Where(x => x.LineaNegocioID == 4)).ToList()[i].nombre)</td>
+                                                            <td>
+                                                                <label class="checkbox primary" for="chkSubLinea@((((List<Domain.MainModule.Entities.SubLineaNegocio>)ViewBag.PrimerRiesgoAll).Where(x => x.LineaNegocioID == 4)).ToList()[i].SubLineaNegocioID)">
+                                                                    <input type="checkbox" data-toggle="radio" value="" id="chkSubLinea@((((List<Domain.MainModule.Entities.SubLineaNegocio>)ViewBag.PrimerRiesgoAll).Where(x => x.LineaNegocioID == 4)).ToList()[i].SubLineaNegocioID)" @(((List<Domain.MainModule.Entities.SubLineaNegocio>)ViewBag.PrimerRiesgoSelection).Where(x => x.SubLineaNegocioID == (((List<Domain.MainModule.Entities.SubLineaNegocio>)ViewBag.PrimerRiesgoAll).Where(y => y.LineaNegocioID == 4)).ToList()[i].SubLineaNegocioID).Count() > 0 ? "checked" : "")>
+                                                                </label>
+                                                            </td>
+                                                            @if ((((List<Domain.MainModule.Entities.SubLineaNegocio>)ViewBag.PrimerRiesgoAll).Where(x => x.LineaNegocioID == 4)).Count() > i + 1)
+                                                        {
+                                                                <td style="padding:0 8px 0 8px">@((((List<Domain.MainModule.Entities.SubLineaNegocio>)ViewBag.PrimerRiesgoAll).Where(x => x.LineaNegocioID == 4)).ToList()[i + 1].nombre)</td>
+                                                                <td>
+                                                                    <label class="checkbox primary" for="chkSubLinea@((((List<Domain.MainModule.Entities.SubLineaNegocio>)ViewBag.PrimerRiesgoAll).Where(x => x.LineaNegocioID == 4)).ToList()[i+1].SubLineaNegocioID)">
+                                                                        <input type="checkbox" data-toggle="radio" value="" id="chkSubLinea@((((List<Domain.MainModule.Entities.SubLineaNegocio>)ViewBag.PrimerRiesgoAll).Where(x => x.LineaNegocioID == 4)).ToList()[i+1].SubLineaNegocioID)" @(((List<Domain.MainModule.Entities.SubLineaNegocio>)ViewBag.PrimerRiesgoSelection).Where(x => x.SubLineaNegocioID == (((List<Domain.MainModule.Entities.SubLineaNegocio>)ViewBag.PrimerRiesgoAll).Where(y => y.LineaNegocioID == 4)).ToList()[i + 1].SubLineaNegocioID).Count() > 0 ? "checked" : "")>
+                                                                    </label>
+                                                                </td>
+                                                        }
+                                                        </tr>
+                                                }
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <hr color="blue" size=3 />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align="right" colspan="2">
+                                <table>
+                                    <tr>                                        
+                                        <td><button type="submit" class="btn btn-success" @(Model.isActivo ? "" :"disabled") >Guardar</button></td>
+                                        <td width="50px;"></td>                                      
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+                    
+        </td>
+    </tr>
+        }
+</table>
+
+
+@section scripts {
+    @Scripts.Render("~/bundles/typehead")
+
+    <script>
+              
+        var dataMiscelaneos = [];
+        var dataTecnicos = [];
+        var dataRC = [];
+
+        $("#ddlMiscelaneos option").each(function () {
+            if ($(this).val() != "")
+                dataMiscelaneos.push($(this).text())
+        });
+
+        $("#ddlTecnicos option").each(function () {
+            if ($(this).val() != "")
+                dataTecnicos.push($(this).text())
+        });
+
+        $("#ddlRC option").each(function () {
+            if ($(this).val() != "")
+                dataRC.push($(this).text())
+        });
+
+        var miscelaneosnames = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: $.map(dataMiscelaneos, function (n) {
+                return {
+                    name: n
+                };
+            })
+        });
+
+        var tecnicosnames = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: $.map(dataTecnicos, function (n) {
+                return {
+                    name: n
+                };
+            })
+        });
+
+        var RCnames = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: $.map(dataRC, function (n) {
+                return {
+                    name: n
+                };
+            })
+        });
+
+        miscelaneosnames.initialize();
+        tecnicosnames.initialize();
+        RCnames.initialize();
+
+        $('#tiMiscelaneos').tagsinput({
+            typeaheadjs: {
+                name: 'miscenlaneosnames',
+                displayKey: 'name',
+                valueKey: 'name',
+                source: miscelaneosnames.ttAdapter()
+            }
+        });
+
+        $('#tiTecnicos').tagsinput({
+            typeaheadjs: {
+                name: 'tecnicosnames',
+                displayKey: 'name',
+                valueKey: 'name',
+                source: tecnicosnames.ttAdapter()
+            }
+        });
+
+        $('#tiRC').tagsinput({
+            typeaheadjs: {
+                name: 'RCnames',
+                displayKey: 'name',
+                valueKey: 'name',
+                source: RCnames.ttAdapter()
+            }
+        });
+
+
+    $(function () {
+
+        $.ajaxSetup({ cache: false });
+
+        $(".multiSelect").multiselect({
+            multiple: false,
+            header: "Seleccionar una opción",
+            noneSelectedText: "Seleccionar una opción",
+            selectedList: 1,
+            position: { my: 'left top', at: 'left bottom' }
+        });
+
+        
+        $(".multiSelect2").multiselect({
+            multiple: false,
+            header: "Seleccionar una opción",
+            noneSelectedText: "Seleccionar una opción",
+            selectedList: 1,
+            position: { my: 'left top', at: 'left bottom' }
+        }).multiselectfilter();
+
+
+        $(".fecha").datepicker({
+            autoclose: true,
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy',
+            dayNamesMin: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+            monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+            showButtonPanel: true
+        });
+
+        MonolineaTrans();
+        TipoOperacionChange();
+        RestarFechas();
+       
+    });
+
+        function AddTagInput(nombre) {
+            //debugger;
+            var valor = $('#ddl' + nombre).val();
+            var texto = $('#ddl' + nombre + ' option:selected').text();
+        
+            $('#ti' + nombre).tagsinput('add', texto);
+        }
+                
+
+        function CambiarChk() {
+            //debugger;
+            $('#hdNew').val($('#chkNew').is(':checked'));
+
+            if ($('#chkNew').is(':checked'))
+                $("#txtPolizaAnterior").attr("disabled", "disabled");
+            else
+                $("#txtPolizaAnterior").removeAttr("disabled", "disabled");
+        }
+
+        function CambiarChkPrimerRiesgo() {
+            //debugger;
+            if ($('#chkPrimerRiesgo').is(':checked')) {
+                $("#txtLimite").removeAttr("disabled", "disabled");
+                $("#tblPrimerRiesgo").show();
+            }
+            else {
+                $("#txtLimite").attr("disabled", "disabled");
+                $("#tblPrimerRiesgo").css('display', 'none');
+            }
+            
+            $('#hdPrimerRiesgo').val($('#chkPrimerRiesgo').is(':checked'));
+        }
+
+        function VerificarChecks() {
+            var subLineas = [];
+            var tipos = [];
+            
+            $('input[id^=chkSubLinea]').each(function (i, obj) {                
+                if (obj.checked)
+                    subLineas.push(obj.id.split('chkSubLinea')[1])
+            });
+
+            $('input[id^=chkTipoCobertura]').each(function (i, obj) {
+                if (obj.checked)
+                    tipos.push(obj.id.split('chkTipoCobertura')[1])
+            });
+
+            $('#hdPrimerRiesgoSubLinea').val(subLineas);
+            $('#hdPrimerTipoCobertura').val(tipos);
+            //debugger;
+        }
+
+        $('#frm').submit(function () {
+            var url = '@Url.Action("Crear", "Cotizar")';
+            //debugger;
+            VerificarChecks();
+
+
+            $("#hdMiscelaneos").val($("#tiMiscelaneos").tagsinput('items'));
+            $("#hdTecnicos").val($("#tiTecnicos").tagsinput('items'));
+            $("#hdRC").val($("#tiRC").tagsinput('items'));
+
+            $("#hdIncendio").val($('#chkIncendio').is(':checked'));
+            $("#hdHidro").val($('#chkHidro').is(':checked'));
+            $("#hdTerremoto").val($('#chkTerremoto').is(':checked'));
+            $("#hdTerremotoBI").val($('#chkTerremotoBI').is(':checked'));
+            $("#hdTransporte").val($('#chkTransporte').is(':checked'));
+
+            $('#frm').prop('action', url);
+
+            return true;
+        });
+
+        function Buscar() {
+            var valor = $('#txtRFC').val();
+            $('#divError').html('');
+
+            $.ajax({
+                url: '@Url.Content("~/Cotizar/GetAsegurado/")',
+                data: {
+                    rfc: valor
+                },
+                traditional: true,
+                success: function (data) {
+                    if (data.id == "0") {
+                        $('#divError').html("@Html.Raw(ViewBag.ErrorNotFound)");
+                    }
+                    else {
+                        $('#hdAseguradoID').val(data.id);
+                        $('#txtNombreAsegurado').val(data.nombre);
+                        $('#dviBuscarAsegurado').modal("hide");
+                        $('#hdNombreAsegurado').val(data.nombre);
+                        $('#hdRFCAsegurado').val(data.rfc);
+                        $('#hdisOFAC').val(data.isOFAC);
+                    }
+                }
+
+            });
+        }
+
+        @*function CambiarPagIncendio(a) {            
+            var url = '@Url.Action("CotizarIncendio", "Cotizar", new { cotizacionID = "param" })';
+            window.location.href = url.replace('param', a);
+        }
+
+        function CambiarPagValores(a) {            
+            var url = '@Url.Action("Valores", "Cotizar", new { cotizacionID = "param" })';
+            window.location.href = url.replace('param', a);
+        }*@
+
+        function OpenContacto() {
+            $('#divBuscarContacto').modal('toggle');
+            BuscarAgente();
+        }
+
+        function BuscarAgente() {
+            var selectionSucursal = $('#ddlSucursal').val();
+            $('#ddlAgente').html('');
+
+            if (selectionSucursal != null) {
+                $.ajax({
+                    url: '@Url.Content("~/Cotizar/GetAgenteToSelection/")',
+                    data: {
+                        sucursalID: selectionSucursal
+                    },
+                    dataType: 'JSON',
+                    success: function (data) {
+
+                        if (data.errorAcceso) {
+                            alert(data.errorAcceso);
+                        }
+                        else {
+                            var $select = $('#ddlAgente');
+                            $.each(data.datos, function (key, val) {
+                                $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                            })
+
+                            $select.multiselect('refresh');
+
+                            BuscarContacto();
+                        }
+                    }, error: function () {
+                        $('#ddlAgente').append('<option id="-1">none available</option>');
+                    }
+                });
+            }
+        }
+
+        function BuscarContacto() {
+            
+            var selectionAgente = $('#ddlAgente').val();
+            $('#ddlContacto').html('');
+
+            if (selectionAgente != null) {
+                $.ajax({
+                    url: '@Url.Content("~/Cotizar/GetContactoToSelection/")',
+                    data: {
+                        agenteID: selectionAgente
+                    },
+                    dataType: 'JSON',
+                    success: function (data) {
+
+                        if (data.errorAcceso) {
+                            alert(data.errorAcceso);
+                        }
+                        else {
+                            var $select = $('#ddlContacto');
+                            $.each(data.datos, function (key, val) {
+                                $select.append('<option value="' + val.Value + '">' + val.Text + '</option>');
+                            })
+
+                            $select.multiselect('refresh');
+                        }
+                    }, error: function () {
+                        $('#ddlContacto').append('<option id="-1">none available</option>');
+                    }
+                });
+            }
+        }
+
+        function SeleccionarContacto() {
+            //debugger;
+            if ($('#ddlContacto').val() != null) {
+                $("#txtContacto").val($('#ddlContacto option:selected').text());
+                $("#hdContactoID").val($('#ddlContacto option:selected').val());
+                $('#divBuscarContacto').modal('hide');
+            }
+        }
+
+        function CambiarVigFinal() {
+            //debugger;
+            var fechaIni = $('#txtVigenciaIni').val();            
+            if (fechaIni != "")
+            {
+                var sig = Number(fechaIni.substr(9, 1)) + 1;
+                $('#txtVigenciaFin').val(fechaIni.substr(0, 9) + sig.toString());
+            }
+
+            RestarFechas();
+        }
+
+        function RestarFechas() {
+            //debugger;
+            var fechaIni = $('#txtVigenciaIni').datepicker('getDate');
+            var fechaFin = $('#txtVigenciaFin').datepicker('getDate');
+
+            var millisecondsPerDay = 1000 * 60 * 60 * 24;
+
+            var millisBetween = fechaFin.getTime() - fechaIni.getTime();
+            var days = millisBetween / millisecondsPerDay;
+
+            //alert(Math.floor(days));
+            $("#spnNroDias").text(Math.floor(days));
+
+        }
+
+        function CambiarGastosAd() {            
+            $('#txtGastosAdq').val(Number($('#txtComision').val()) + Number($('#txtOtrosGastosAdq').val()));
+            $('#hdGastosAd').val($('#txtGastosAdq').val());
+        }
+
+        function MonolineaTrans() {
+            var valor = $('#chkTransporte').is(':checked');
+
+            if (valor) {
+                $("#tblPrimerRiesgo").css('display', 'none');
+                $("#trInflacion").css('display', 'none');
+                $("#trMisc").css('display', 'none');
+                $("#trMiscInput").css('display', 'none');
+                $("#trTitulosMisc").css('display', 'none');
+                $("#tdIncendio").css('display', 'none');
+                $("#tdHidro").css('display', 'none');
+                $("#tdTerremoto").css('display', 'none');
+                $("#tdTerremotoBI").css('display', 'none');
+            }
+            else
+            {
+                $("#tblPrimerRiesgo").show();
+                $("#trInflacion").show();
+                $("#trMisc").show();
+                $("#trMiscInput").show();
+                $("#trTitulosMisc").show();
+                $("#tdIncendio").show();
+                $("#tdHidro").show();
+                $("#tdTerremoto").show();
+                $("#tdTerremotoBI").show();
+
+                CambiarChkPrimerRiesgo();
+            }
+        }
+
+        function TipoOperacionChange() {
+            var valor = $('#ddlTipoOperacion').val();
+            if (valor == 1)
+            {
+                $('#txtParticipacion').val('100');
+                $('#txtParticipacion').attr("disabled", "disabled"); 
+            }
+            else
+                $('#txtParticipacion').removeAttr("disabled");
+        }
+    </script>
+}
