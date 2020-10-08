@@ -13,41 +13,37 @@ namespace Application.Integration
 {
     public class WsConsultaPersona
     {
-        public static string test(string rfc)
+        public static SDTConsultaPersonaOut.Persona datosAseguradoWS(string rfc)
         {
-            if (rfc == "" || rfc is null)
+            SDTConsultaPersonaOut.Persona result = new SDTConsultaPersonaOut.Persona();
+            try
             {
-                rfc = "XAXX010101000";
+                if (rfc == "" || rfc is null)
+                {
+                    rfc = "XAXX010101000";
+                }
+
+                var response = CallWebService(rfc);
+                string datosAsegurado = getBetween(response.ToString(), "<Persona>", "</Persona>");
+                if (datosAsegurado.Length > 0)
+                {
+                    var serializer = new XmlSerializer(typeof(SDTConsultaPersonaOut.Persona));
+                    using (TextReader reader = new StringReader(datosAsegurado))
+                    {
+                        result = (SDTConsultaPersonaOut.Persona)serializer.Deserialize(reader);
+                    }
+                }
             }
-
-            WSConsultaPersonaSoapPortClient _wsConsultaPersona = new WSConsultaPersonaSoapPortClient();
-
-            var sdtPersona = new SDTConsultaPersonaIn { RFC = rfc };
-            var request = MapToXml(sdtPersona);
-            var objectResponse = _wsConsultaPersona.Execute(sdtPersona);
-            var response = MapToXml(objectResponse);
-
-            return response.ToString();
+            catch { }
+            return result;
         }
 
-        public static object MapEntityToXml { get; private set; }
-
-        public static string MapToXml<T>(T objectType)
+        public static string CallWebService(string rfc)
         {
-            using (var stringwriter = new StringWriter())
-            {
-                var serializer = new XmlSerializer(typeof(T));
-                serializer.Serialize(stringwriter, objectType);
-                return stringwriter.ToString();
-            }
-        }
+            var _url = "https://testcol.berkleyonline.com.ar:8443/BIWebMXTest/servlet/com.berkleycomercial10.awsconsultapersona?wsdl";
+            var _action = "";
 
-        public static void CallWebService()
-        {
-            var _url = "http://xxxxxxxxx/Service1.asmx";
-            var _action = "http://xxxxxxxx/Service1.asmx?op=HelloWorld";
-
-            XmlDocument soapEnvelopeXml = CreateSoapEnvelope();
+            XmlDocument soapEnvelopeXml = CreateSoapEnvelope(rfc);
             HttpWebRequest webRequest = CreateWebRequest(_url, _action);
             InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml, webRequest);
 
@@ -68,33 +64,35 @@ namespace Application.Integration
                 }
                 Console.Write(soapResult);
             }
+            return soapResult;
         }
 
         private static HttpWebRequest CreateWebRequest(string url, string action)
         {
             HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
-            webRequest.Headers.Add("SOAPAction", action);
+            //webRequest.Headers.Add("SOAPAction", action);
             webRequest.ContentType = "text/xml;charset=\"utf-8\"";
             webRequest.Accept = "text/xml";
             webRequest.Method = "POST";
             return webRequest;
         }
 
-        private static XmlDocument CreateSoapEnvelope()
+        private static XmlDocument CreateSoapEnvelope(string rfc)
         {
             XmlDocument soapEnvelopeDocument = new XmlDocument();
-            soapEnvelopeDocument.LoadXml(
-                                            @"<SOAP-ENV:Envelope xmlns:SOAP-ENV=""http://schemas.xmlsoap.org/soap/envelope/"" 
-                                               xmlns:xsi=""http://www.w3.org/1999/XMLSchema-instance"" 
-                                               xmlns:xsd=""http://www.w3.org/1999/XMLSchema"">
-                                        <SOAP-ENV:Body>
-                                            <HelloWorld xmlns=""http://tempuri.org/"" 
-                                                SOAP-ENV:encodingStyle=""http://schemas.xmlsoap.org/soap/encoding/"">
-                                                <int1 xsi:type=""xsd:integer"">12</int1>
-                                                <int2 xsi:type=""xsd:integer"">32</int2>
-                                            </HelloWorld>
-                                        </SOAP-ENV:Body>
-                                    </SOAP-ENV:Envelope>");
+            string c1 = @"<SOAP-ENV:Envelope xmlns:SOAP-ENV=""http://schemas.xmlsoap.org/soap/envelope/"" 
+                            xmlns:ber=""Berkley_Comercial_10"">   
+                          <SOAP-ENV:Body>      
+                            <ber:WSConsultaPersona.Execute>      
+                            <ber:Sdtconsultapersonain>      
+                            <ber:RFC>";
+            string c2 = @"</ber:RFC>
+                          </ber:Sdtconsultapersonain>
+                          </ber:WSConsultaPersona.Execute>
+                         </SOAP-ENV:Body>
+                        </SOAP-ENV:Envelope>";
+
+            soapEnvelopeDocument.LoadXml(c1 + rfc + c2);
             return soapEnvelopeDocument;
         }
 
@@ -104,6 +102,18 @@ namespace Application.Integration
             {
                 soapEnvelopeXml.Save(stream);
             }
+        }
+        public static string getBetween(string strSource, string strStart, string strEnd)
+        {
+            if (strSource.Contains(strStart) && strSource.Contains(strEnd))
+            {
+                int Start, End;
+                Start = strSource.IndexOf(strStart, 0); //+ strStart.Length;
+                End = strSource.IndexOf(strEnd, Start);
+                return strSource.Substring(Start, (End + strEnd.Length) - Start);
+            }
+
+            return "";
         }
     }
 }

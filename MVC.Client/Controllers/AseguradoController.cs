@@ -13,6 +13,11 @@ using MVC.Client.Extensions.Utilities;
 using MVC.Client.Extensions.ActionFilters;
 using MVC.Client.Extension.Utilities;
 using Application.Integration;
+using Newtonsoft.Json;
+using Domain.MainModule.Asegurados;
+using System.Xml.Serialization;
+using System.IO;
+using Application.Integration.wsConsultaPersona;
 
 namespace MVC.Client.Controllers
 {
@@ -181,13 +186,41 @@ namespace MVC.Client.Controllers
 
             if (string.IsNullOrEmpty(mensaje))
             {
+                //old
                 //List<Asegurado> cot = _AseguradoService.FindAseguradobyFiltro(rfc, razonSocial, nombre, apellido1, apellido2);
-                datos = Render.RenderRazorViewToString(this, "Templates/ListaAsegurados", _AseguradoService.FindAseguradobyFiltro(rfc, razonSocial, nombre, apellido1, apellido2));
+                //datos = Render.RenderRazorViewToString(this, "Templates/ListaAsegurados", _AseguradoService.FindAseguradobyFiltro(rfc, razonSocial, nombre, apellido1, apellido2));
 
                 //200928 - rbaeza - test
-                string datoAsegurado = WsConsultaPersona.test(rfc);
+                var datosAseguradoWS = WsConsultaPersona.datosAseguradoWS(rfc);
+                List<Asegurado> datosAsegurado = new List<Asegurado>();
                 //Comparación de datos provenientes del servicio vs los datos de la BD
-                //Pendiente
+                if (datosAseguradoWS.PerCod > 0)
+                {
+                    datosAsegurado.Add(new Asegurado
+                        {
+                            Nombres = datosAseguradoWS.Asegurado[0].AseNom.ToString(),
+                            Apellido1 = datosAseguradoWS.Asegurado[0].AseNomEx.ToString(),
+                            Apellido2 = datosAseguradoWS.Asegurado[0].AseNomEx2.ToString(),
+                            AseguradoID = datosAseguradoWS.Asegurado[0].AseCod,//Revisar
+                            CURP = "",//Pendiente por revisar
+                            TipoPersonaID = Int32.Parse(datosAseguradoWS.PerTipPer.ToString()),//Revisar
+                            CodigoPostal = datosAseguradoWS.Direccion[0].PerLocaliMex[0].ToString(),
+                            Cod_colonia = datosAseguradoWS.Direccion[0].PerDomici[0].ToString(),
+                            RFC = datosAseguradoWS.RFC.ToString(),
+                            RazonSocial = datosAseguradoWS.PerNom.ToString()//,
+                            //SIC = //revisar
+                    }
+                    ); 
+                }
+                else
+                {
+                    //Busca datos en BD
+                    datosAsegurado = _AseguradoService.FindAseguradobyFiltro(rfc, razonSocial, nombre, apellido1, apellido2);
+                }
+
+                datos = Render.RenderRazorViewToString(this, "Templates/ListaAsegurados", datosAsegurado);
+
+                
             }
             else
                 mensaje = MessagesValidation.Error(mensaje).ToString();

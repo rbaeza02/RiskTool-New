@@ -79,33 +79,35 @@ namespace Application.Integration.wsConsultaPersona {
                 this.extensionDataField = value;
             }
         }
-        
-        //[System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, EmitDefaultValue=false)]
-        //public Application.Integration.wsConsultaPersona.SDTConsultaPersonaOut.Persona Persona {
-        //    get {
-        //        return this.PersonaField;
-        //    }
-        //    set {
-        //        if ((object.ReferenceEquals(this.PersonaField, value) != true)) {
-        //            this.PersonaField = value;
-        //            this.RaisePropertyChanged("Persona");
-        //        }
-        //    }
-        //}
-        
-        //[System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, EmitDefaultValue=false, Order=1)]
-        //public Application.Integration.wsConsultaPersona.SDTConsultaPersonaOut.Errores _Errores {
-        //    get {
-        //        return this._ErroresField;
-        //    }
-        //    set {
-        //        if ((object.ReferenceEquals(this._ErroresField, value) != true)) {
-        //            this._ErroresField = value;
-        //            this.RaisePropertyChanged("Errores");
-        //        }
-        //    }
-        //}
-        
+
+        public Persona GetPersona()
+        {
+            return this.PersonaField;
+        }
+
+        public void SetPersona(Persona value)
+        {
+            if ((object.ReferenceEquals(this.PersonaField, value) != true))
+            {
+                this.PersonaField = value;
+                this.RaisePropertyChanged("Persona");
+            }
+        }
+
+        public Errores GetErrores()
+        {
+            return this.ErroresField;
+        }
+
+        public void SetErrores(Errores value)
+        {
+            if ((object.ReferenceEquals(this.ErroresField, value) != true))
+            {
+                this.ErroresField = value;
+                this.RaisePropertyChanged("Errores");
+            }
+        }
+
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {

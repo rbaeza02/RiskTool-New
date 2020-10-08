@@ -574,6 +574,10 @@
       <Project>{ebf60b19-31af-4f10-be71-5807a94cb12a}</Project>
       <Name>Domain.MainModule.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Domain.MainModule\Domain.MainModule.csproj">
+      <Project>{1C1A10C7-7C17-4DC8-B72E-8BF9537FC357}</Project>
+      <Name>Domain.MainModule</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Reports\PresentacionCotizacionRC.rdlc" />
