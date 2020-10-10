@@ -45,7 +45,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dlls\Domain.Core.Entities.dll</HintPath>
     </Reference>
-    <Reference Include="Infrastructure.CrossCutting.IoC">
+    <Reference Include="Infrastructure.CrossCutting.IoC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dlls\Infrastructure.CrossCutting.IoC.dll</HintPath>
     </Reference>
     <Reference Include="Infrastructure.Data.Core">
@@ -223,6 +224,8 @@
     <Content Include="Content\fonts\lato\lato-italic.svg" />
     <Content Include="Content\fonts\lato\lato-light.svg" />
     <Content Include="Content\fonts\lato\lato-regular.svg" />
+    <Content Include="Content\menu\menu - bkp.css" />
+    <Content Include="Content\style.css" />
     <Content Include="Content\menu\menu.css" />
     <Content Include="Content\multiselect\images\ui-bg_glass_100_f6f6f6_1x400.png" />
     <Content Include="Content\multiselect\images\ui-bg_glass_100_fdf5ce_1x400.png" />
@@ -356,6 +359,7 @@
     <Content Include="Images\flatui\icons\svg\ribbon.svg" />
     <Content Include="Images\flatui\icons\svg\toilet-paper.svg" />
     <Content Include="Images\heroAccent.png" />
+    <Content Include="Images\logo-berkley.png" />
     <Content Include="Images\orderedList0.png" />
     <Content Include="Images\orderedList1.png" />
     <Content Include="Images\orderedList2.png" />
@@ -366,7 +370,11 @@
     <Content Include="Images\orderedList7.png" />
     <Content Include="Images\orderedList8.png" />
     <Content Include="Images\orderedList9.png" />
+    <Content Include="Images\squaredlogo.png" />
     <Content Include="Images\timeout-icon.png" />
+    <Content Include="Scripts\jquery.min.js" />
+    <Content Include="Scripts\main.js" />
+    <Content Include="Scripts\popper.js" />
     <Content Include="Scripts\timeout\timeout-dialog.js" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
@@ -548,6 +556,7 @@
     <Content Include="Views\Process\Templates\ListaBeneficiario.cshtml" />
     <Content Include="Views\Process\Templates\ListaPagador.cshtml" />
     <Content Include="Views\Cotizar\PresentacionRC.cshtml" />
+    <Content Include="Views\Shared\NavigationLeft - bkp.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

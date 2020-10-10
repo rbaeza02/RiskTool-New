@@ -1,25 +1,45 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Risk Tool</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <link href="~/BO.ico" rel="shortcut icon" type="image/x-icon" />
-    
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="~/Content/style.css" rel="stylesheet" />
+
+
     @Styles.Render("~/Content/flatUiCssBundle")
     @Styles.Render("~/Content/timeout")
     @Scripts.Render("~/bundles/modernizr")
     @RenderSection("css", required: false)
 
-    @Styles.Render("~/Content/menu_Personal")
-    @*<link href="~/Content/menu/menu.css" rel="stylesheet" />*@
+    @*@Styles.Render("~/Content/menu_Personal")*@
+
 
 
 </head>
 <body>
+
+
+
+
+
+    <div class="wrapper d-flex align-items-stretch">
         @Html.Partial("NavigationLeft")
-        @Html.Partial("Navigation")
-        <div class="container body-content">
+
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5">
+
+
+
+      
+            @Html.Partial("Navigation")
 
             <div id="DivError" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-header">
@@ -27,22 +47,31 @@
                     <h4>ERROR</h4>
                 </div>
                 <div class="modal-body">
-                   <span id="spnErrorException"></span>
-                </div>                
+                    <span id="spnErrorException"></span>
+                </div>
             </div>
-
-
             @RenderBody()
         </div>
 
-        @Scripts.Render("~/bundles/jquery")
-        @Scripts.Render("~/bundles/flatUiJsBundle")
-        @Scripts.Render("~/bundles/jqueryui")
-        @Scripts.Render("~/bundles/js")
-        @Scripts.Render("~/bundles/timeout")
 
-        <script type="text/javascript">
-            
+
+
+    </div>
+
+
+
+
+
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/flatUiJsBundle")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/js")
+    @Scripts.Render("~/bundles/timeout")
+
+    <script type="text/javascript">
+
             $(function () {
                 var fnTimeOut = function () {
                     jQuery.timeoutDialog.setupDialogTimer({
@@ -82,7 +111,7 @@
                 return true;
             }
 
-           
+
             $('input.number').keyup(function (event) {
                 //debugger;
                 // skip for arrow keys
@@ -113,7 +142,7 @@
 
             var toggle = true;
             CambiarToggle();
-            
+
             $(".sidebar-icon").click(function () {
                 CambiarToggle()
             });
@@ -133,7 +162,7 @@
 
                 toggle = !toggle;
             }
-        </script>
-        @RenderSection("scripts", required: false)
+    </script>
+    @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -49,7 +49,9 @@ namespace MVC.Client
                ));
            
             bundles.Add(new ScriptBundle("~/bundles/js").Include(
-                        "~/Scripts/site.js"));
+                        "~/Scripts/site.js",
+                        "~/Scripts/popper.js",
+                        "~/Scripts/main.js"));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
@@ -66,7 +68,7 @@ namespace MVC.Client
 
             bundles.Add(new StyleBundle("~/Content/menu_Personal").Include("~/Content/menu/menu.css"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/site.css"));
+            bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/style.css"));
             bundles.Add(new StyleBundle("~/Content/editable").Include("~/Content/editable/bootstrap-editable.css"));
             bundles.Add(new StyleBundle("~/Content/dynatable_personal").Include("~/Content/dynatable/jquery.dynatable.css"));
             bundles.Add(new StyleBundle("~/Content/flatUiCssBundle").Include(

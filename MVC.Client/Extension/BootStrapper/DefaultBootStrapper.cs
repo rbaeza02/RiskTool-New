@@ -8,7 +8,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity;
 using Domain.MainModule.Entities;
-using Infrastructure.CrossCutting;
+using Infrastructure.CrossCutting.IoC;
 using MVC.Client.Extensions.CustomModelBinders;
 using MVC.Client.Extensions.DependencyInjection;
 
