@@ -45,7 +45,8 @@
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Infrastructure.CrossCutting">
+    <Reference Include="Infrastructure.CrossCutting, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dlls\Infrastructure.CrossCutting.dll</HintPath>
     </Reference>
     <Reference Include="Infrastructure.Data.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

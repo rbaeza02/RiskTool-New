@@ -58,8 +58,6 @@ namespace MVC.Client.Controllers
             DateTime inicio, fin;
             Nullable<DateTime> param1 = null, param2 = null;
 
-            
-
             if (!string.IsNullOrEmpty(vigenciaInicio))
                 if (!DateTime.TryParseExact(vigenciaInicio, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out inicio))
                     mensaje = "- Vigencia Inicio -> " + Resources.Messages.date_error;

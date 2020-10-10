@@ -473,7 +473,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="MainModuleContext.Types.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MainModuleContext.Types.cs</LastGenOutput>
