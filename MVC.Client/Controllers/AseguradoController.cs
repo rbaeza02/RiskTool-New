@@ -201,14 +201,14 @@ namespace MVC.Client.Controllers
                             Nombres = datosAseguradoWS.Asegurado[0].AseNom.ToString(),
                             Apellido1 = datosAseguradoWS.Asegurado[0].AseNomEx.ToString(),
                             Apellido2 = datosAseguradoWS.Asegurado[0].AseNomEx2.ToString(),
-                            AseguradoID = datosAseguradoWS.Asegurado[0].AseCod,//Revisar
-                            CURP = "",//Pendiente por revisar
-                            TipoPersonaID = Int32.Parse(datosAseguradoWS.PerTipPer.ToString()),//Revisar
-                            CodigoPostal = datosAseguradoWS.Direccion[0].PerLocaliMex[0].ToString(),
+                            AseguradoID = datosAseguradoWS.Asegurado[0].AseCod,//Revisar a qué se refiere el campo AseCod
+                            CURP = "",//Pendiente por revisar ya que no hay un campo explícito para el CURP en la respuesta del ws
+                            TipoPersonaID = Int32.Parse(datosAseguradoWS.PerTipPer.ToString()),//Revisar a qué se refiere el campo PerTipPer
+                            CodigoPostal = datosAseguradoWS.Direccion[0].PerLocaliMex[0].ToString(), //revisar si el código postal siempre viene separado por coma al final del campo PerLocaliMex
                             Cod_colonia = datosAseguradoWS.Direccion[0].PerDomici[0].ToString(),
                             RFC = datosAseguradoWS.RFC.ToString(),
                             RazonSocial = datosAseguradoWS.PerNom.ToString()//,
-                            //SIC = //revisar
+                            //SIC = //Revisar qué es?
                     }
                     ); 
                 }
